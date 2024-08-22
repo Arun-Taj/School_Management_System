@@ -24,7 +24,7 @@ class Chart2 extends Component {
 				//yValueFormatString: "#,###'%'",
 				dataPoints: [
 					
-					{ name: "Estimation", y: 200},
+					{ name: "Estimation", y: 300},
 					//{ name: "Estimation", y: 2},
 					
 				]
@@ -33,7 +33,7 @@ class Chart2 extends Component {
 		return (
 		<div>
 			<CanvasJSChart options = {options}
-				 onRef={ref => this.chart = ref} 
+				//  onRef={ref => this.chart = ref} 
 			/>
 			
 		</div>

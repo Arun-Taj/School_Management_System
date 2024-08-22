@@ -7,6 +7,7 @@ import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [expandedMenu, setExpandedMenu] = useState(null);
+  const [expandedSubMenu, setExpandedSubMenu] = useState(null);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -14,6 +15,10 @@ const Sidebar = () => {
 
   const toggleSubMenu = (index) => {
     setExpandedMenu(expandedMenu === index ? null : index);
+  };
+
+  const toggleResultSubMenu = () => {
+    setExpandedSubMenu(expandedSubMenu === 'result' ? null : 'result');
   };
 
   const menuItems = [
@@ -26,16 +31,48 @@ const Sidebar = () => {
         { name: 'Student ID Card', link: '/students/idCard' }
       ]
     },
-    { name: 'Employees', icon: FaUser, link: '/employees',
-    subMenu: [
-      { name: 'Add New', link: '/employees/employeeForm' },
-      { name: 'All Employees', link: '/employees/allEmployees' },
-      { name: 'Employee ID Card', link: '/employees/eId' },
-    ] },
-    { name: 'Accounts', icon: MdAccountBalanceWallet, link: '/accounts' },
-    { name: 'Fees', icon: FaMoneyBill, link: '/fees' },
-    { name: 'Attendance', icon: FaHandPaper, link: '/attendance' },
-    { name: 'Exam', icon: FaEdit, link: '/exam' },
+    {
+      name: 'Employees', icon: FaUser, link: '/employees',
+      subMenu: [
+        { name: 'Add New', link: '/employees/employeeForm' },
+        { name: 'All Employees', link: '/employees/allEmployees' },
+        { name: 'Employee ID Card', link: '/employees/eId' },
+      ]
+    },
+    {
+      name: 'Accounts', icon: MdAccountBalanceWallet, link: '/accounts',
+      subMenu: [
+        { name: 'Chart Of Account', link: '/accounts/chart' },
+        { name: 'Add Income', link: '/accounts/addIncome' },
+        { name: 'Add Expenses', link: '/accounts/addExpenses' },
+        { name: 'Account Statement', link: '/accounts/statements' },
+      ]
+    },
+    {
+      name: 'Fees', icon: FaMoneyBill, link: '/fees',
+      subMenu: [
+        { name: 'Fee Receipt', link: '/fees/feeReceipt' },
+        { name: 'Fee Report', link: '/fees/feeReport' },
+        { name: 'Fee Defaulter', link: '/fees/feeDefaulter' },
+      ]
+    },
+    {
+      name: 'Attendance', icon: FaHandPaper, link: '/attendance',
+      subMenu: [
+        { name: 'Mark Student Attendance', link: '/attendance/markStudent' },
+        { name: 'Student Attendance Report', link: '/attendance/studentReport' },
+        { name: 'Mark Employee Attendance', link: '/attendance/markEmployee' },
+        { name: 'Employee Attendance Report', link: '/attendance/EmployeeReport' }
+      ]
+    },
+    {
+      name: 'Exam', icon: FaEdit, link: '#', // Use '#' or 'null' as placeholder since it has a submenu
+      subMenu: [
+        { name: 'Create New Exam', link: '/exam/createExam' },
+        { name: 'Edit or Delete', link: '/exam/updateExam' },
+        { name: 'Add/Update Exam Marks', link: '/exam/updateExamMarks' }
+      ]
+    },
     { name: 'Configuration', icon: FaCog, link: '/config' },
   ];
 
@@ -56,7 +93,7 @@ const Sidebar = () => {
               <div className="flex items-center">
                 <item.icon className="mr-2" />
                 {isOpen && (
-                  <Link to={item.link} className="flex items-center">
+                  <Link to={item.link || '#'} className="flex items-center">
                     <span>{item.name}</span>
                   </Link>
                 )}
@@ -74,10 +111,37 @@ const Sidebar = () => {
             {item.subMenu && expandedMenu === index && (
               <div className="ml-6">
                 {item.subMenu.map((subItem, subIndex) => (
-                  <Link to={subItem.link} key={subIndex} className="block text-black py-1">
-                    {subItem.name}
-                  </Link>
+                  <div key={subIndex}>
+                    <Link to={subItem.link} className="block text-black py-1">
+                      {subItem.name}
+                    </Link>
+                  </div>
                 ))}
+                {/* Render the Result submenu only when Exam is expanded */}
+                {item.name === 'Exam' && (
+                  <>
+                    <div className="flex items-center justify-between text-black py-2 cursor-pointer">
+                      <span>Result</span>
+                      <div onClick={toggleResultSubMenu}>
+                        {expandedSubMenu === 'result' ? (
+                          <FaMinus className="text-black cursor-pointer" />
+                        ) : (
+                          <FaPlus className="text-black cursor-pointer" />
+                        )}
+                      </div>
+                    </div>
+                    {expandedSubMenu === 'result' && (
+                      <div className="ml-6">
+                        <Link to="/exam/studentReport" className="block text-black py-1">
+                          Student Wise Report
+                        </Link>
+                        <Link to="/exam/classReport" className="block text-black py-1">
+                          Class Wise Report
+                        </Link>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             )}
           </div>

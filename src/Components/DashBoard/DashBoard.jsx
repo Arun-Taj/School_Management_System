@@ -5,6 +5,8 @@ import ClassWiseReport from "./ClassWiseReport";
 import Chart from "./Chart";
 import Chart2 from "./Chart2"
 import Chart3 from "./Chart3"
+// import { Doughnut } from "react-chartjs-2";
+import Dougnut from "./Dougnut";
 const Dashboard = () => {
   return (
     <div className="flex flex-col  bg-gray-300 min-h-screen">
@@ -129,7 +131,7 @@ const Dashboard = () => {
           </div>
          
           <div className="flex flex-row space-x-4 pt-2">
-            <div className=" w-[290px]"><Chart2/></div>
+            <div className=" w-[290px]"><Dougnut/></div>
             <div className=" w-[290px] "><Chart3/></div>
           </div>
         </div>
