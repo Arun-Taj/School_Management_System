@@ -66,18 +66,18 @@ const Sidebar = () => {
       ]
     },
     {
-      name: 'Exam', icon: FaEdit, link: '#', // Use '#' or 'null' as placeholder since it has a submenu
+      name: 'Exam', icon: FaEdit, link: '/exam',
       subMenu: [
         { name: 'Create New Exam', link: '/exam/createExam' },
         { name: 'Edit or Delete', link: '/exam/updateExam' },
         { name: 'Add/Update Exam Marks', link: '/exam/updateExamMarks' }
       ]
     },
-    { name: 'Configuration', icon: FaCog, link: '/config' },
+    { name: 'Configuration', icon: FaCog, link: '/config' }
   ];
 
   return (
-    <div className={`flex flex-col ${isOpen ? 'w-64' : 'w-20'} bg-[#FFFFFF] h-screen p-5`}>
+    <div className={`flex flex-col ${isOpen ? 'w-64' : 'w-20'} bg-[#FFFFFF] h-screen p-5 box-`}style={{ boxShadow: '4px 4px 4px 0px #00000040' }}>
       <div className="flex justify-between items-center">
         <h1 className={`text-black ${!isOpen && 'hidden'}`}>LOGO</h1>
         {isOpen ? (
@@ -91,12 +91,10 @@ const Sidebar = () => {
           <div key={index}>
             <div className="flex items-center justify-between text-black py-2 cursor-pointer">
               <div className="flex items-center">
-                <item.icon className="mr-2" />
-                {isOpen && (
-                  <Link to={item.link || '#'} className="flex items-center">
-                    <span>{item.name}</span>
-                  </Link>
-                )}
+                <Link to={item.link} className="flex items-center">
+                  <item.icon className="mr-2" />
+                  {isOpen && <span>{item.name}</span>}
+                </Link>
               </div>
               {item.subMenu && isOpen && (
                 <div onClick={() => toggleSubMenu(index)}>

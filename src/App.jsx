@@ -1,7 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+import SignUp from './Components/Pages/SignUp&SignIn/SignUp';
+
 import Sidebar from './Components/DashBoard/Sidebar';
 import Dashboard from './Components/DashBoard/DashBoard';
+import Navbar from './Components/DashBoard/Navbar';
 
 import Students from './Components/Pages/StudentPage/Students';  
 import AdmissionForm from './Components/Pages/StudentPage/AdmissionForm';
@@ -40,8 +44,16 @@ import FeeReport from './Components/Pages/FeePage/FeeReport'
 import FeeDefaulter from './Components/Pages/FeePage/FeeDefaulter'
 
 import Configuration from './Components/Pages/ConfigurationPage/Configuration';
-import Navbar from './Components/DashBoard/Navbar';
+import Classes from './Components/Pages/ConfigurationPage/Classes'
+import CreateSubject from './Components/Pages/ConfigurationPage/CreateSubject';
+import AssignSubject from './Components/Pages/ConfigurationPage/AssignSubject';
+
+
+
+
+
 import Dougnut from './Components/DashBoard/Dougnut';
+
 
 
 
@@ -93,16 +105,20 @@ function App() {
               <Route path='/exam/updateExam' element={<EditExam/>} />
               <Route path='/exam/updateExamMarks' element={<UpdateMarks/>} />
               <Route path='/exam/result' element={<Result/>} />
-              <Route path='/exam/studentResult' element={<StudentResult/>} />
-              <Route path='/exam/classResult' element={<ClassResult/>} />
+              <Route path='/exam/studentReport' element={<StudentResult/>} />
+              <Route path='/exam/classReport' element={<ClassResult/>} />
 
               <Route path="/config" element={<Configuration />} />
+              <Route path="/config/classes" element={<Classes />} />
+              <Route path="/config/createSub" element={<CreateSubject />} />
+              <Route path="/config/assignSub" element={<AssignSubject />} />
+
             </Routes>
           </div>
         </div>
       </div>
     </Router>
-    // <Dougnut/>
+        // <SignUp/>
   
     
   );
