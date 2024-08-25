@@ -73,7 +73,11 @@ const Sidebar = () => {
         { name: 'Add/Update Exam Marks', link: '/exam/updateExamMarks' }
       ]
     },
-    { name: 'Configuration', icon: FaCog, link: '/config' }
+    { name: 'Configuration', icon: FaCog, link: '/config',
+    subMenu: [
+      { name: 'Classes', link: '/config/classes' },
+      
+    ] }
   ];
 
   return (
@@ -135,6 +139,30 @@ const Sidebar = () => {
                         </Link>
                         <Link to="/exam/classReport" className="block text-black py-1">
                           Class Wise Report
+                        </Link>
+                      </div>
+                    )}
+                  </>
+                )}
+                {item.name === 'Configuration' && (
+                  <>
+                    <div className="flex items-center justify-between text-black py-2 cursor-pointer">
+                      <span>Subjects</span>
+                      <div onClick={toggleResultSubMenu}>
+                        {expandedSubMenu === 'result' ? (
+                          <FaMinus className="text-black cursor-pointer" />
+                        ) : (
+                          <FaPlus className="text-black cursor-pointer" />
+                        )}
+                      </div>
+                    </div>
+                    {expandedSubMenu === 'result' && (
+                      <div className="ml-6">
+                        <Link to="/config/createSub" className="block text-black py-1">
+                          Create Subjects
+                        </Link>
+                        <Link to="/config/assignSub" className="block text-black py-1">
+                          Assign Subjects
                         </Link>
                       </div>
                     )}
