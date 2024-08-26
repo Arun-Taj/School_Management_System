@@ -5,7 +5,7 @@ import { FaRegEye, FaUser } from "react-icons/fa";
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
 import { FiRefreshCcw } from "react-icons/fi";
-import { HiOutlineMenu } from "react-icons/hi";
+import { IoFilterSharp } from "react-icons/io5";
 
 const AllStudents = () => {
   // Dummy data to replicate the table
@@ -41,7 +41,7 @@ const AllStudents = () => {
         <div className=" ">
           <div className="flex items-center  bg-white rounded-full ">
             {/* Left Side: Three-Line Menu Icon */}
-            <HiOutlineMenu className="text-gray-600 ml-4" size={24} />
+            <IoFilterSharp className="text-gray-600 ml-4" size={24} />
 
             {/* Vertical Line Divider */}
             <div className="w-px h-6 bg-gray-600 mx-4"></div>
@@ -57,7 +57,7 @@ const AllStudents = () => {
             <IoSearch className="text-gray-600 mr-4" size={24} />
           </div>
         </div>
-        <div className="border border-[#BCA8EA] p-2 rounded-full">
+        <div className="border border-[#BCA8EA] p-2 rounded-full bg-white">
           <FiRefreshCcw />
         </div>
       </div>
@@ -111,28 +111,30 @@ const AllStudents = () => {
       {/* Pagination Controls */}
       <div className="mt-4 flex justify-between items-center pb-10">
         <div className="flex space-x-2 items-center">
-          <button className="px-3 py-2 border border-gray-400 rounded-full ">
+          <button className="px-3 py-2 border border-gray-400 rounded-full bg-white">
             10
           </button>
-          <button className="px-3 py-2 border border-gray-400 rounded-full ">
+          <button className="px-3 py-2 border border-gray-400 rounded-full bg-white">
             25
           </button>
-          <button className="px-3 py-2 border border-gray-400 rounded-full ">
+          <button className="px-3 py-2 border border-gray-400 rounded-full bg-white">
             50
           </button>
           <p>Records per page </p>
         </div>
-        <div className="text-sm text-gray-600">
-          Showing 1 to 25 of 78 records
-        </div>
-        <div className="flex space-x-2 items-center">
-          <button className="px-3   ">
-            <IoIosArrowDropleft size={30} />
-          </button>
-          <p className="border border-gray-400 px-2 rounded-full"> 1</p>
-          <button className="px-3 ">
-            <IoIosArrowDropright size={30} />
-          </button>
+        <div className="flex flex-row items-center">
+          <div className="text-sm text-gray-600 ">
+            Showing 1 to 25 of 78 records
+          </div>
+          <div className="flex space-x-2 items-center">
+            <button className="px-3  ">
+              <IoIosArrowDropleft size={30} />
+            </button>
+            <p className="border border-gray-700 px-2 rounded-full"> 1</p>
+            <button className="px-3 ">
+              <IoIosArrowDropright size={30} />
+            </button>
+          </div>
         </div>
       </div>
     </div>
