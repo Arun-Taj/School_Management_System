@@ -144,7 +144,7 @@ const SignInForm = () => {
           </form>
 
           <p className="text-center mt-4 text-sm">
-            Don’t have an account?{" "}
+            Don't have an account?
             <a href="#" className="text-blue-500">
               Sign up
             </a>
@@ -160,7 +160,7 @@ const SignInForm = () => {
             Stop struggling with common tasks and focus on the real choke points, with our powerful School Management Platform.
           </p>
           <img
-            src="src/assets/Premium Vector Time management concept flat.jpeg"
+            src="src/assets/image.svg"
             alt="Manage Illustration"
             className="mt-6"
           />

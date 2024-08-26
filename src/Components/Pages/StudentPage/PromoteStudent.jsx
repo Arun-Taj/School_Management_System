@@ -7,14 +7,15 @@ import { IoSearch } from "react-icons/io5";
 import { FiRefreshCcw } from "react-icons/fi";
 import { HiOutlineMenu } from "react-icons/hi";
 
-const AllEmployee = () => {
+const PromoteStudent = () => {
   // Dummy data to replicate the table
   const rows = Array(7).fill({
     enrollmentId: "01249999",
     name: "Rahul Kumar Debnath",
     fatherName: "Subham Kumar Debnath",
     gender: "Male",
-    mainSubject:"Science",
+    class: "08",
+    rollNo: "35",
     phoneNo: "0123456789",
   });
 
@@ -23,7 +24,7 @@ const AllEmployee = () => {
       <div className="flex gap-4  bg-white  rounded-3xl p-4 ">
         <div className="flex items-center space-x-2">
           <FaUser className="text-gray-700 " />
-          <span className="text-gray-700 font-medium">Employee</span>
+          <span className="text-gray-700 font-medium">Students</span>
         </div>
 
         {/* Vertical divider */}
@@ -31,7 +32,7 @@ const AllEmployee = () => {
 
         {/* "Add New" text */}
         <div>
-          <span className="text-gray-700 font-medium">All Employees</span>
+          <span className="text-gray-700 font-medium">Promote Students</span>
         </div>
       </div>
 
@@ -65,14 +66,14 @@ const AllEmployee = () => {
         <table className="w-full border-collapse border border-gray-300 bg-white rounded-lg overflow-hidden">
           <thead className="">
             <tr className="">
-              <th className="p-2 py-6">Employement ID</th>
+              <th className="p-2 py-6">Enrollment ID</th>
               <th className="p-2 py-6">Name</th>
               <th className="p-2 py-6">Father's Name</th>
               <th className="p-2 py-6">Gender</th>
-              <th className="p-2 py-6">Main Subject</th>
+              <th className="p-2 py-6">Class</th>
+              <th className="p-2 py-6">Roll No.</th>
+              <th className="p-2 py-6">Promote to</th>
               
-              <th className="p-2 py-6">Phone No.</th>
-              <th className="p-2 py-6">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -87,19 +88,16 @@ const AllEmployee = () => {
                 <td className="p-2 text-center">{row.name}</td>
                 <td className="p-2 text-center">{row.fatherName}</td>
                 <td className="p-2 text-center">{row.gender}</td>
-                <td className="p-2 text-center">{row.mainSubject}</td>
-                
-                <td className="p-2 text-center">{row.phoneNo}</td>
-                <td className="p-2 text-center">
-                  <button className="mr-2 p-1 text-black">
-                    <FaRegEye />
-                  </button>
-                  <button className="mr-2 p-1 text-black">
-                    <MdOutlineEdit />
-                  </button>
-                  <button className="p-1 text-black">
-                    <RiDeleteBin6Line />
-                  </button>
+                <td className="p-2 text-center">{row.class}</td>
+                <td className="p-2 text-center">{row.rollNo}</td>
+                <td className="p-2  ">
+                  <select className="border border-gray-400 rounded-3xl p-2 px-10 bg-white">
+                    <option value="09" disabled selected>Select Class</option>
+                    <option value="09">Class 09</option>
+                    <option value="10">Class 10</option>
+                    <option value="11">Class 11</option>
+                    <option value="12">Class 12</option>
+                  </select>
                 </td>
               </tr>
             ))}
@@ -138,4 +136,5 @@ const AllEmployee = () => {
   );
 };
 
-export default AllEmployee;
+export default PromoteStudent;
+

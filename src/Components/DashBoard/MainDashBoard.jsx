@@ -10,6 +10,7 @@ import Navbar from './Navbar';
 import Students from '../Pages/StudentPage/Students' 
 import AdmissionForm from '../Pages/StudentPage/AdmissionForm';
 import AllStudents from '../Pages/StudentPage/AllStudents';
+import PromoteStudent from '../Pages/StudentPage/PromoteStudent';
 import IdCard from '../Pages/StudentPage/IdCard';
 
 import Employees from '../Pages/EmployeePage/Employees';  
@@ -82,6 +83,7 @@ function MainDashBoard() {
               <Route path="/students" element={<Students />} />
               <Route path="/students/admissionForm" element={<AdmissionForm/>} /> 
               <Route path="/students/allStudents" element={<AllStudents />} /> 
+              <Route path='/students/promoteStudents' element={<PromoteStudent/>} />
               <Route path="/students/idCard" element={<IdCard />} /> 
 
               <Route path="/employees" element={<Employees />} />

@@ -28,6 +28,7 @@ const Sidebar = () => {
       subMenu: [
         { name: 'Add New', link: '/students/admissionForm' },
         { name: 'All Students', link: '/students/allStudents' },
+        { name: 'Promote Students', link: '/students/promoteStudents' },
         { name: 'Student ID Card', link: '/students/idCard' }
       ]
     },

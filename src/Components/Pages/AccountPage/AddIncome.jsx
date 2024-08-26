@@ -2,7 +2,9 @@ import React from 'react'
 
 const AddIncome = () => {
   return (
-    <div>AddIncome</div>
+    <div>
+      
+    </div>
   )
 }
 
