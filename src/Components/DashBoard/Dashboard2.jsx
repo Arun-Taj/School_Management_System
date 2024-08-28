@@ -1,14 +1,13 @@
 import React from "react";
 import { CiUser } from "react-icons/ci";
 import { FaToolbox } from "react-icons/fa";
-import ClassWiseReport from "../../DashBoard/ClassWiseReport";
-import Chart from "../../DashBoard/Chart";
+
 // import Chart2 from "../../DashBoard/Chart2";
 import Chart3 from "../../DashBoard/Chart3";
 // import { Doughnut } from "react-chartjs-2";
 import Dougnut from "../../DashBoard/Dougnut";
-import DemoChart from "../../DashBoard/Table&Chart";
-const CreateExam = () => {
+import DemoChart from "../../DashBoard/DemoChart";
+const Dashboard = () => {
   return (
     <div className="flex flex-col  bg-gray-300 min-h-screen">
       <div className="grid grid-cols-4 gap-4 p-4 bg-purple-100">
@@ -123,4 +122,4 @@ const CreateExam = () => {
   );
 };
 
-export default CreateExam;
+export default Dashboard;
