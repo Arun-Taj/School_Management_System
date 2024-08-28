@@ -1,8 +1,11 @@
 import React from 'react'
+import Dashboard from '../../DashBoard/DashBoard'
 
 const Attendance = () => {
   return (
-    <div>Attendence</div>
+   <>
+   <Dashboard/>
+   </>
   )
 }
 

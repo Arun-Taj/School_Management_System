@@ -1,8 +1,11 @@
 import React from 'react'
+import Dashboard from '../../DashBoard/DashBoard'
 
 const Fees = () => {
   return (
-    <div>Fees</div>
+    <>
+    <Dashboard/>
+    </>
   )
 }
 

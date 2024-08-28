@@ -4,7 +4,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-function DemoChart() {
+function TableChart() {
   const doughnutData = {
     labels: ["Remaining", "Collected"],
     datasets: [
@@ -196,4 +196,4 @@ function DemoChart() {
   );
 }
 
-export default DemoChart;
+export default TableChart;

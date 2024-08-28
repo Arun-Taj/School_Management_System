@@ -2,7 +2,7 @@ import React from "react";
 import { CiUser } from "react-icons/ci";
 import { FaToolbox } from "react-icons/fa";
 
-import DemoChart from "./Table&Chart";
+import TableChart from "./Table&Chart";
 
 const Dashboard = () => {
   return (
@@ -112,7 +112,7 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="">
-        <DemoChart />
+        <TableChart />
       </div>
     </div>
   );
