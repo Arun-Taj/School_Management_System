@@ -121,8 +121,8 @@ const formRef = useRef(null);
   };
 
   return (
-    <div className="bg-pink-100 min-h-screen py-2 px-2">
-      <div className="flex gap-4  bg-white mx-8 rounded-3xl px-4 py-2 mb-8 mt-4">
+    <div className="bg-pink-100 min-h-screen p-8">
+      <div className="flex gap-4  bg-white  rounded-3xl p-2">
         <div className="flex items-center space-x-2">
           <MdBusinessCenter className="text-gray-700" />
           <span className="text-gray-700 font-medium">Employee</span>
@@ -140,7 +140,7 @@ const formRef = useRef(null);
 
 {/* Form Data */}
       <form onSubmit={handleSubmit} ref={formRef} className="max-w-5xl mx-auto  ">
-        <div className="mb-8 text-center">
+        <div className="my-8 text-center">
           <h2 className="text-3xl font-bold text-black">Employee Form</h2>
         </div>
 

@@ -21,7 +21,7 @@ const PromoteStudent = () => {
 
   return (
     <div className="p-8 bg-pink-100">
-      <div className="flex gap-4  bg-white  rounded-3xl p-4 ">
+      <div className="flex gap-4  bg-white  rounded-3xl p-2 ">
         <div className="flex items-center space-x-2">
           <FaUser className="text-gray-700 " />
           <span className="text-gray-700 font-medium">Students</span>
@@ -37,7 +37,7 @@ const PromoteStudent = () => {
       </div>
 
       {/* Search Bar */}
-      <div className="flex flex-row gap-4 justify-end items-center py-10">
+      <div className="flex flex-row gap-4 justify-end items-center py-10 px-8">
         <div className=" ">
           <div className="flex items-center  bg-white rounded-full ">
             {/* Left Side: Three-Line Menu Icon */}
@@ -62,7 +62,7 @@ const PromoteStudent = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl shadow-lg">
+      <div className="overflow-x-auto rounded-2xl shadow-lg px-8">
         <table className="w-full border-collapse border border-gray-300 bg-white rounded-lg overflow-hidden">
           <thead className="">
             <tr className="">
@@ -106,7 +106,7 @@ const PromoteStudent = () => {
       </div>
 
       {/* Pagination Controls */}
-      <div className="mt-4 flex justify-between items-center pb-10">
+      <div className="mt-4 flex justify-between items-center pb-10 px-8">
         <div className="flex space-x-2 items-center">
           <button className="px-3 py-2 border border-gray-400 rounded-full ">
             10

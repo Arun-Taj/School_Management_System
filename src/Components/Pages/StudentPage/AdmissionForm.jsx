@@ -80,8 +80,8 @@ function AdmissionForm() {
   };
 
   return (
-    <div className="bg-pink-100 min-h-screen py-2 px-2">
-      <div className="flex gap-4  bg-white mx-8 rounded-3xl p-2 mb-8 mt-4">
+    <div className="bg-pink-100 min-h-screen p-8">
+      <div className="flex gap-4  bg-white  rounded-3xl p-2">
         <div className="flex items-center space-x-2">
           <FaUser className="text-gray-700" />
           <span className="text-gray-700 font-medium">Students</span>
@@ -97,7 +97,7 @@ function AdmissionForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="max-w-5xl mx-auto  ">
-        <div className="mb-8 text-center">
+        <div className="my-8 text-center">
           <h2 className="text-3xl font-bold text-black">Admission Form</h2>
         </div>
 

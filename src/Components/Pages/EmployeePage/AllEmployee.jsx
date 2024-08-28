@@ -20,7 +20,7 @@ const AllEmployee = () => {
 
   return (
     <div className="p-8 bg-pink-100">
-      <div className="flex gap-4  bg-white  rounded-3xl p-4 ">
+      <div className="flex gap-4  bg-white  rounded-3xl p-2 ">
         <div className="flex items-center space-x-2">
           <FaUser className="text-gray-700 " />
           <span className="text-gray-700 font-medium">Employee</span>
