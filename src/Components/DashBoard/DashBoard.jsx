@@ -6,7 +6,7 @@ import TableChart from "./Table&Chart";
 
 const Dashboard = () => {
   return (
-    <div className="flex flex-col p-8 bg-purple-100 min-h-screen">
+    <div className="flex flex-col p-8 bg-pink-100 min-h-screen">
       <div className="grid grid-cols-4 gap-4 pb-6 bg-purple-100">
         {/* Total Students */}
         <div className="flex flex-col gap-4">

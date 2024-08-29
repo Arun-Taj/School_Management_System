@@ -49,6 +49,9 @@ import Classes from '../Pages/ConfigurationPage/Classes'
 import CreateSubject from '../Pages/ConfigurationPage/CreateSubject';
 import AssignSubject from '../Pages/ConfigurationPage/AssignSubject';
 
+import Profile from './Profile/Profile';
+import AccountSetting from './Profile/AccountSetting';
+
 
 
 
@@ -79,6 +82,8 @@ function MainDashBoard() {
               {/* <Route path="/dashboard" element={<Dashboard />} /> */}
 
                  
+              <Route path="/profile" element={<Profile />} />
+          <Route path="/accountSetting" element={<AccountSetting />} />
 
               <Route path="/students" element={<Students />} />
               <Route path="/students/admissionForm" element={<AdmissionForm/>} /> 

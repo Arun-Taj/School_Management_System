@@ -90,13 +90,13 @@ function TableChart() {
                     idx % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"
                   }`}
                 >
-                  <td className="p-2">{idx + 1}</td>
-                  <td className="p-2">35</td>
-                  <td className="p-2">15</td>
-                  <td className="p-2">5</td>
-                  <td className="p-2">15,000</td>
-                  <td className="p-2">9,000</td>
-                  <td className="p-2">6,000</td>
+                  <td className="p-2 text-center">{idx + 1}</td>
+                  <td className="p-2 text-center">35</td>
+                  <td className="p-2 text-center">15</td>
+                  <td className="p-2 text-center">5</td>
+                  <td className="p-2 text-center">15,000</td>
+                  <td className="p-2 text-center">9,000</td>
+                  <td className="p-2 text-center">6,000</td>
                 </tr>
               ))}
             </tbody>

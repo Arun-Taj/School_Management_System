@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FaUser, FaEdit, FaUsers, FaMoneyBill, FaHandPaper, FaCog, FaPlus, FaMinus } from 'react-icons/fa';
 import { MdHome, MdAccountBalanceWallet } from "react-icons/md";
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
+import { MdBusinessCenter } from "react-icons/md";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -33,7 +34,7 @@ const Sidebar = () => {
       ]
     },
     {
-      name: 'Employees', icon: FaUser, link: '/employees',
+      name: 'Employees', icon: MdBusinessCenter, link: '/employees',
       subMenu: [
         { name: 'Add New', link: '/employees/employeeForm' },
         { name: 'All Employees', link: '/employees/allEmployees' },
