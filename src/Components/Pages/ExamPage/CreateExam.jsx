@@ -1,124 +1,169 @@
-import React from "react";
-import { CiUser } from "react-icons/ci";
-import { FaToolbox } from "react-icons/fa";
-import ClassWiseReport from "../../DashBoard/ClassWiseReport";
-import Chart from "../../DashBoard/Chart";
-// import Chart2 from "../../DashBoard/Chart2";
-import Chart3 from "../../DashBoard/Chart3";
-// import { Doughnut } from "react-chartjs-2";
-import Dougnut from "../../DashBoard/Dougnut";
-import DemoChart from "../../DashBoard/Table&Chart";
+import React, { useState } from "react";
+import { FaEdit } from "react-icons/fa";
+import { RiDeleteBin6Line } from "react-icons/ri";
+
 const CreateExam = () => {
+  const [selectedClasses, setSelectedClasses] = useState({});
+  const classesData = [
+    {
+      className: "Class 1",
+      subjects: ["English", "Social Science", "Math"],
+    },
+    {
+      className: "Class 2",
+      subjects: ["English", "Social Science", "Math"],
+    },
+    {
+      className: "Class 3",
+      subjects: ["English", "Social Science", "Math"],
+    },
+    {
+      className: "Class 4",
+      subjects: ["English", "Social Science", "Math"],
+    },
+  ];
+
+  const handleClassToggle = (className) => {
+    setSelectedClasses((prev) => ({
+      ...prev,
+      [className]: !prev[className],
+    }));
+  };
+  const handleSelectAllClasses = (isSelected) => {
+    const allClassesSelected = {};
+    classesData.forEach((classItem) => {
+      allClassesSelected[classItem.className] = isSelected;
+    });
+    setSelectedClasses(allClassesSelected);
+  };
+
+  const isAllSelected = Object.values(selectedClasses).every(
+    (isSelected) => isSelected
+  );
+
   return (
-    <div className="flex flex-col  bg-gray-300 min-h-screen">
-      <div className="grid grid-cols-4 gap-4 p-4 bg-purple-100">
-      {/* Total Students */}
-      <div className="flex flex-col gap-4">
-        <div className="bg-white p-4 rounded-xl shadow-md flex flex-col justify-between h-full">
-          <div className="text-[20px] font-bold">Total Students</div>
-          <div className="flex justify-between items-center pt-2">
-            <CiUser size={48} />
-            <p className="font-sans text-3xl font-bold">50</p>
-          </div>
+    <div className="p-8 bg-pink-100 min-h-screen">
+      <div className="flex gap-4  bg-white  rounded-3xl p-2 ">
+        <div className="flex items-center space-x-2">
+          <FaEdit className="text-gray-700 " />
+          <span className="text-gray-700 font-medium">Exam </span>
         </div>
 
-        {/* Total Employees */}
-        <div className="bg-white p-4 rounded-xl shadow-md flex flex-col justify-between h-full">
-          <div className="text-[20px] font-bold">Total Employees</div>
-          <div className="flex justify-between items-center pt-2">
-            <FaToolbox size={48} />
-            <p className="font-sans text-3xl font-bold">50</p>
-          </div>
-        </div>
-      </div>
+        {/* Vertical divider */}
+        <div className="border-l border-gray-700 h-6"></div>
 
-      {/* Revenue and Expense */}
-      <div className="bg-white p-4 rounded-xl shadow-md col-span-1 flex flex-col justify-between h-full">
+        {/* "Add New" text */}
         <div>
-          <div className="text-[20px] font-bold">Revenue</div>
-          <div className="text-[48px] font-bold flex justify-between items-center">
-            <p>₹</p>
-            <p>7,800</p>
-          </div>
-          <div className="text-sm flex justify-between items-center">
-            <p>This Month</p>
-            <p>₹ 5,000</p>
-          </div>
-        </div>
-
-        <hr className="border-gray-300 my-4" />
-
-        <div>
-          <div className="text-[20px] font-bold">Expense</div>
-          <div className="text-[48px] font-bold flex justify-between items-center">
-            <p>₹</p>
-            <p>3,600</p>
-          </div>
-          <div className="text-sm flex justify-between items-center">
-            <p>This Month</p>
-            <p>₹ 2,000</p>
-          </div>
+          <span className="text-gray-700 font-medium">Create New Exam</span>
         </div>
       </div>
 
-      {/* Total Profit and Dues */}
-      <div className="col-span-2 flex flex-col gap-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-green-300 p-4 rounded-xl shadow-md flex flex-col justify-between h-full">
-            <div className="text-[20px] font-bold">Total Profit</div>
-            <div className="text-[32px] font-bold flex justify-between items-center">
-              <p>₹</p>
-              <p>4,200</p>
+      <div className="pt-10 ">
+        <h1 className="text-center font-bold text-2xl">Add New Examination</h1>
+
+        <div className="flex flex-row pt-6 justify-around">
+          <div className="space-y-6">
+            <div className="flex flex-row gap-4">
+              <span>
+                <p className="text-center font-bold">Select Session</p>
+                <select
+                  name=""
+                  id=""
+                  className="p-2 bg-white rounded-full border border-gray-300"
+                >
+                  <option value="">2020-2021</option>
+                  <option value="">2021-2022</option>
+                  <option value="">2022-2023</option>
+                  <option value="">2023-2024</option>
+                </select>
+              </span>
+              <span>
+                <p className="text-center font-bold">Starting Date</p>
+                <input
+                  type="date"
+                  name="date"
+                  id="date"
+                  className="p-2 border border-gray-300 rounded-full"
+                />
+              </span>
+              <span>
+                <p className="text-center font-bold">Ending Date</p>
+                <input
+                  type="date"
+                  name="date"
+                  id="date"
+                  className="p-2 border border-gray-300 rounded-full"
+                />
+              </span>
             </div>
-            <div className="text-sm flex justify-between items-center">
-              <p>This Month</p>
-              <p>₹ 3,000</p>
+            <div className="pt-8">
+              <p className="text-center font-bold">Examination Name</p>
+              <input
+                type="text"
+                className="p-2 rounded-full w-full border border-gray-300 flex justify-center items-center"
+                placeholder="Name the exam"
+              />
+            </div>
+            <div className="flex justify-center items-center pt-10">
+              <button className="bg-pink-500 rounded-full p-2 px-6 border border-gray-300 ">
+                Submit
+              </button>
             </div>
           </div>
 
-          <div className="bg-red-300 p-4 rounded-xl shadow-md flex flex-col justify-between h-full">
-            <div className="text-[20px] font-bold">Dues</div>
-            <div className="text-[32px] font-bold flex justify-between items-center">
-              <p>₹</p>
-              <p>20,200</p>
-            </div>
-            <div className="text-sm flex justify-between items-center">
-              <p>This Month</p>
-              <p>₹ 15,000</p>
-            </div>
-          </div>
-        </div>
+          <div className="w-1/3">
+            <div className="bg-white py-4 rounded-lg shadow-xl">
+              <h2 className="text-xl font-bold text-center">Classes</h2>
+              <div className="mt-4 ">
+                <div className="flex items-center justify-between p-2 bg-[#BCA8EA] px-4">
+                  <span>Select All Class</span>
+                  <input
+                    type="checkbox"
+                    onChange={(e) => handleSelectAllClasses(e.target.checked)}
+                    checked={
+                      isAllSelected && Object.keys(selectedClasses).length > 0
+                    }
+                  />
+                </div>
 
-        {/* Fee Collection Progress Bars */}
-        <div className="bg-white p-4 rounded-xl shadow-md">
-          <div className="text-sm mb-2 flex justify-between">
-            <p>This Month Fee Collection</p>
-            <p>65%</p>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
-            <div className="bg-purple-500 h-2 rounded-full w-4/6"></div>
-          </div>
-          <div className="text-sm mb-2 flex justify-between">
-            <p>Last Month Fee Collection</p>
-            <p>65%</p>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
-            <div className="bg-purple-500 h-2 rounded-full w-3/6"></div>
-          </div>
-          <div className="text-sm mb-2 flex justify-between">
-            <p>This Year Fee Collection</p>
-            <p>65%</p>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
-            <div className="bg-purple-500 h-2 rounded-full w-4/6"></div>
+                {classesData.map((classItem, index) => (
+                  <div key={index} className="mb-2 ">
+                    <div className="flex items-center justify-between p-2 border-b border-purple-200 px-4">
+                      <span>{classItem.className}</span>
+                      <input
+                        type="checkbox"
+                        onChange={() => handleClassToggle(classItem.className)}
+                        checked={!!selectedClasses[classItem.className]}
+                      />
+                    </div>
+
+                    {selectedClasses[classItem.className] && (
+                      <div className="bg-[#E3D6FF] p-2">
+                        {classItem.subjects.map((subject, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-center justify-between mt-2 px-4"
+                          >
+                            <span>{subject}</span>
+                            <div className=" flex justify-center items-center gap-2">
+                              <button className="bg-white border border-gray-300 px-2 rounded-full">
+                                Total Exam Mark
+                              </button>
+                              <button className="">
+                                <RiDeleteBin6Line />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-      <div>
-        <DemoChart/>
-      </div>
-      
     </div>
   );
 };
