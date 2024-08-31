@@ -137,10 +137,10 @@ const Sidebar = () => {
                     {expandedSubMenu === 'result' && (
                       <div className="ml-6">
                         <Link to="/exam/studentReport" className="block text-black py-1">
-                          Student Wise Report
+                          Student Wise Result
                         </Link>
                         <Link to="/exam/classReport" className="block text-black py-1">
-                          Class Wise Report
+                          Class Wise Result
                         </Link>
                       </div>
                     )}

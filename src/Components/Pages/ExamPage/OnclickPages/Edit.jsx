@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-const  Classes = () => {
+const Edit = () => {
   const [selectedClasses, setSelectedClasses] = useState({});
   const classesData = [
     {
@@ -55,6 +55,10 @@ const  Classes = () => {
         {/* "Add New" text */}
         <div>
           <span className="text-gray-700 font-medium">Edit or Delete</span>
+        </div>
+        <div className="border-l border-gray-700 h-6"></div>
+        <div>
+          <span className="text-gray-700 font-medium">Edit</span>
         </div>
       </div>
 
@@ -168,4 +172,4 @@ const  Classes = () => {
   );
 };
 
-export default Classes;
+export default Edit;

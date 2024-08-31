@@ -32,12 +32,15 @@ import EmployeeReport from '../Pages/AttendencePage/EmployeeReport'
 
 import Exam from '../Pages/ExamPage/Exam'; 
 import CreateExam from '../Pages/ExamPage/CreateExam'
-import EditExam from '../Pages/ExamPage/EditExam'
+import EditDeleteExam from '../Pages/ExamPage/EditDeleteExam';
+import Edit from '../Pages/ExamPage/OnclickPages/Edit';
 import UpdateMarks from '../Pages/ExamPage/UpdateMarks'
+import Search from '../Pages/ExamPage/OnclickPages/Search';
 import Result from '../Pages/ExamPage/Result'; 
-import StudentResult from '../Pages/ExamPage/StudentResult'
-import ClassResult from '../Pages/ExamPage/ClassResult';
-
+import StudentResult from '../Pages/ExamPage/ResultPages/StudentResult'
+import StdResSearch from '../Pages/ExamPage/OnclickPages/StdResSearch';
+import ClassResult from '../Pages/ExamPage/ResultPages/ClassResult';
+import ClsResSearch from '../Pages/ExamPage/OnclickPages/ClsResSearch';
 
 import Fees from '../Pages/FeePage/Fees';
 import FeeReceipt from '../Pages/FeePage/FeeReceipt'
@@ -51,6 +54,8 @@ import AssignSubject from '../Pages/ConfigurationPage/AssignSubject';
 
 import Profile from './Profile/Profile';
 import AccountSetting from './Profile/AccountSetting';
+
+
 
 
 
@@ -116,10 +121,14 @@ function MainDashBoard() {
 
               <Route path="/exam" element={<Exam />} />
               <Route path='/exam/createExam' element={<CreateExam/>} />
-              <Route path='/exam/updateExam' element={<EditExam/>} />
+              <Route path='/exam/updateExam' element={<EditDeleteExam/>} />
+              <Route path="/exam/edit" element={<Edit/>} />
               <Route path='/exam/updateExamMarks' element={<UpdateMarks/>} />
+              <Route path="/exam/search" element={<Search/>} />
               <Route path='/exam/result' element={<Result/>} />
               <Route path='/exam/studentReport' element={<StudentResult/>} />
+              <Route path='/exam/studentResult' element={<StdResSearch/>} />
+              <Route path='/exam/classResult' element={<ClsResSearch/>} />
               <Route path='/exam/classReport' element={<ClassResult/>} />
 
               <Route path="/config" element={<Configuration />} />

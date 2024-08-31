@@ -106,7 +106,7 @@ const CreateExam = () => {
             </div>
             <div className="flex justify-center items-center pt-10">
               <button className="bg-pink-500 rounded-full p-2 px-6 border border-gray-300 ">
-                Submit
+                Create
               </button>
             </div>
           </div>
