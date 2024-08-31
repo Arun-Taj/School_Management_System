@@ -1,13 +1,21 @@
 import React, { useRef, useState } from "react";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";   
+import { useNavigate } from "react-router-dom";
 
-function SchoolDetails() {
+const SchoolDetails=({onAdminClick}) => {
   const fileInputRef = useRef(null);
 
   const handleUploadClick = () => {
     fileInputRef.current.click();
   };
+
+  // const navigate = useNavigate();
+
+  // const handleAdminClick = () => {
+  //   navigate("/admin"); 
+  // };
+
 
   return (
     <div
@@ -113,7 +121,10 @@ function SchoolDetails() {
               className="col-span-1 border border-gray-300 rounded-3xl px-4 py-2 placeholder-black"
             />
           </div>
-          <IoIosArrowDropright size={24}/>
+          <button type="button" onClick={onAdminClick}>
+            <IoIosArrowDropright size={24}/>
+          </button>
+          
         </form>
       </div>
     </div>

@@ -70,7 +70,7 @@ function TableChart() {
           Class Wise Report
         </p>
         <div className="overflow-x-auto w-full">
-          <table className="w-full bg-purple-200  overflow-hidden">
+          <table className="w-full   overflow-hidden">
             <thead>
               <tr className="bg-white text-center text-sm">
                 <th className="p-2">Class</th>
@@ -106,7 +106,7 @@ function TableChart() {
 
       {/* Estimated Fee This Month */}
       <div className="col-span-2 ">
-        <div className="grid grid-cols-2 gap-4 h-full bg-purple-100">
+        <div className="grid grid-cols-2 gap-4 h-full">
           {/* Estimated Fee This Month */}
           <div className="col-span-2 bg-white p-6 rounded-xl shadow-md">
             <div className="text-center text-[20px] font-bold mb-4">

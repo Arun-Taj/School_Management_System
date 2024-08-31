@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { IoIosArrowDropleft } from "react-icons/io";
 
-function AdminDetails() {
+function AdminDetails({onBackClick}) {
   const fileInputRef = useRef(null);
   const [photoPreview, setPhotoPreview] = useState(null); // To store the uploaded image preview
   const {
@@ -34,13 +34,13 @@ function AdminDetails() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center">
-      <div className="bg-pink-100 rounded-3xl p-8 w-full max-w-2xl">
+    <div className="min-h-screen bg-cover bg-center flex items-center justify-center p-4"style={{ backgroundImage: `url('src/assets/black background.svg')` }}>
+      <div className="bg-pink-100 rounded-3xl p-4">
         <h1 className="text-center text-xl font-semibold mb-6">
           Admin Details
         </h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-3  ">
             <div>
               <input
                 type="text"
@@ -79,7 +79,7 @@ function AdminDetails() {
             </div>
             <div>
               <select
-                className="w-full border rounded-3xl px-4 py-2"
+                className="w-full border rounded-3xl px-4 py-2 bg-white"
                 {...register("gender", { required: "Gender is required" })}
               >
                 <option value="" disabled selected>
@@ -197,7 +197,7 @@ function AdminDetails() {
           <div className="grid grid-cols-4 gap-4">
             <div>
               <select
-                className="w-full border rounded-3xl px-4 py-2"
+                className="w-full border rounded-3xl px-4 py-2 bg-white"
                 {...register("district", { required: "District is required" })}
               >
                 <option value="" disabled selected>
@@ -217,7 +217,7 @@ function AdminDetails() {
             </div>
             <div>
               <select
-                className="w-full border rounded-3xl px-4 py-2"
+                className="w-full border rounded-3xl px-4 py-2 bg-white"
                 {...register("state", { required: "State is required" })}
               >
                 <option value="" disabled selected>
@@ -235,7 +235,7 @@ function AdminDetails() {
             </div>
             <div>
               <select
-                className="w-full border rounded-3xl px-4 py-2"
+                className="w-full border rounded-3xl px-4 py-2 bg-white"
                 {...register("country", { required: "Country is required" })}
               >
                 <option value="" disabled selected>
@@ -330,15 +330,10 @@ function AdminDetails() {
             </div>
           </div>
 
-          <button
-            type="submit"
-            className="mt-6 w-full bg-purple-500 text-white py-2 rounded-3xl hover:bg-purple-600 transition"
-          >
-            Submit
-          </button>
-          <div className="mt-4 text-center">
+          
+          <button type="button" onClick={onBackClick} className="mt-4 text-center">
             <IoIosArrowDropleft size={24} className="cursor-pointer" />
-          </div>
+          </button>
         </form>
       </div>    
     </div>
