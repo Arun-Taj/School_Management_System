@@ -1,52 +1,20 @@
 import React, { useState } from "react";
-import { FaEdit } from "react-icons/fa";
-import { RiDeleteBin6Line } from "react-icons/ri";
+
+import { FcSettings } from "react-icons/fc";
+
+import Table from "./Table";
+import { IoSearch } from "react-icons/io5";
+import { FiRefreshCcw } from "react-icons/fi";
 
 const  Classes = () => {
-  const [selectedClasses, setSelectedClasses] = useState({});
-  const classesData = [
-    {
-      className: "Class 1",
-      subjects: ["English", "Social Science", "Math"],
-    },
-    {
-      className: "Class 2",
-      subjects: ["English", "Social Science", "Math"],
-    },
-    {
-      className: "Class 3",
-      subjects: ["English", "Social Science", "Math"],
-    },
-    {
-      className: "Class 4",
-      subjects: ["English", "Social Science", "Math"],
-    },
-  ];
-
-  const handleClassToggle = (className) => {
-    setSelectedClasses((prev) => ({
-      ...prev,
-      [className]: !prev[className],
-    }));
-  };
-  const handleSelectAllClasses = (isSelected) => {
-    const allClassesSelected = {};
-    classesData.forEach((classItem) => {
-      allClassesSelected[classItem.className] = isSelected;
-    });
-    setSelectedClasses(allClassesSelected);
-  };
-
-  const isAllSelected = Object.values(selectedClasses).every(
-    (isSelected) => isSelected
-  );
+  
 
   return (
     <div className="p-8 bg-pink-100 min-h-screen">
       <div className="flex gap-4  bg-white  rounded-3xl p-2 ">
         <div className="flex items-center space-x-2">
-          <FaEdit className="text-gray-700 " />
-          <span className="text-gray-700 font-medium">Exam </span>
+          <FcSettings className="text-gray-700 " />
+          <span className="text-gray-700 font-medium">Configuration</span>
         </div>
 
         {/* Vertical divider */}
@@ -54,116 +22,73 @@ const  Classes = () => {
 
         {/* "Add New" text */}
         <div>
-          <span className="text-gray-700 font-medium">Edit or Delete</span>
+          <span className="text-gray-700 font-medium">Classes</span>
         </div>
       </div>
 
-      <div className="pt-10 ">
-        <h1 className="text-center font-bold text-2xl">Update Examination</h1>
 
-        <div className="flex flex-row pt-6 justify-around">
-          <div className="space-y-6">
-            <div className="flex flex-row gap-4">
-              <span>
-                <p className="text-center font-bold">Select Session</p>
-                <select
-                  name=""
-                  id=""
-                  className="p-2 bg-white rounded-full border border-gray-300"
-                >
-                  <option value="">2020-2021</option>
-                  <option value="">2021-2022</option>
-                  <option value="">2022-2023</option>
-                  <option value="">2023-2024</option>
-                </select>
-              </span>
-              <span>
-                <p className="text-center font-bold">Starting Date</p>
-                <input
-                  type="date"
-                  name="date"
-                  id="date"
-                  className="p-2 border border-gray-300 rounded-full"
-                />
-              </span>
-              <span>
-                <p className="text-center font-bold">Ending Date</p>
-                <input
-                  type="date"
-                  name="date"
-                  id="date"
-                  className="p-2 border border-gray-300 rounded-full"
-                />
-              </span>
-            </div>
-            <div className="pt-8">
-              <p className="text-center font-bold">Examination Name</p>
-              <input
-                type="text"
-                className="p-2 rounded-full w-full border border-gray-300 flex justify-center items-center"
-                placeholder="Name the exam"
-              />
-            </div>
-            <div className="flex justify-center items-center pt-10">
-              <button className="bg-pink-500 rounded-full p-2 px-6 border border-gray-300 ">
-                Update
-              </button>
-            </div>
+
+
+      <div className="flex flex-row justify-between gap-4">
+        <div className="w-2/3 mt-10 flex flex-col bg-white shadow-md rounded-2xl  items-center h-2/3">
+          <h3 className="mb-8 text-2xl font-semibold flex mt-10">
+            Add New Class
+          </h3>
+          <div className="px-6">
+          <input
+            type="text"
+            className="p-2 px-4 mb-4 rounded-3xl placeholder-black border border-blue-500 w-full "
+            placeholder="Name of the Class"
+          />
+           <input
+            type="text"
+            className="p-2 px-4 mb-4 rounded-3xl placeholder-black border border-blue-500 w-full"
+            placeholder="Monthly Fees"
+          />
+          <select
+            name=""
+            id=""
+            className="p-3 px-4 rounded-3xl bg-white  border border-blue-500 w-full"
+          >
+            <option value="" disabled selected>
+              Type
+            </option>
+            <option value="">Smart</option>
+            <option value="">Gentlement</option>
+            <option value="">Sporty</option>
+          </select>
           </div>
+          <button className="mt-16 bg-pink-500 rounded-3xl text-white p-2 px-4 font-bold mb-16">
+            Save Head
+          </button>
+        </div>
 
-          <div className="w-1/3">
-            <div className="bg-white py-4 rounded-lg shadow-xl">
-              <h2 className="text-xl font-bold text-center">Classes</h2>
-              <div className="mt-4 ">
-                <div className="flex items-center justify-between p-2 bg-[#BCA8EA] px-4">
-                  <span>Select All Class</span>
-                  <input
-                    type="checkbox"
-                    onChange={(e) => handleSelectAllClasses(e.target.checked)}
-                    checked={
-                      isAllSelected && Object.keys(selectedClasses).length > 0
-                    }
-                  />
-                </div>
+        {/* Search Bar */}
+        <div className="flex flex-col w-full">
+          <div className="flex flex-row gap-4  py-10 justify-end">
+            <div className=" ">
+              <div className="flex items-center  bg-white rounded-full ">
 
-                {classesData.map((classItem, index) => (
-                  <div key={index} className="mb-2 ">
-                    <div className="flex items-center justify-between p-2 border-b border-purple-200 px-4">
-                      <span>{classItem.className}</span>
-                      <input
-                        type="checkbox"
-                        onChange={() => handleClassToggle(classItem.className)}
-                        checked={!!selectedClasses[classItem.className]}
-                      />
-                    </div>
+                {/* Input Field */}
+                <input
+                  type="text"
+                  placeholder="Search"
+                  className=" py-2 text-gray-600 placeholder-gray-500 bg-transparent focus:outline-none ml-3"
+                />
 
-                    {selectedClasses[classItem.className] && (
-                      <div className="bg-[#E3D6FF] p-2">
-                        {classItem.subjects.map((subject, idx) => (
-                          <div
-                            key={idx}
-                            className="flex items-center justify-between mt-2 px-4"
-                          >
-                            <span>{subject}</span>
-                            <div className=" flex justify-center items-center gap-2">
-                              <button className="bg-white border border-gray-300 px-2 rounded-full">
-                                Total Exam Mark
-                              </button>
-                              <button className="">
-                                <RiDeleteBin6Line />
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                {/* Right Side: Search Icon */}
+                <IoSearch className="text-gray-600 mr-4" size={24} />
               </div>
             </div>
+            <div className="bg-white p-3 rounded-full border border-[#BCA8EA]">
+              <FiRefreshCcw />
+            </div>
           </div>
+          <Table/>
         </div>
       </div>
+
+     
     </div>
   );
 };

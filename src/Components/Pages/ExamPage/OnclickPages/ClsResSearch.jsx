@@ -54,7 +54,7 @@ const ClsResSearch = () => {
       </div>
 
       <div>
-        <p className='font-bold text-2xl text-center pt-10'>Result of Class 8</p>
+        <p className='font-bold text-2xl text-center pt-10 pb-6'>Result of Class 8</p>
       </div>
 
       <div className="w-full max-w-7xl bg-white py-4 rounded-lg shadow-lg">

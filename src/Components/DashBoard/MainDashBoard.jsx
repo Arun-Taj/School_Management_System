@@ -54,6 +54,9 @@ import AssignSubject from '../Pages/ConfigurationPage/AssignSubject';
 
 import Profile from './Profile/Profile';
 import AccountSetting from './Profile/AccountSetting';
+import AddWholeClsData from '../Pages/ExamPage/OnclickPages/AddWholeClsData';
+import AddSingleStdData from '../Pages/ExamPage/OnclickPages/AddSingleStdData';
+import EditPage from '../Pages/ConfigurationPage/EditPage';
 
 
 
@@ -125,6 +128,8 @@ function MainDashBoard() {
               <Route path="/exam/edit" element={<Edit/>} />
               <Route path='/exam/updateExamMarks' element={<UpdateMarks/>} />
               <Route path="/exam/search" element={<Search/>} />
+              <Route path="/exam/search/addWholeClsData" element={<AddWholeClsData/>} />
+              <Route path="/exam/search/addSingleStdData" element={<AddSingleStdData/>} />
               <Route path='/exam/result' element={<Result/>} />
               <Route path='/exam/studentReport' element={<StudentResult/>} />
               <Route path='/exam/studentResult' element={<StdResSearch/>} />
@@ -135,6 +140,7 @@ function MainDashBoard() {
               <Route path="/config/classes" element={<Classes />} />
               <Route path="/config/createSub" element={<CreateSubject />} />
               <Route path="/config/assignSub" element={<AssignSubject />} />
+              <Route path="/config/assignSubject/edit" element={<EditPage />} />
 
 
 
