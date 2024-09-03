@@ -1,8 +1,19 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import SchoolDetails from "./SchoolDetails";
+import { useNavigate } from "react-router-dom";
+
 
 const SignupForm = () => {
+
+
+  const navigate=useNavigate();
+  // const handleClick=()=>{
+  //   navigate("/")
+  // }
+  const logInClick=()=>{
+    navigate('/signin')
+  }
+
   const [formData, setFormData] = useState({
     email: "",
     phone: "",
@@ -78,15 +89,8 @@ const SignupForm = () => {
       // Handle form submission
       console.log("Form submitted successfully!");
 
-      // Clear form data after successful submission
-      setFormData({
-        email: "",
-        phone: "",
-        username: "",
-        password: "",
-        confirmPassword: "",
-        terms: false,
-      });
+      localStorage.setItem("id",JSON.stringify(formData));
+      navigate("/")
       setFormErrors({});
     }
   };
@@ -230,10 +234,10 @@ const SignupForm = () => {
         </form>
 
         <p className="text-center mt-4 text-sm">
-          Already have an account?{" "}
-          <a href="#" className="text-blue-500">
+          Already have an account?
+          <button type="button" className="text-blue-500" onClick={logInClick}>
             Log in
-          </a>
+          </button>
         </p>
       </div>
      

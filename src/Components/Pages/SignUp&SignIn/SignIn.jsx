@@ -1,90 +1,80 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 
 const SignInForm = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-    rememberMe: false,
-  });
 
+
+const navigate=useNavigate();
+
+const initialFormValues = {
+  username: "",
+  password: "",
+  rememberMe:false
+};
+const [formValues, setFormValues] = useState(initialFormValues);
   const [formErrors, setFormErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
+    setFormValues({
+      ...formValues,
       [name]: type === "checkbox" ? checked : value,
     });
   };
 
-  const validateForm = () => {
-    const errors = {};
-    const usernameRegex = /^.{3,}$/;
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+  
 
-    if (!formData.username) {
-      errors.username = "Username is required.";
-    } else if (!usernameRegex.test(formData.username)) {
-      errors.username = "Username must be at least 3 characters long.";
-    }
 
-    if (!formData.password) {
-      errors.password = "Password is required.";
-    } else if (!passwordRegex.test(formData.password)) {
-      errors.password =
-        "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.";
-    }
-
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleSubmit = (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
+    setIsSubmitted(true);
 
-    if (validateForm()) {
-      // Handle form submission
-      console.log("Form submitted successfully!");
+    const loggedUser = JSON.parse(localStorage.getItem("id")); // Ensure the key matches your registration key
 
-      // Clear form data after successful submission
-      setFormData({
-        username: "",
-        password: "",
-        rememberMe: false,
+    // Check if the entered username and password match the stored values
+    if (loggedUser && formValues.username === loggedUser.username && formValues.password === loggedUser.password) {
+      navigate("/");
+    } else {
+      // Set error messages for incorrect username/password
+      setFormErrors({
+        username: formValues.username===""? "User name is required!": formValues.username !== loggedUser.username ? "Incorrect username" : "",
+        password: formValues.password===""? "Password is required!": formValues.password !== loggedUser.password ? "Incorrect password" : "",
       });
-      setFormErrors({});
     }
   };
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  const handleSignUpClick = () => {
+    navigate('/signup'); 
+  };
+
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="flex bg-white shadow-md rounded-lg w-full max-w-4xl">
+    <div className="flex justify-center items-center bg-pink-100">
+      <div className="flex bg-white shadow-2xl rounded-lg w-full max-w-5xl ">
         {/* Left Side */}
         <div className="w-1/2 p-8">
+          <p className="pb-10">Logo</p>
           <h2 className="text-2xl font-semibold mb-2 text-center">
             Welcome back
           </h2>
-          <p className="text-center text-sm mb-8">
+          <p className="text-center text-sm pb-20">
             Simplify your workflow and boost your productivity with Demo App. Get started today.
           </p>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleLogin}>
             {/* Username */}
-            <div className="mb-4">
+            <div className="mb-4 ">
               <input
                 type="text"
                 name="username"
                 placeholder="User Name"
-                value={formData.username}
+                value={formValues.username}
                 onChange={handleChange}
-                className="w-full border border-solid border-[#5011DD] p-2 rounded-lg"
+                className="w-full border border-solid border-[#5011DD] p-2 rounded-full"
               />
               {formErrors.username && (
                 <p className="text-red-500 text-sm mt-1">{formErrors.username}</p>
@@ -97,12 +87,12 @@ const SignInForm = () => {
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Password"
-                value={formData.password}
+                value={formValues.password}
                 onChange={handleChange}
-                className="w-full border border-solid border-[#5011DD] p-2 rounded-lg pr-10"
+                className="w-full border border-solid border-[#5011DD] p-2  pr-10 rounded-full"
               />
               <span
-                className="absolute right-2 top-2 cursor-pointer"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2  cursor-pointer"
                 onClick={togglePasswordVisibility}
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -119,24 +109,24 @@ const SignInForm = () => {
                   type="checkbox"
                   id="rememberMe"
                   name="rememberMe"
-                  checked={formData.rememberMe}
+                  checked={formValues.rememberMe}
                   onChange={handleChange}
-                  className="mr-2"
+                  className="mr-2 "
                 />
                 <label htmlFor="rememberMe" className="text-sm">
                   Remember Me
                 </label>
               </div>
-              <a href="#" className="text-sm text-blue-500">
+              <button className="text-sm text-blue-500">
                 Forgot Password?
-              </a>
+              </button>
             </div>
 
             {/* Submit Button */}
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="bg-pink-500 text-white p-2 rounded-lg hover:bg-pink-600 w-full"
+                className="bg-pink-500 text-white p-2 rounded-full px-6 hover:bg-pink-600"
               >
                 Log in
               </button>
@@ -145,9 +135,9 @@ const SignInForm = () => {
 
           <p className="text-center mt-4 text-sm">
             Don't have an account?
-            <a href="#" className="text-blue-500">
+            <button className="text-blue-500" onClick={handleSignUpClick}>
               Sign up
-            </a>
+            </button>
           </p>
         </div>
 

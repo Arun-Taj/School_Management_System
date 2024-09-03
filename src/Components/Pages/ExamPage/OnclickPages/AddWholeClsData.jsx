@@ -182,6 +182,8 @@ const AddWholeClsData = () => {
           </div>
         </div>
 
+        {/* Pagination */}
+
         <div className="flex justify-between items-center mt-4 pl-2">
           <div className="flex items-center space-x-2">
             {[10, 25, 50].map((size) => (
@@ -197,6 +199,7 @@ const AddWholeClsData = () => {
           </div>
 
           <div className="flex space-x-1 items-center pr-2">
+          <p>Showing 1 to 10 of 15 records</p>
               <button
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}

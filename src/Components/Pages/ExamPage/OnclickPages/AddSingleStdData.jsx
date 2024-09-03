@@ -205,6 +205,7 @@ const AddSingleStdData = () => {
               records
             </span>
             <div className="flex space-x-1 items-center pr-2">
+            <p>Showing 1 to 10 of 15 records</p>
               <button
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
