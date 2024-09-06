@@ -1,11 +1,14 @@
 import React, { useState, useRef } from "react";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { MdBusinessCenter } from "react-icons/md";
-function AddEmployee() {
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { formValidationSchema } from "./EmpValidations";
 
+function AddEmployee() {
   // Select complimentry logic
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [district, SetDistrict] = useState("District");
 
   const options = ["Python", "C++", "DSA"];
 
@@ -23,14 +26,16 @@ function AddEmployee() {
   const removeOption = (option) => {
     setSelectedOptions(selectedOptions.filter((item) => item !== option));
   };
+
+  //upload logic
   const fileInputRef = useRef(null);
 
   const handleUploadClick = () => {
     fileInputRef.current.click();
   };
 
-// Reset logic
-const formRef = useRef(null);
+  // Reset logic
+  const formRef = useRef(null);
 
   const handleReset = () => {
     // Reset the form using the ref
@@ -39,85 +44,34 @@ const formRef = useRef(null);
     }
   };
 
-
-
-  const [formData, setFormData] = useState({
-    studentFirstName: "",
-    studentMiddleName: "",
-    studentLastName: "",
+  const initialValues = {
+    employeeFirstName: "",
+    employeeMiddleName: "",
+    employeeLastName: "",
     gender: "",
     dateOfBirth: "",
+    photoUpload: "",
     aadharNumber: "",
-    motherTongue: "",
     phoneNumber: "",
     alternatePhoneNumber: "",
-    classOfAdmission: "",
+    email: "",
+    selectRole: "",
     fatherFirstName: "",
     fatherMiddleName: "",
     fatherLastName: "",
-    fatherAadharNumber: "",
-    fatherOccupation: "",
-    motherFirstName: "",
-    motherMiddleName: "",
-    motherLastName: "",
-    motherAadharNumber: "",
-    motherOccupation: "",
-    guardianFirstName: "",
-    guardianMiddleName: "",
-    guardianLastName: "",
-    guardianAadharNumber: "",
-    guardianOccupation: "",
-    relationWithGuardian: "",
-    guardianPhoneNumber: "",
-    sameAsFatherMother: false,
-  });
-
-  const [errors, setErrors] = useState({});
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
+    husbandFirstName: "",
+    husbandMiddleName: "",
+    husbandLastName: "",
+    address1: "",
+    townVillageCity: "",
+    district: "",
+    state: "",
+    country: "",
+    zipCode: "",
   };
 
-
-  
-
-  const validate = () => {
-    const newErrors = {};
-    const { studentFirstName, studentLastName, gender, dateOfBirth, aadharNumber, phoneNumber, email, classOfAdmission } = formData;
-
-    if (!studentFirstName) newErrors.studentFirstName = 'First Name is required.';
-    if (!studentLastName) newErrors.studentLastName = 'Last Name is required.';
-    if (!gender) newErrors.gender = 'Gender is required.';
-    if (!dateOfBirth) newErrors.dateOfBirth = 'Date of Birth is required.';
-    if (!aadharNumber) newErrors.aadharNumber = 'Aadhar Number is required.';
-    if (!phoneNumber) newErrors.phoneNumber = 'Phone Number is required.';
-    if (!email) {
-      newErrors.email = 'Email is required.';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = 'Email address is invalid.';
-    }
-    if (!classOfAdmission) newErrors.classOfAdmission = 'Employee Role is required.';
-
-
-    // Add more validation as needed
-
-    return newErrors;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-    } else {
-      // Submit form data
-      console.log("Form submitted successfully", formData);
-      setErrors({});
-    }
+  const handleSubmit = (values) => {
+    console.log("Form Submitted", values, values.file);
   };
 
   return (
@@ -137,691 +91,767 @@ const formRef = useRef(null);
         </div>
       </div>
 
-
-{/* Form Data */}
-      <form onSubmit={handleSubmit} ref={formRef} className="max-w-5xl mx-auto  ">
-        <div className="my-8 text-center">
-          <h2 className="text-3xl font-bold text-black">Employee Form</h2>
-        </div>
-
-        {/* Employee Information */}
-
-        <section className="mb-8">
-          <h3 className="text-lg font-semibold mb-2 flex items-center">
-            <span className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
-              1
-            </span>
-            <span>
-              Basic Information
-              
-            </span>
-          </h3><hr className="border-gray-600" />
-          <div className="grid grid-cols-6  gap-4 mt-6">
-            <div className="mb-4">
-              <label className="block text-sm font-medium">First Name</label>
-              <input
-                type="text"
-                name="studentFirstName"
-                value={formData.studentFirstName}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-              {errors.studentFirstName && (
-                <p className="text-red-500 text-sm">
-                  {errors.studentFirstName}
-                </p>
-              )}
+      {/* Form Data */}
+      <Formik
+        initialValues={initialValues}
+        validationSchema={formValidationSchema}
+        onSubmit={handleSubmit}
+        validateOnChange={true}
+      >
+        {({ setFieldValue, isSubmitting,values }) => (
+          <Form className=" ">
+            <div className="my-8 text-center">
+              <h2 className="text-3xl font-bold text-black">Employee Form</h2>
             </div>
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Middle Name</label>
-              <input
-                type="text"
-                name="studentMiddleName"
-                value={formData.studentMiddleName}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-            </div>
+            {/* Employee Information */}
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Last Name</label>
-              <input
-                type="text"
-                name="studentLastName"
-                value={formData.studentLastName}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-              {errors.studentLastName && (
-                <p className="text-red-500 text-sm">{errors.studentLastName}</p>
-              )}
-            </div>
+            <section className="mb-8">
+              <h3 className="text-lg font-semibold mb-2 flex items-center">
+                <span className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
+                  1
+                </span>
+                <span>Basic Information</span>
+              </h3>
+              <hr className="border-gray-600" />
+              <div className="grid grid-cols-6  gap-4 mt-6">
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">
+                    First Name
+                  </label>
+                  <Field
+                    name="employeeFirstName"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                  <ErrorMessage
+                    name="employeeFirstName"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
 
-            {/* Gender */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Gender</label>
-              <select
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-              >
-                <option value=""> Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-              {errors.gender && (
-                <p className="text-red-500 text-sm">{errors.gender}</p>
-              )}
-            </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">
+                    Middle Name
+                  </label>
+                  <Field
+                    name="employeeMiddleName"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                </div>
 
-            {/* Date of Birth */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Date of Birth</label>
-              <input
-                type="date"
-                name="dateOfBirth"
-                value={formData.dateOfBirth}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2  rounded-3xl"
-              />
-              {errors.dateOfBirth && (
-                <p className="text-red-500 text-sm">{errors.dateOfBirth}</p>
-              )}
-            </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">Last Name</label>
+                  <Field
+                    name="employeeLastName"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                  <ErrorMessage
+                    name="employeeLastName"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
 
-            {/* Student Photo */}
-            <div className="mb-4 relative">
-              <label className="block text-sm font-medium">
-                Employee Photo
-              </label>
-              <input
-                type="file"
-                ref={fileInputRef}
-                style={{ display: "none" }}
-                className="rounded-3xl"
-              />
-              <button
-                type="button"
-                onClick={handleUploadClick}
-                className="w-full bg-white border border-gray-300 rounded-3xl px-4 p-2 flex flex-row items-start justify-between"
-              >
-                Upload Photo <MdOutlineFileUpload />
-              </button>
-            </div>
-          </div>
+                {/* Gender */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">Gender</label>
+                  <Field
+                    as="select"
+                    name="gender"
+                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                  >
+                    <option value=""> Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </Field>
+                  <ErrorMessage
+                    name="gender"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
 
-          <div className="grid grid-cols-6  gap-4">
-            {/* Aadhar Number */}
-            <div className="mb-4 col-span-2">
-              <label className="block text-sm font-medium">Aadhar Number</label>
-              <input
-                type="text"
-                name="aadharNumber"
-                value={formData.aadharNumber}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-              {errors.aadharNumber && (
-                <p className="text-red-500 text-sm">{errors.aadharNumber}</p>
-              )}
-            </div>
+                {/* Date of Birth */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">
+                    Date of Birth
+                  </label>
+                  <Field
+                    type="date"
+                    name="dateOfBirth"
+                    className="mt-1 block w-full p-2 rounded-3xl"
+                  />
+                  <ErrorMessage
+                    name="dateOfBirth"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
 
-            
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Phone Number</label>
-              <input
-                type="tel"
-                name="number"
-               
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-            </div>
-
-            {/* Phone Number */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium">
-                Alternate Phone No.
-              </label>
-              <input
-                type="tel"
-                name="phoneNumber"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-              {errors.phoneNumber && (
-                <p className="text-red-500 text-sm">{errors.phoneNumber}</p>
-              )}
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Email</label>
-              <input
-                type="email"
-                name="email"
-                
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-            </div>
-            
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Employee Role</label>
-              <select
-                name="classOfAdmission"
-                value={formData.classOfAdmission}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-              >
-                <option value="" disabled selected>
-                  Select Role
-                </option>
-                <option value="teacher">Teacher</option>
-                <option value="peon">Peon</option>
-                <option value="finance">Finance Manager</option>
-                <option value="labAssistance">Lab Assistance</option>
-              </select>
-              {errors.classOfAdmission && (
-                <p className="text-red-500 text-sm">
-                  {errors.classOfAdmission}
-                </p>
-              )}
-            </div>
-          </div>
-        </section>
-
-        {/* Father & Husband Name */}
-        <section className="mb-8">
-          <h3 className="text-lg font-semibold mb-2 flex items-center">
-            <span className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
-              2
-            </span>
-            <span>
-              Father / Husband Name
-              
-            </span>
-          </h3><hr className="border-gray-600" />
-          <div className="grid grid-cols-6  gap-4 mt-6">
-            {/* Father's First Name */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium">
-                Father's First Name
-              </label>
-              <input
-                type="text"
-                name="fatherFirstName"
-                value={formData.fatherFirstName}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-            </div>
-            {/* Father's Middle Name */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium">
-                Father's Middle Name
-              </label>
-              <input
-                type="text"
-                name="fatherMiddleName"
-                value={formData.fatherMiddleName}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-            </div>
-            {/* Father's Last Name */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium">
-                Father's Last Name
-              </label>
-              <input
-                type="text"
-                name="fatherLastName"
-                value={formData.fatherLastName}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-sm font-medium">
-                Husband's First Name
-              </label>
-              <input
-                type="text"
-                name="fatherAadharNumber"
-                value={formData.fatherAadharNumber}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-sm font-medium">
-                Husband's Second Name
-              </label>
-              <input
-                type="text"
-                name="fatherOccupation"
-                value={formData.fatherOccupation}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-sm font-medium">
-                Husband's Last Name
-              </label>
-              <input
-                type="text"
-                name="lastName"
-                
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* Permanent Address */}
-        <section className="mb-8">
-          <h3 className="text-lg font-semibold mb-2 flex items-center">
-            <span className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
-              3
-            </span>
-            <span>
-              Permanent Address
-              
-            </span>
-          </h3><hr className="border-gray-600" />
-          <div className="grid grid-cols-7 gap-4 mt-6">
-            <div className="mb-4 col-span-2">
-              <label className="block text-sm font-medium">Address 1</label>
-              <input
-                type="text"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-            </div>
-
-            <div className="mb-4 col-span-2">
-              <label className="block text-sm font-medium">
-                Town/Village/City
-              </label>
-              <input
-                type="text"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-sm font-medium">District</label>
-              <select
-                name="selectCountry"
-                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-              >
-                <option value="" disabled selected>
-                  District
-                </option>
-                <option value="Class 1">Nepal</option>
-                <option value="Class 2">India</option>
-                <option value="Class 3">China</option>
-              </select>
-            </div>
-
-            <div className="mb-4 ">
-              <label className="block text-sm font-medium">State</label>
-              <select
-                name="selectCountry"
-                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-              >
-                <option value="" disabled selected>
-                  State
-                </option>
-                <option value="Class 1">Nepal</option>
-                <option value="Class 2">India</option>
-                <option value="Class 3">China</option>
-              </select>
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Country</label>
-              <select
-                name="selectCountry"
-                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-              >
-                <option value="" disabled selected>
-                  Country
-                </option>
-                <option value="Class 1">Nepal</option>
-                <option value="Class 2">India</option>
-                <option value="Class 3">China</option>
-              </select>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Zip Code</label>
-              <input
-                type="text"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* Current Address */}
-        <section className="mb-8">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold  flex items-center">
-              <span className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
-                4
-              </span>
-              <span>
-                Current Address
-              
-              </span>
-              
-            </h3>
-            <div className="flex items-center mb-4 mt-6">
-              <input
-                type="checkbox"
-                name="sameAsFatherMother"
-                checked={formData.sameAsFatherMother}
-                onChange={handleChange}
-                className="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded-3xl"
-              />
-              <label className="text-sm">Same as Permanent Address</label>
-            </div>
-          </div>
-          <hr className="border-gray-600"/>
-
-
-          <div className="grid grid-cols-7 gap-4 pt-4">
-            <div className="mb-4 col-span-2">
-              <label className="block text-sm font-medium">Address 1</label>
-              <input
-                type="text"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-            </div>
-
-            <div className="mb-4 col-span-2">
-              <label className="block text-sm font-medium">
-                Town/Village/City
-              </label>
-              <input
-                type="text"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-sm font-medium">District</label>
-              <select
-                name="selectCountry"
-                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-              >
-                <option value="" disabled selected>
-                  District
-                </option>
-                <option value="Class 1">Nepal</option>
-                <option value="Class 2">India</option>
-                <option value="Class 3">China</option>
-              </select>
-            </div>
-
-            <div className="mb-4 ">
-              <label className="block text-sm font-medium">State</label>
-              <select
-                name="selectCountry"
-                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-              >
-                <option value="" disabled selected>
-                  State
-                </option>
-                <option value="Class 1">Nepal</option>
-                <option value="Class 2">India</option>
-                <option value="Class 3">China</option>
-              </select>
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Country</label>
-              <select
-                name="selectCountry"
-                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-              >
-                <option value="" disabled selected>
-                  Country
-                </option>
-                <option value="Class 1">Nepal</option>
-                <option value="Class 2">India</option>
-                <option value="Class 3">China</option>
-              </select>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Zip Code</label>
-              <input
-                type="text"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* Other informations */}
-        <section className="mb-8">
-          <h3 className="text-lg font-semibold mb-2 flex items-center">
-            <span className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
-              5
-            </span>
-            <span>
-              Other Information
-             
-            </span>
-          </h3> <hr className="border-gray-600" />
-          <div className="grid grid-cols-6  gap-4 mb-4 mt-6">
-            <div className="mb-4">
-              <label className="block text-sm font-medium">
-                Date of Joining
-              </label>
-              <input
-                type="date"
-                name="dateOfBirth"
-                value={formData.dateOfBirth}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2  rounded-3xl"
-              />
-              {errors.dateOfBirth && (
-                <p className="text-red-500 text-sm">{errors.dateOfBirth}</p>
-              )}
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Nationality</label>
-              <input
-                type="text"
-                name="Nationality"
-                value={formData.fatherFirstName}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Religion</label>
-              <select
-                name="selectReligion"
-                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-              >
-                <option value="" disabled selected>
-                  Religion
-                </option>
-                <option value="Class 1">Sikh</option>
-                <option value="Class 2">Hindu</option>
-                <option value="Class 3">Muslim</option>
-              </select>
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Caste</label>
-              <select
-                name="selectCaste"
-                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-              >
-                <option value="" disabled selected>
-                  Caste
-                </option>
-                <option value="Class 1">Sikh</option>
-                <option value="Class 2">Hindu</option>
-                <option value="Class 3">Muslim</option>
-              </select>
-            </div>{" "}
-            <div className="mb-4 ">
-              <label className="block text-sm font-medium">Blood Group</label>
-              <select
-                name="selecBlood"
-                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-              >
-                <option value="">O+</option>
-                <option value="Class 1">O-</option>
-                <option value="Class 2">A+</option>
-                <option value="Class 3">AB+</option>
-              </select>
-            </div>
-            <div className="mb-4 relative">
-              <label className="block text-sm font-medium">
-                Upload Bio-Data
-              </label>
-              <input
-                type="file"
-                ref={fileInputRef}
-                style={{ display: "none" }}
-                className="rounded-3xl"
-              />
-              <button
-                type="button"
-                onClick={handleUploadClick}
-                className="w-full bg-white border border-gray-300 rounded-3xl px-4 p-2 flex flex-row items-start justify-between"
-              >
-                Upload Photo <MdOutlineFileUpload />
-              </button>
-            </div>
-          </div>
-          <div className="grid grid-cols-6 gap-4">
-            <div className="mb-4 col-span-2">
-              <label className="block text-sm font-medium">
-                Educationals Details
-              </label>
-              <input
-                type="text"
-                placeholder="Details"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-sm font-medium">Experience</label>
-              <input
-                type="text"
-                placeholder="Details"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-              />
-            </div>
-
-            <div className="mb-4 ">
-              <label className="block text-sm font-medium">Main Subject</label>
-              <select
-                name="mainSubject"
-                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-              >
-                <option value="" disabled selected>
-                  Subject
-                </option>
-                <option value="Class 1">English</option>
-                <option value="Class 2">Maths</option>
-                <option value="Class 3">Science</option>
-              </select>
-            </div>
-
-
-                  {/* Complementry subjects */}
-            <div className="mb-4 col-span-2">
-              <label className="block text-sm font-medium">
-                Complementry Subjects
-              </label>
-              <div className="relative">
-                <div
-                  className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl cursor-pointer"
-                  onClick={toggleDropdown}
-                >
-                  <div className="flex flex-wrap">
-                    {selectedOptions.length > 0 ? (
-                      selectedOptions.map((option, index) => (
-                        <div
-                          key={index}
-                          className="bg-blue-500 text-white px-2 py-1 rounded-full mr-2 mb-2 flex items-center"
+                {/* Employee Photo */}
+                <div className="mb-4 relative">
+                  <label className="block text-sm font-medium">
+                    Employee Photo
+                  </label>
+                  <Field name="file">
+                    {({ form }) => (
+                      <>
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          style={{ display: "none" }}
+                          className="rounded-3xl"
+                          onChange={(event) => {
+                            form.setFieldValue(
+                              "file",
+                              event.currentTarget.files[0]
+                            );
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={handleUploadClick}
+                          className="w-full bg-white border border-gray-300 rounded-3xl px-4 p-2 flex flex-row items-start justify-between"
                         >
-                          {option}
-                          <button
-                            className="ml-2 text-white"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removeOption(option);
-                            }}
+                          Upload Photo <MdOutlineFileUpload />
+                        </button>
+
+                        {/* ErrorMessage for file validation */}
+                        <ErrorMessage
+                          name="file"
+                          component="p"
+                          className="text-red-500 text-sm mt-1"
+                        />
+                      </>
+                    )}
+                  </Field>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-6  gap-4">
+                {/* Aadhar Number */}
+                <div className="mb-4 col-span-2">
+                  <label className="block text-sm font-medium">
+                    Aadhar Number
+                  </label>
+                  <Field
+                    name="aadharNumber"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                  <ErrorMessage
+                    name="aadharNumber"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">
+                    Phone Number
+                  </label>
+                  <Field
+                    name="phoneNumber"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                  <ErrorMessage
+                    name="phoneNumber"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+
+                {/* Phone Number */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">
+                    Alternate Phone No.
+                  </label>
+                  <Field
+                    name="alternatePhoneNumber"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                  <ErrorMessage
+                    name="alternatePhoneNumber"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">Email</label>
+                  <Field
+                    name="email"
+                    type="email"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                  <ErrorMessage
+                    name="email"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">
+                    Employee Role
+                  </label>
+                  <Field
+                    as="select"
+                    name="selectRole"
+                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                  >
+                    <option value="" disabled selected>
+                      Select Role
+                    </option>
+                    <option value="teacher">Teacher</option>
+                    <option value="peon">Peon</option>
+                    <option value="finance">Finance Manager</option>
+                    <option value="labAssistance">Lab Assistance</option>
+                  </Field>
+                  <ErrorMessage
+                    name="selectRole"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* Father & Husband Name */}
+            <section className="mb-8">
+              <h3 className="text-lg font-semibold mb-2 flex items-center">
+                <span className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
+                  2
+                </span>
+                <span>Father / Husband Name</span>
+              </h3>
+              <hr className="border-gray-600" />
+              <div className="grid grid-cols-6  gap-4 mt-6">
+                {/* Father's First Name */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">
+                    Father's First Name
+                  </label>
+                  <Field
+                    name="fatherFirstName"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                  <ErrorMessage
+                    name="fatherFirstName"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+                {/* Father's Middle Name */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">
+                    Father's Middle Name
+                  </label>
+                  <Field
+                    name="fatherMiddleFirstName"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                </div>
+                {/* Father's Last Name */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">
+                    Father's Last Name
+                  </label>
+                  <Field
+                    name="fatherLastName"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                  <ErrorMessage
+                    name="fatherLastName"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">
+                    Husband's First Name
+                  </label>
+                  <Field
+                    name="husbandFirstName"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                  <ErrorMessage
+                    name="husbandFirstName"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">
+                    Husband's Middle Name
+                  </label>
+                  <Field
+                    name="husbandSecondName"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">
+                    Husband's Last Name
+                  </label>
+                  <Field
+                    name="husbandLastName"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                  <ErrorMessage
+                    name="husbandLastName"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* Permanent Address */}
+            <section className="mb-8">
+              <h3 className="text-lg font-semibold mb-2 flex items-center">
+                <span className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
+                  3
+                </span>
+                <span>Permanent Address</span>
+              </h3>
+              <hr className="border-gray-600" />
+              <div className="grid grid-cols-7 gap-4 mt-6">
+                <div className="mb-4 col-span-2">
+                  <label className="block text-sm font-medium">Address 1</label>
+                  <Field
+                    name="address1"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                  <ErrorMessage
+                    name="address1"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+
+                <div className="mb-4 col-span-2">
+                  <label className="block text-sm font-medium">
+                    Town/Village/City
+                  </label>
+                  <Field
+                    name="townVillageCity"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                  <ErrorMessage
+                    name="townVillageCity"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">District</label>
+                  <Field
+                    as="select"
+                    name="district"
+                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                  >
+                    <option value="" disabled selected>
+                      District
+                    </option>
+                    <option value="teacher">Chennai</option>
+                    <option value="peon">Jhapa</option>
+                    <option value="">Lakhanau</option>
+                    <option value="labAssistance">Morang</option>
+                  </Field>
+                  <ErrorMessage
+                    name="district"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+
+                <div className="mb-4 ">
+                  <label className="block text-sm font-medium">State</label>
+                  <Field
+                    as="select"
+                    name="state"
+                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                  >
+                    <option value="" disabled selected>
+                      State
+                    </option>
+                    <option value="teacher">Chennai</option>
+                    <option value="">Lakhanau</option>
+                    <option value="labAssistance">Koshi</option>
+                  </Field>
+                  <ErrorMessage
+                    name="state"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">Country</label>
+                  <Field
+                    as="select"
+                    name="country"
+                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                  >
+                    <option value="" disabled selected>
+                      Countyr
+                    </option>
+                    <option value="teacher">Nepal</option>
+                    <option value="peon">India</option>
+                    <option value="">China</option>
+                    <option value="labAssistance">Bhutan</option>
+                  </Field>
+                  <ErrorMessage
+                    name="country"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">Zip Code</label>
+                  <Field
+                    name="zipCode"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                  <ErrorMessage
+                    name="zipCode"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* Current Address */}
+            <section className="mb-8">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold  flex items-center">
+                  <span className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
+                    4
+                  </span>
+                  <span>Current Address</span>
+                </h3>
+                <div className="flex items-center mb-4 mt-6">
+                  <Field
+                    type="checkbox"
+                    name="sameAsPermanentAddress"
+                    className="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded-3xl"
+                    onChange={(e) => {
+                      const isChecked = e.target.checked;
+                      if (isChecked) {
+                        setFieldValue("currentAddress1", values.address1);
+                        setFieldValue(
+                          "currentTownVillageCity",
+                          values.townVillageCity
+                        );
+                        setFieldValue("currentDistrict", values.district);
+                        setFieldValue("currentState", values.state);
+                        setFieldValue("currentCountry", values.country);
+                        setFieldValue("currentZipCode", values.zipCode);
+                      }
+                    }}
+                  />
+                  <label className="text-sm">Same as Permanent Address</label>
+                </div>
+              </div>
+              <hr className="border-gray-600" />
+
+              <div className="grid grid-cols-7 gap-4 pt-4">
+                <div className="mb-4 col-span-2">
+                  <label className="block text-sm font-medium">Address 1</label>
+                  <Field
+                    name="currentAddress1"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                </div>
+
+                <div className="mb-4 col-span-2">
+                  <label className="block text-sm font-medium">
+                    Town/Village/City
+                  </label>
+                  <Field
+                    name="currentTownVillageCity"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">District</label>
+                  <Field
+                    as="select"
+                    name="currentDistrict"
+                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                  >
+                    <option value="" disabled selected>
+                      District
+                    </option>
+                    <option value="Chennai">Chennai</option>
+                    <option value="Jhapa">Jhapa</option>
+                    <option value="Lakhanau">Lakhanau</option>
+                    <option value="Morang">Morang</option>
+                  </Field>
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">State</label>
+                  <Field
+                    as="select"
+                    name="currentState"
+                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                  >
+                    <option value="" disabled selected>
+                      State
+                    </option>
+                    <option value="Chennai">Chennai</option>
+                    <option value="Lakhanau">Lakhanau</option>
+                    <option value="Koshi">Koshi</option>
+                  </Field>
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">Country</label>
+                  <Field
+                    as="select"
+                    name="currentCountry"
+                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                  >
+                    <option value="" disabled selected>
+                      Country
+                    </option>
+                    <option value="Nepal">Nepal</option>
+                    <option value="India">India</option>
+                    <option value="China">China</option>
+                    <option value="Bhutan">Bhutan</option>
+                  </Field>
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">Zip Code</label>
+                  <Field
+                    name="currentZipCode"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* Other informations */}
+            <section className="mb-8">
+              <h3 className="text-lg font-semibold mb-2 flex items-center">
+                <span className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
+                  5
+                </span>
+                <span>Other Information</span>
+              </h3>{" "}
+              <hr className="border-gray-600" />
+              <div className="grid grid-cols-6  gap-4 mb-4 mt-6">
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">
+                    Date of Joining
+                  </label>
+                  <input
+                    type="date"
+                    name="dateOfBirth"
+                    className="mt-1 block w-full p-2  rounded-3xl"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">
+                    Nationality
+                  </label>
+                  <input
+                    type="text"
+                    name="nationality"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">Religion</label>
+                  <select
+                    name="selectReligion"
+                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                  >
+                    <option value="" disabled selected>
+                      Religion
+                    </option>
+                    <option value="Class 1">Sikh</option>
+                    <option value="Class 2">Hindu</option>
+                    <option value="Class 3">Muslim</option>
+                  </select>
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">Caste</label>
+                  <select
+                    name="selectCaste"
+                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                  >
+                    <option value="" disabled selected>
+                      Caste
+                    </option>
+                    <option value="Class 1">Sikh</option>
+                    <option value="Class 2">Hindu</option>
+                    <option value="Class 3">Muslim</option>
+                  </select>
+                </div>{" "}
+                <div className="mb-4 ">
+                  <label className="block text-sm font-medium">
+                    Blood Group
+                  </label>
+                  <select
+                    name="selecBlood"
+                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                  >
+                    <option value="">O+</option>
+                    <option value="Class 1">O-</option>
+                    <option value="Class 2">A+</option>
+                    <option value="Class 3">AB+</option>
+                  </select>
+                </div>
+                <div className="mb-4 relative">
+                  <label className="block text-sm font-medium">
+                    Upload Bio-Data
+                  </label>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: "none" }}
+                    className="rounded-3xl"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleUploadClick}
+                    className="w-full bg-white border border-gray-300 rounded-3xl px-4 p-2 flex flex-row items-start justify-between"
+                  >
+                    Upload Photo <MdOutlineFileUpload />
+                  </button>
+                </div>
+              </div>
+              <div className="grid grid-cols-6 gap-4">
+                <div className="mb-4 col-span-2">
+                  <label className="block text-sm font-medium">
+                    Educationals Details
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Details"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">
+                    Experience
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Details"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                </div>
+
+                <div className="mb-4 ">
+                  <label className="block text-sm font-medium">
+                    Main Subject
+                  </label>
+                  <select
+                    name="mainSubject"
+                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                  >
+                    <option value="" disabled selected>
+                      Subject
+                    </option>
+                    <option value="Class 1">English</option>
+                    <option value="Class 2">Maths</option>
+                    <option value="Class 3">Science</option>
+                  </select>
+                </div>
+
+                {/* Complementry subjects */}
+                <div className="mb-4 col-span-2">
+                  <label className="block text-sm font-medium">
+                    Complementry Subjects
+                  </label>
+                  <div className="relative">
+                    <div
+                      className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl cursor-pointer"
+                      onClick={toggleDropdown}
+                    >
+                      <div className="flex flex-wrap">
+                        {selectedOptions.length > 0 ? (
+                          selectedOptions.map((option, index) => (
+                            <div
+                              key={index}
+                              className="bg-blue-500 text-white px-2 py-1 rounded-full mr-2 mb-2 flex items-center"
+                            >
+                              {option}
+                              <button
+                                className="ml-2 text-white"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  removeOption(option);
+                                }}
+                              >
+                                &times;
+                              </button>
+                            </div>
+                          ))
+                        ) : (
+                          <span className="text-gray-400">
+                            Select subjects...
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    {isOpen && (
+                      <ul className="absolute w-full bg-white border border-gray-300 rounded-3xl mt-1 max-h-48 overflow-y-auto z-10">
+                        {options.map((option, index) => (
+                          <li
+                            key={index}
+                            className="p-2 cursor-pointer hover:bg-gray-200"
+                            onClick={() => selectOption(option)}
                           >
-                            &times;
-                          </button>
-                        </div>
-                      ))
-                    ) : (
-                      <span className="text-gray-400">Select subjects...</span>
+                            {option}
+                          </li>
+                        ))}
+                      </ul>
                     )}
                   </div>
                 </div>
-                {isOpen && (
-                  <ul className="absolute w-full bg-white border border-gray-300 rounded-3xl mt-1 max-h-48 overflow-y-auto z-10">
-                    {options.map((option, index) => (
-                      <li
-                        key={index}
-                        className="p-2 cursor-pointer hover:bg-gray-200"
-                        onClick={() => selectOption(option)}
-                      >
-                        {option}
-                      </li>
-                    ))}
-                  </ul>
-                )}
+              </div>
+              <div className=" mb-4">
+                <label htmlFor="">Remarks Notes</label>
+                <input
+                  placeholder="Details"
+                  type="text"
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                />
+              </div>
+            </section>
+
+            <div className="flex flex-row justify-center gap-6 py-10">
+              <div className="">
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="bg-pink-500 text-white font-semibold px-6 py-2 rounded-3xl shadow-md hover:bg-pink-600"
+                >
+                  Reset
+                </button>
+              </div>
+              <div className="">
+                <button
+                  type="submit"
+                  onClick={handleSubmit}
+                  className="bg-pink-500 text-white font-semibold px-6 py-2 rounded-3xl shadow-md hover:bg-pink-600"
+                >
+                  Submit
+                </button>
               </div>
             </div>
-
-          </div>
-
-          <div className=" mb-4">
-            <label htmlFor="">Remarks Notes</label>
-            <input
-              placeholder="Details"
-              type="text"
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
-            />
-          </div>
-        </section>
-
-        <div className="flex flex-row justify-center gap-6 py-10">
-        <div className="">
-        <button
-          type="button"
-          onClick={handleReset}
-          className="bg-pink-500 text-white font-semibold px-6 py-2 rounded-3xl shadow-md hover:bg-pink-600"
-        >
-          Reset
-        </button>
-      </div>
-          <div className="">
-            <button
-              type="submit"
-              className="bg-pink-500 text-white font-semibold px-6 py-2 rounded-3xl shadow-md hover:bg-pink-600"
-            >
-              Submit
-            </button>
-          </div>
-        </div>
-      </form>
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 }

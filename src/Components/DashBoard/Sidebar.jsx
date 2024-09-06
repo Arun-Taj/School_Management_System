@@ -75,15 +75,16 @@ const Sidebar = () => {
         { name: 'Add/Update Exam Marks', link: '/exam/updateExamMarks' }
       ]
     },
-    { name: 'Configuration', icon: FaCog, link: '/config',
-    subMenu: [
-      { name: 'Classes', link: '/config/classes' },
-      
-    ] }
+    {
+      name: 'Configuration', icon: FaCog, link: '/config',
+      subMenu: [
+        { name: 'Classes', link: '/config/classes' },
+      ]
+    }
   ];
 
   return (
-    <div className={`flex flex-col ${isOpen ? 'w-64' : 'w-20'} bg-[#FFFFFF] h-screen p-5 box-`}style={{ boxShadow: '4px 4px 4px 0px #00000040' }}>
+    <div className={`flex flex-col ${isOpen ? 'w-64' : 'w-20'} bg-[#FFFFFF] h-screen p-5 transition-all duration-300 ease-in-out`} style={{ boxShadow: '4px 4px 4px 0px #00000040' }}>
       <div className="flex justify-between items-center">
         <h1 className={`text-black ${!isOpen && 'hidden'}`}>LOGO</h1>
         {isOpen ? (
@@ -97,8 +98,8 @@ const Sidebar = () => {
           <div key={index}>
             <div className="flex items-center justify-between text-black py-2 cursor-pointer">
               <div className="flex items-center">
-                <Link to={item.link} className="flex items-center">
-                  <item.icon className="mr-2" />
+                <Link to={item.link} className="flex items-center hover:text-[#5011DD] hover:font-bold transition-colors duration-200">
+                  <item.icon className="mr-2 text-xl hover:text-[#5011DD] " />
                   {isOpen && <span>{item.name}</span>}
                 </Link>
               </div>
@@ -112,20 +113,19 @@ const Sidebar = () => {
                 </div>
               )}
             </div>
-            {item.subMenu && expandedMenu === index && (
+            {item.subMenu && expandedMenu === index && isOpen && (
               <div className="ml-6">
                 {item.subMenu.map((subItem, subIndex) => (
                   <div key={subIndex}>
-                    <Link to={subItem.link} className="block text-black py-1">
+                    <Link to={subItem.link} className="block text-black py-1 hover:text-[#5011DD] hover:font-bold transition-colors duration-200">
                       {subItem.name}
                     </Link>
                   </div>
                 ))}
-                {/* Render the Result submenu only when Exam is expanded */}
                 {item.name === 'Exam' && (
                   <>
                     <div className="flex items-center justify-between text-black py-2 cursor-pointer">
-                      <span>Result</span>
+                      <span className="hover:text-[#5011DD] hover:font-bold transition-colors duration-200">Result</span>
                       <div onClick={toggleResultSubMenu}>
                         {expandedSubMenu === 'result' ? (
                           <FaMinus className="text-black cursor-pointer" />
@@ -136,10 +136,10 @@ const Sidebar = () => {
                     </div>
                     {expandedSubMenu === 'result' && (
                       <div className="ml-6">
-                        <Link to="/exam/studentReport" className="block text-black py-1">
+                        <Link to="/exam/studentReport" className="block text-black py-1 hover:text-[#5011DD] hover:font-bold transition-colors duration-200">
                           Student Wise Result
                         </Link>
-                        <Link to="/exam/classReport" className="block text-black py-1">
+                        <Link to="/exam/classReport" className="block text-black py-1 hover:text-[#5011DD] hover:font-bold transition-colors duration-200">
                           Class Wise Result
                         </Link>
                       </div>
@@ -149,7 +149,7 @@ const Sidebar = () => {
                 {item.name === 'Configuration' && (
                   <>
                     <div className="flex items-center justify-between text-black py-2 cursor-pointer">
-                      <span>Subjects</span>
+                      <span className="hover:text-[#5011DD] hover:font-bold  transition-colors duration-200">Subjects</span>
                       <div onClick={toggleResultSubMenu}>
                         {expandedSubMenu === 'result' ? (
                           <FaMinus className="text-black cursor-pointer" />
@@ -160,10 +160,10 @@ const Sidebar = () => {
                     </div>
                     {expandedSubMenu === 'result' && (
                       <div className="ml-6">
-                        <Link to="/config/createSub" className="block text-black py-1">
+                        <Link to="/config/createSub" className="block text-black py-1 hover:text-[#5011DD] hover:font-bold  transition-colors duration-200">
                           Create Subjects
                         </Link>
-                        <Link to="/config/assignSub" className="block text-black py-1">
+                        <Link to="/config/assignSub" className="block text-black py-1 hover:text-[#5011DD] hover:font-bold transition-colors duration-200">
                           Assign Subjects
                         </Link>
                       </div>

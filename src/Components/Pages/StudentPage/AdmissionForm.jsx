@@ -1,12 +1,8 @@
 import React, { useState, useRef } from "react";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
-function AdmissionForm() {
-  const fileInputRef = useRef(null);
 
-  const handleUploadClick = () => {
-    fileInputRef.current.click();
-  };
+function AdmissionForm() {
   const [formData, setFormData] = useState({
     studentFirstName: "",
     studentMiddleName: "",
@@ -38,45 +34,179 @@ function AdmissionForm() {
     sameAsFatherMother: false,
   });
 
+  // State for managing errors
   const [errors, setErrors] = useState({});
 
+  // Ref for file input
+  const fileInputRef = useRef(null);
+
+  // Handle change for form fields
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
       [name]: type === "checkbox" ? checked : value,
-    });
+    }));
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
   };
 
+  // Validate the form fields
   const validate = () => {
-    const newErrors = {};
-    if (!formData.studentFirstName)
-      newErrors.studentFirstName = "First Name is required";
-    if (!formData.studentLastName)
-      newErrors.studentLastName = "Last Name is required";
-    if (!formData.gender) newErrors.gender = "Gender is required";
-    if (!formData.dateOfBirth)
-      newErrors.dateOfBirth = "Date of Birth is required";
-    if (!formData.aadharNumber)
-      newErrors.aadharNumber = "Aadhar Number is required";
-    if (!formData.phoneNumber)
-      newErrors.phoneNumber = "Phone Number is required";
-    if (!formData.classOfAdmission)
-      newErrors.classOfAdmission = "Class of Admission is required";
-    // Add more validation as needed
+    const errors = {};
 
-    return newErrors;
+    // Validation for student details
+    if (!formData.studentFirstName.trim()) {
+      errors.studentFirstName = "First Name is required";
+    }
+
+    if (!formData.studentLastName.trim()) {
+      errors.studentLastName = "Last Name is required";
+    }
+
+    if (!formData.gender) {
+      errors.gender = "Gender is required";
+    }
+
+    if (!formData.dateOfBirth) {
+      errors.dateOfBirth = "Date of Birth is required";
+    }
+
+    if (!formData.aadharNumber.trim()) {
+      errors.aadharNumber = "Aadhar Number is required";
+    } else if (!/^\d{12}$/.test(formData.aadharNumber)) {
+      errors.aadharNumber = "Aadhar Number must be a 12-digit number";
+    }
+
+    if (!formData.phoneNumber.trim()) {
+      errors.phoneNumber = "Phone Number is required";
+    } else if (!/^\d{10}$/.test(formData.phoneNumber)) {
+      errors.phoneNumber = "Phone Number must be a 10-digit number";
+    }
+
+    if (!formData.classOfAdmission.trim()) {
+      errors.classOfAdmission = "Class of Admission is required";
+    }
+
+    // Validation for father details
+    if (!formData.fatherFirstName.trim()) {
+      errors.fatherFirstName = "Father's First Name is required";
+    }
+
+    if (!formData.fatherLastName.trim()) {
+      errors.fatherLastName = "Father's Last Name is required";
+    }
+
+    if (!formData.fatherAadharNumber.trim()) {
+      errors.fatherAadharNumber = "Father's Aadhar Number is required";
+    } else if (!/^\d{12}$/.test(formData.fatherAadharNumber)) {
+      errors.fatherAadharNumber =
+        "Father's Aadhar Number must be a 12-digit number";
+    }
+
+    // Validation for mother details
+    if (!formData.motherFirstName.trim()) {
+      errors.motherFirstName = "Mother's First Name is required";
+    }
+
+    if (!formData.motherLastName.trim()) {
+      errors.motherLastName = "Mother's Last Name is required";
+    }
+
+    if (!formData.motherAadharNumber.trim()) {
+      errors.motherAadharNumber = "Mother's Aadhar Number is required";
+    } else if (!/^\d{12}$/.test(formData.motherAadharNumber)) {
+      errors.motherAadharNumber =
+        "Mother's Aadhar Number must be a 12-digit number";
+    }
+
+    // Validation for guardian details (only if not same as father/mother)
+    if (!formData.sameAsFatherMother) {
+      if (!formData.guardianFirstName.trim()) {
+        errors.guardianFirstName = "Guardian's First Name is required";
+      }
+
+      if (!formData.guardianLastName.trim()) {
+        errors.guardianLastName = "Guardian's Last Name is required";
+      }
+
+      if (!formData.guardianAadharNumber.trim()) {
+        errors.guardianAadharNumber = "Guardian's Aadhar Number is required";
+      } else if (!/^\d{12}$/.test(formData.guardianAadharNumber)) {
+        errors.guardianAadharNumber =
+          "Guardian's Aadhar Number must be a 12-digit number";
+      }
+
+      if (!formData.relationWithGuardian.trim()) {
+        errors.relationWithGuardian = "Relation with Guardian is required";
+      }
+
+      if (!formData.guardianPhoneNumber.trim()) {
+        errors.guardianPhoneNumber = "Guardian's Phone Number is required";
+      } else if (!/^\d{10}$/.test(formData.guardianPhoneNumber)) {
+        errors.guardianPhoneNumber =
+          "Guardian's Phone Number must be a 10-digit number";
+      }
+    }
+
+    // Return validation result
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
+  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
+
+    if (validate()) {
+      console.log("Form submitted successfully!", formData);
+      localStorage.setItem("formData", JSON.stringify(formData));
+
+      // Reset the form data after submission
+      setFormData({
+        studentFirstName: "",
+        studentMiddleName: "",
+        studentLastName: "",
+        gender: "",
+        dateOfBirth: "",
+        aadharNumber: "",
+        motherTongue: "",
+        phoneNumber: "",
+        alternatePhoneNumber: "",
+        classOfAdmission: "",
+        fatherFirstName: "",
+        fatherMiddleName: "",
+        fatherLastName: "",
+        fatherAadharNumber: "",
+        fatherOccupation: "",
+        motherFirstName: "",
+        motherMiddleName: "",
+        motherLastName: "",
+        motherAadharNumber: "",
+        motherOccupation: "",
+        guardianFirstName: "",
+        guardianMiddleName: "",
+        guardianLastName: "",
+        guardianAadharNumber: "",
+        guardianOccupation: "",
+        relationWithGuardian: "",
+        guardianPhoneNumber: "",
+        sameAsFatherMother: false,
+      });
+
+      setErrors({});
     } else {
-      // Submit form data
-      console.log("Form submitted successfully", formData);
+      console.log("Form has errors. Please correct them and try again.");
     }
+  };
+
+  // Handle file upload click (optional based on file handling logic)
+  const handleUploadClick = () => {
+    fileInputRef.current.click();
   };
 
   return (
@@ -96,23 +226,20 @@ function AdmissionForm() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="max-w-5xl mx-auto  ">
-        <div className="my-8 text-center">
-          <h2 className="text-3xl font-bold text-black">Admission Form</h2>
-        </div>
+      <div className="my-8 text-center">
+        <h2 className="text-3xl font-bold text-black">Admission Form</h2>
+      </div>
 
-        {/* Student Information */}
-
+      {/* Student Information */}
+      <form onSubmit={handleSubmit} className=" ">
         <section className="mb-8">
           <h3 className="text-lg font-semibold mb-2 flex items-center">
             <span className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
               1
             </span>
-            <span>
-              Student Information
-              
-            </span>
-          </h3><hr className="border-gray-600" />
+            <span>Student Information</span>
+          </h3>
+          <hr className="border-gray-600" />
           <div className="grid grid-cols-6  gap-4 mt-6">
             {/* Student's First Name */}
             <div className="mb-4">
@@ -282,7 +409,9 @@ function AdmissionForm() {
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
               >
-                <option value="" disabled selected>Select Class</option>
+                <option value="" disabled selected>
+                  Select Class
+                </option>
                 <option value="Class 1">Class 1</option>
                 <option value="Class 2">Class 2</option>
                 <option value="Class 3">Class 3</option>
@@ -304,11 +433,9 @@ function AdmissionForm() {
             <span className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
               2
             </span>
-            <span>
-              Father & Mother Information
-              
-            </span>
-          </h3><hr className="border-gray-600" />
+            <span>Father & Mother Information</span>
+          </h3>
+          <hr className="border-gray-600" />
           <div className="grid grid-cols-6  gap-4 mt-6">
             {/* Father's First Name */}
             <div className="mb-4">
@@ -322,6 +449,9 @@ function AdmissionForm() {
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
+              {errors.fatherFirstName && (
+                <p className="text-red-500 text-sm">{errors.fatherFirstName}</p>
+              )}
             </div>
             {/* Father's Middle Name */}
             <div className="mb-4">
@@ -348,6 +478,9 @@ function AdmissionForm() {
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
+              {errors.fatherLastName && (
+                <p className="text-red-500 text-sm">{errors.fatherLastName}</p>
+              )}
             </div>{" "}
             {/* Father's Aadhar Number */}
             <div className="mb-4 col-span-2">
@@ -359,6 +492,9 @@ function AdmissionForm() {
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
+              {errors.fatherAadharNumber && (
+                <p className="text-red-500 text-sm">{errors.fatherAadharNumber}</p>
+              )}
             </div>
             {/* Father's Occupation */}
             <div className="mb-4">
@@ -370,6 +506,7 @@ function AdmissionForm() {
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
+              
             </div>
           </div>
 
@@ -381,11 +518,14 @@ function AdmissionForm() {
               </label>
               <input
                 type="text"
-                name="MotherFirstName"
+                name="motherFirstName"
                 value={formData.motherFirstName}
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
+              {errors.motherFirstName && (
+                <p className="text-red-500 text-sm">{errors.motherFirstName}</p>
+              )}
             </div>
             {/* Mother's Middle Name */}
             <div className="mb-4">
@@ -394,7 +534,7 @@ function AdmissionForm() {
               </label>
               <input
                 type="text"
-                name="MotherMiddleName"
+                name="motherMiddleName"
                 value={formData.motherMiddleName}
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
@@ -407,29 +547,35 @@ function AdmissionForm() {
               </label>
               <input
                 type="text"
-                name="MotherLastName"
+                name="motherLastName"
                 value={formData.motherLastName}
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
+              {errors.motherLastName && (
+                <p className="text-red-500 text-sm">{errors.motherLastName}</p>
+              )}
             </div>
             {/* Mother's Aadhar Number */}
             <div className="mb-4 col-span-2">
               <label className="block text-sm font-medium">Aadhar Number</label>
               <input
                 type="text"
-                name="MotherAadharNumber"
+                name="motherAadharNumber"
                 value={formData.motherAadharNumber}
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
+              {errors.motherAadharNumber && (
+                <p className="text-red-500 text-sm">{errors.motherAadharNumber}</p>
+              )}
             </div>
             {/* Mother's Occupation */}
             <div className="mb-4">
               <label className="block text-sm font-medium">Occupation</label>
               <input
                 type="text"
-                name="MotherOccupation"
+                name="motherOccupation"
                 value={formData.motherOccupation}
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
@@ -445,11 +591,9 @@ function AdmissionForm() {
               <span className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
                 3
               </span>
-              <span>
-                Guardian Informations
-                
-              </span>
-            </h3><hr className="border-gray-600" />
+              <span>Guardian Informations</span>
+            </h3>
+            <hr className="border-gray-600" />
             <div className="flex items-center mb-4">
               <input
                 type="checkbox"
@@ -458,6 +602,9 @@ function AdmissionForm() {
                 onChange={handleChange}
                 className="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded-3xl"
               />
+              {errors.sameAsFatherMother && (
+                <p className="text-red-500 text-sm">{errors.sameAsFatherMother}</p>
+              )}
               <label className="text-sm">
                 Same as Father & Mother Information
               </label>
@@ -476,6 +623,9 @@ function AdmissionForm() {
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
+              {errors.guardianFirstName && (
+                <p className="text-red-500 text-sm">{errors.guardianFirstName}</p>
+              )}
             </div>
 
             {/* Guardian's Middle Name */}
@@ -504,6 +654,9 @@ function AdmissionForm() {
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
+              {errors.guardianLastName && (
+                <p className="text-red-500 text-sm">{errors.guardianLastName}</p>
+              )}
             </div>
 
             {/* Guardian's Aadhar Number */}
@@ -516,6 +669,9 @@ function AdmissionForm() {
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
+              {errors.guardianAadharNumber && (
+                <p className="text-red-500 text-sm">{errors.guardianAadharNumber}</p>
+              )}
             </div>
 
             {/* Guardian's Occupation */}
@@ -544,6 +700,9 @@ function AdmissionForm() {
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
+              {errors.relationWithGuardian && (
+                <p className="text-red-500 text-sm">{errors.relationWithGuardian}</p>
+              )}
             </div>
 
             {/* Phone Number */}
@@ -551,8 +710,14 @@ function AdmissionForm() {
               <label className="block text-sm font-medium">Phone Number</label>
               <input
                 type="tel"
+                name="guardianPhoneNumber"
+                value={formData.guardianPhoneNumber}
+                onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
+              {errors.guardianPhoneNumber && (
+                <p className="text-red-500 text-sm">{errors.guardianPhoneNumber}</p>
+              )}
             </div>
           </div>
         </section>
@@ -562,11 +727,9 @@ function AdmissionForm() {
             <span className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
               4
             </span>
-            <span>
-              Permanent Address
-              
-            </span>
-          </h3><hr className="border-gray-600" />
+            <span>Permanent Address</span>
+          </h3>
+          <hr className="border-gray-600" />
           <div className="grid grid-cols-7 gap-4 mt-6">
             <div className="mb-4 col-span-2">
               <label className="block text-sm font-medium">Address 1</label>
@@ -647,10 +810,7 @@ function AdmissionForm() {
               <span className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
                 5
               </span>
-              <span>
-                Current Address
-                
-              </span>
+              <span>Current Address</span>
             </h3>
             <div className="flex items-center mb-4 mt-6">
               <input
@@ -662,7 +822,8 @@ function AdmissionForm() {
               />
               <label className="text-sm">Same as Permanent Address</label>
             </div>
-          </div><hr className="border-gray-600" />
+          </div>
+          <hr className="border-gray-600" />
           <div className="grid grid-cols-7 gap-4 mt-4">
             <div className="mb-4 col-span-2">
               <label className="block text-sm font-medium">Address 1</label>
@@ -742,11 +903,9 @@ function AdmissionForm() {
             <span className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
               2
             </span>
-            <span>
-              Other Information
-             
-            </span>
-          </h3> <hr className="border-gray-600" />
+            <span>Other Information</span>
+          </h3>{" "}
+          <hr className="border-gray-600" />
           <div className="grid grid-cols-6  gap-4 mb-4 mt-6">
             <div className="mb-4">
               <label className="block text-sm font-medium">Nationality</label>
