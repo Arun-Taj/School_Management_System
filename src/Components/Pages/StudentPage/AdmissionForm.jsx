@@ -42,6 +42,7 @@ function AdmissionForm() {
     pcountry:"",
     pzipCode:"",
 
+    sameAsPermanentAddress:"",
     cAddress1:"",
     ctownVillageCity:"",
     cdistrict:"",
@@ -52,7 +53,7 @@ function AdmissionForm() {
     nationality:"",
     religion:"",
     caste:"",
-    bloodGruop:"",
+    bloodGroup:"",
     personalIdentification:"",
     disease:"",
     lastAttendance:"",
@@ -71,18 +72,47 @@ const [formData,setFormData]=useState(initialFormValues)
   // Handle change for form fields
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-
+  
+    setFormData((prevFormData) => {
+      // Update the current field value
+      let updatedFormData = {
+        ...prevFormData,
+        [name]: type === "checkbox" ? checked : value,
+      };
+  
+      // Logic for copying permanent address to current address if checkbox is checked
+      if (name === "sameAsPermanentAddress" && checked) {
+        updatedFormData = {
+          ...updatedFormData,
+          cAddress1: prevFormData.pAddress1,
+          ctownVillageCity: prevFormData.ptownVillageCity,
+          cdistrict: prevFormData.pdistrict,
+          cstate:prevFormData.pstate,
+          ccountry:prevFormData.pcountry,
+          czipCode:prevFormData.pzipCode,
+        };
+      }
+  
+      // If "sameAsPermanentAddress" is unchecked, clear the current address fields
+      if (name === "sameAsPermanentAddress" && !checked) {
+        updatedFormData = {
+          ...updatedFormData,
+          cAddress1: "",
+          ctownVillageCity: "",
+          cdistrict: "",
+        };
+      }
+  
+      return updatedFormData;
+    });
+  
+    // Clear errors for the changed field
     setErrors((prevErrors) => ({
       ...prevErrors,
       [name]: "",
     }));
   };
-
+  
   // Validate the form fields
   const validate = () => {
     const errors = {};
@@ -198,7 +228,13 @@ const [formData,setFormData]=useState(initialFormValues)
       errors.pcountry="Select Country";
     }
     if(!formData.pzipCode){
-      errors.pzipCode="Mention zip code"
+      errors.pzipCode="Mention zip code";
+    }
+    if(!formData.nationality){
+      errors.nationality="Mention Nationality";
+    }
+    if(!formData.bloodGroup){
+      errors.bloodGroup="Select Blood Group";
     }
 
     // Return validation result
@@ -615,8 +651,8 @@ const [formData,setFormData]=useState(initialFormValues)
               </span>
               <span>Guardian Informations</span>
             </h3>
-            <hr className="border-gray-600" />
-            <div className="flex items-center mb-4">
+            
+            {/* <div className="flex items-center mb-4">
               <input
                 type="checkbox"
                 name="sameAsFatherMother"
@@ -630,9 +666,11 @@ const [formData,setFormData]=useState(initialFormValues)
               <label className="text-sm">
                 Same as Father & Mother Information
               </label>
-            </div>
+            </div> */}
           </div>
-          <div className="grid grid-cols-6 gap-4">
+          <hr className="border-gray-600" />
+
+          <div className="grid grid-cols-6 gap-4 mt-6">
             {/* Guardian's First Name */}
             <div className="mb-4">
               <label className="block text-sm font-medium">
@@ -649,6 +687,7 @@ const [formData,setFormData]=useState(initialFormValues)
                 <p className="text-red-500 text-sm">{errors.guardianFirstName}</p>
               )}
             </div>
+            
 
             {/* Guardian's Middle Name */}
             <div className="mb-4">
@@ -844,7 +883,7 @@ const [formData,setFormData]=useState(initialFormValues)
               )}
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium">Zip Code</label>
+              <label className="block text-sm font-medium">Pin Code</label>
               <input
                 type="text"
                 name="pzipCode"
@@ -871,7 +910,7 @@ const [formData,setFormData]=useState(initialFormValues)
             <div className="flex items-center mb-4 mt-6">
               <input
                 type="checkbox"
-                name="sameAsFatherMother"
+                name="sameAsPermanentAddress"
                 checked={formData.sameAsPermanentAddress}
                 onChange={handleChange}
                 className="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded-3xl"
@@ -956,7 +995,7 @@ const [formData,setFormData]=useState(initialFormValues)
               </select>
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium">Zip Code</label>
+              <label className="block text-sm font-medium">Pin Code</label>
               <input
                 type="text"
                 name="czipCode"
@@ -971,7 +1010,7 @@ const [formData,setFormData]=useState(initialFormValues)
         <section className="mb-8">
           <h3 className="text-lg font-semibold mb-2 flex items-center">
             <span className="bg-black text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
-              2
+              6
             </span>
             <span>Other Information</span>
           </h3>{" "}
@@ -1026,15 +1065,21 @@ const [formData,setFormData]=useState(initialFormValues)
               <label className="block text-sm font-medium">Blood Group</label>
               <select
                 name="bloodGroup"
-                value={formData.bloodGruop}
+                value={formData.bloodGroup}
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-              >
-                <option value="">O+</option>
-                <option value="Class 1">O-</option>
-                <option value="Class 2">A+</option>
-                <option value="Class 3">AB+</option>
+              > 
+                <option value="" disabled selected>
+                  Blood Group
+                </option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+                <option value="A+">A+</option>
+                <option value="AB+">AB+</option>
               </select>
+              {errors.bloodGroup && (
+                <p className="text-red-500 text-sm">{errors.bloodGroup}</p>
+              )}
             </div>
             <div className="mb-4 col-span-2">
               <label className="block text-sm font-medium">
@@ -1051,7 +1096,7 @@ const [formData,setFormData]=useState(initialFormValues)
           </div>
           <div className=" mb-4">
             <label htmlFor="">
-              Is the boy/girl suffering from any disease ? If so give details
+              Is the boy/girl suffering from any disease ? If so, give details
             </label>
             <input
               placeholder="Details"
@@ -1087,7 +1132,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
           </div>
           <div className=" mb-4">
-            <label htmlFor="">Remarks Notes</label>
+            <label htmlFor="">Remarks (note)</label>
             <input
               placeholder="Details"
               type="text"

@@ -11,12 +11,12 @@ import Navbar from './Navbar';
 import AdmissionForm from '../Pages/StudentPage/AdmissionForm';
 import AllStudents from '../Pages/StudentPage/AllStudents';
 import PromoteStudent from '../Pages/StudentPage/PromoteStudent';
-import IdCard from '../Pages/StudentPage/IdCard';
+// import IdCard from '../Pages/StudentPage/IdCard';
 
 // import Employees from '../Pages/EmployeePage/Employees';  
 import AddEmployee from '../Pages/EmployeePage/AddEmployee';
 import AllEmployee from '../Pages/EmployeePage/AllEmployee';
-import EmpID from '../Pages/EmployeePage/EmpID';
+// import EmpID from '../Pages/EmployeePage/EmpID';
 
 // import Accounts from '../Pages/AccountPage/Accounts'; 
 import ChartAccount from '../Pages/AccountPage/ChartAccount'
@@ -97,12 +97,12 @@ function MainDashBoard() {
               <Route path="/students/admissionForm" element={<AdmissionForm/>} /> 
               <Route path="/students/allStudents" element={<AllStudents />} /> 
               <Route path='/students/promoteStudents' element={<PromoteStudent/>} />
-              <Route path="/students/idCard" element={<IdCard />} /> 
+              {/* <Route path="/students/idCard" element={<IdCard />} />  */}
 
               {/* <Route path="/employees" element={<Employees />} /> */}
               <Route path="/employees/employeeForm" element={<AddEmployee />} />
               <Route path="/employees/allEmployees" element={<AllEmployee />} />
-              <Route path="/employees/eId" element={<EmpID />} />
+              {/* <Route path="/employees/eId" element={<EmpID />} /> */}
 
               {/* <Route path="/accounts" element={<Accounts />} /> */}
               <Route path="/accounts/chart" element={<ChartAccount/>} />

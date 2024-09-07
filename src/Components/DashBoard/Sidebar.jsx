@@ -31,7 +31,7 @@ const Sidebar = () => {
         { name: 'Add New', link: '/students/admissionForm' },
         { name: 'All Students', link: '/students/allStudents' },
         { name: 'Promote Students', link: '/students/promoteStudents' },
-        { name: 'Student ID Card', link: '/students/idCard' }
+        // { name: 'Student ID Card', link: '/students/idCard' }
       ]
     },
     {
@@ -40,7 +40,7 @@ const Sidebar = () => {
       subMenu: [
         { name: 'Add New', link: '/employees/employeeForm' },
         { name: 'All Employees', link: '/employees/allEmployees' },
-        { name: 'Employee ID Card', link: '/employees/eId' },
+        // { name: 'Employee ID Card', link: '/employees/eId' },
       ]
     },
     {

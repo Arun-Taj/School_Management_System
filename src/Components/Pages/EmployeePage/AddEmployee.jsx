@@ -555,7 +555,7 @@ function AddEmployee() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">Zip Code</label>
+                  <label className="block text-sm font-medium">Pin Code</label>
                   <Field
                     name="zipCode"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
@@ -679,7 +679,7 @@ function AddEmployee() {
                   </Field>
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">Zip Code</label>
+                  <label className="block text-sm font-medium">Pin Code</label>
                   <Field
                     name="currentZipCode"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
@@ -802,7 +802,7 @@ function AddEmployee() {
               <div className="grid grid-cols-6 gap-4">
                 <div className="mb-4 col-span-2">
                   <label className="block text-sm font-medium">
-                    Educationals Details
+                    Educational Qualification
                   </label>
                   <Field
                     name="educationalDetails"
@@ -857,7 +857,7 @@ function AddEmployee() {
                 {/* Complementry subjects */}
                 <div className="mb-4 col-span-2">
                   <label className="block text-sm font-medium">
-                    Complementry Subjects
+                    Complimentary Subjects
                   </label>
                   <div className="relative">
                     <div
@@ -907,7 +907,7 @@ function AddEmployee() {
                 </div>
               </div>
               <div className=" mb-4">
-                <label htmlFor="">Remarks Notes</label>
+                <label htmlFor="">Remarks (note)</label>
                 <Field
                   name="remarks"
                   placeholder="Details"
