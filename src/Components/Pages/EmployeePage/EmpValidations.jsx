@@ -67,11 +67,11 @@ export const formValidationSchema = Yup.object().shape({
 
   // Father's/Husband's information
   fatherFirstName: Yup.string().required('Father First Name is required').min(2, 'Must be at least 2 characters'),
-  fatherMiddleName: Yup.string(),
+  // fatherMiddleName: Yup.string(),
   fatherLastName: Yup.string().required('Father Last Name is required').min(2, 'Must be at least 2 characters'),
-  husbandFirstName: Yup.string().required('Husband First Name is required').min(2, 'Must be at least 2 characters'),
-  husbandMiddleName: Yup.string(),
-  husbandLastName: Yup.string().required('Husband Last Name is required').min(2, 'Must be at least 2 characters'),
+  // husbandFirstName: Yup.string().required('Husband First Name is required').min(2, 'Must be at least 2 characters'),
+  // husbandMiddleName: Yup.string(),
+  // husbandLastName: Yup.string().required('Husband Last Name is required').min(2, 'Must be at least 2 characters'),
   address1: Yup.string().required('Address is required').min(3, 'Must be at least 3 characters'),
   townVillageCity: Yup.string().required('Town/Village/City is required').min(2, 'Must be at least 2 characters'),
   district: Yup.string().required('District is required'),
@@ -80,10 +80,14 @@ export const formValidationSchema = Yup.object().shape({
   zipCode: Yup.string()
     // .matches(zipRegExp, 'Invalid zip code format')
     .required('Zip Code is required'),
+    dateOfJoining: Yup.date().required('Date of joining is required'),
+    nationality: Yup.string().required("Nationality is required"),
+    bloodGroup:Yup.string().required("Blood gruop is required"),
+    bioData:Yup.string().required("Bio Data is required"),
+    educationalDetails:Yup.string().required("Educational Details is required"),
+    mainSubject:Yup.string().required("Choose Main subject"),
+    experience:Yup.string().required("Mention experinece"),
+    // complementarySubject:Yup.string().required("Complementary subject is required")
 
-  // Mother's information
-
-
-  // Same as Father/Mother checkbox
   
 });

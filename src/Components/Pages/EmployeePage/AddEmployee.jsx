@@ -35,14 +35,14 @@ function AddEmployee() {
   };
 
   // Reset logic
-  const formRef = useRef(null);
+    // const formRef = useRef(null);
 
-  const handleReset = () => {
-    // Reset the form using the ref
-    if (formRef.current) {
-      formRef.current.reset();
-    }
-  };
+    // const handleReset = () => {
+    //   // Reset the form using the ref
+    //   if (formRef.current) {
+    //     formRef.current.reset();
+    //   }
+    // };
 
   const initialValues = {
     employeeFirstName: "",
@@ -56,23 +56,63 @@ function AddEmployee() {
     alternatePhoneNumber: "",
     email: "",
     selectRole: "",
+
     fatherFirstName: "",
     fatherMiddleName: "",
     fatherLastName: "",
     husbandFirstName: "",
     husbandMiddleName: "",
     husbandLastName: "",
+
     address1: "",
     townVillageCity: "",
     district: "",
     state: "",
     country: "",
     zipCode: "",
+
+    currentAddress1: "",
+    currentTownVillageCity: "",
+    currentDistrict: "",
+    currentState: "",
+    currentCountry: "",
+    currentZipCode: "",
+    sameAsPermanentAddress:false,
+    
+
+
+    dateOfJoining:"",
+    nationality:"",
+    religion:"",
+    caste:"", 
+    bloodGroup:"",
+    bioData:"",
+    educationalDetails:"",
+    experience:"",
+    mainSubject:"",
+    complementarySubject:"",
+    remarks:""
   };
 
-  const handleSubmit = (values) => {
-    console.log("Form Submitted", values, values.file);
-  };
+ // Form submission logic
+ const handleSubmit = (values, formikBag) => {
+  console.log("Form Submitted");
+  console.log("Form Data",values);
+   // Safely log the form data (values)
+  //  try {
+  //   console.log("Form Data (JSON):", JSON.stringify(values, null, 2)); // Ensure only 'values' are stringified
+  // } catch (error) {
+  //   console.error("Error stringifying values:", error);
+  // }
+
+
+  // Perform any form submission logic here (e.g., API call)
+
+  // Reset the form after submission using the formikBag.resetForm() method
+  // formikBag.resetForm();
+};
+
+
 
   return (
     <div className="bg-pink-100 min-h-screen p-8">
@@ -92,17 +132,18 @@ function AddEmployee() {
       </div>
 
       {/* Form Data */}
-      <Formik
-        initialValues={initialValues}
-        validationSchema={formValidationSchema}
-        onSubmit={handleSubmit}
-        validateOnChange={true}
-      >
-        {({ setFieldValue, isSubmitting,values }) => (
-          <Form className=" ">
-            <div className="my-8 text-center">
-              <h2 className="text-3xl font-bold text-black">Employee Form</h2>
-            </div>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={formValidationSchema}
+          onSubmit={handleSubmit}
+          validateOnChange={true}
+          
+        >
+          {({ setFieldValue,isSubmitting, values,resetForm }) => (
+            <Form className=" ">
+              <div className="my-8 text-center">
+                <h2 className="text-3xl font-bold text-black">Employee Form</h2>
+              </div>
 
             {/* Employee Information */}
 
@@ -348,7 +389,7 @@ function AddEmployee() {
                     Father's Middle Name
                   </label>
                   <Field
-                    name="fatherMiddleFirstName"
+                    name="fatherMiddleName"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
                   />
                 </div>
@@ -388,7 +429,7 @@ function AddEmployee() {
                     Husband's Middle Name
                   </label>
                   <Field
-                    name="husbandSecondName"
+                    name="husbandMiddleName"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
                   />
                 </div>
@@ -480,9 +521,10 @@ function AddEmployee() {
                     <option value="" disabled selected>
                       State
                     </option>
-                    <option value="teacher">Chennai</option>
-                    <option value="">Lakhanau</option>
-                    <option value="labAssistance">Koshi</option>
+                   <option value="bihar">Bihar</option>
+                    <option value="bagmati">Bagmati</option>
+                    <option value="koshi">Koshi</option>
+                    <option value="terai">Terai</option>
                   </Field>
                   <ErrorMessage
                     name="state"
@@ -499,7 +541,7 @@ function AddEmployee() {
                     className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
                   >
                     <option value="" disabled selected>
-                      Countyr
+                      Country
                     </option>
                     <option value="teacher">Nepal</option>
                     <option value="peon">India</option>
@@ -554,6 +596,15 @@ function AddEmployee() {
                         setFieldValue("currentCountry", values.country);
                         setFieldValue("currentZipCode", values.zipCode);
                       }
+                      else {
+                        // Clear current address fields when unchecked
+                        setFieldValue("currentAddress1", "");
+                        setFieldValue("currentTownVillageCity", "");
+                        setFieldValue("currentDistrict", "");
+                        setFieldValue("currentState", "");
+                        setFieldValue("currentCountry", "");
+                        setFieldValue("currentZipCode", "");
+                      }
                     }}
                   />
                   <label className="text-sm">Same as Permanent Address</label>
@@ -589,10 +640,10 @@ function AddEmployee() {
                     <option value="" disabled selected>
                       District
                     </option>
-                    <option value="Chennai">Chennai</option>
-                    <option value="Jhapa">Jhapa</option>
-                    <option value="Lakhanau">Lakhanau</option>
-                    <option value="Morang">Morang</option>
+                    <option value="teacher">Chennai</option>
+                    <option value="peon">Jhapa</option>
+                    <option value="">Lakhanau</option>
+                    <option value="labAssistance">Morang</option>
                   </Field>
                 </div>
                 <div className="mb-4">
@@ -605,9 +656,10 @@ function AddEmployee() {
                     <option value="" disabled selected>
                       State
                     </option>
-                    <option value="Chennai">Chennai</option>
-                    <option value="Lakhanau">Lakhanau</option>
-                    <option value="Koshi">Koshi</option>
+                    <option value="bihar">Bihar</option>
+                    <option value="bagmati">Bagmati</option>
+                    <option value="koshi">Koshi</option>
+                    <option value="terai">Terai</option>
                   </Field>
                 </div>
                 <div className="mb-4">
@@ -650,26 +702,36 @@ function AddEmployee() {
                   <label className="block text-sm font-medium">
                     Date of Joining
                   </label>
-                  <input
+                 <Field
                     type="date"
-                    name="dateOfBirth"
-                    className="mt-1 block w-full p-2  rounded-3xl"
+                    name="dateOfJoining"
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                  <ErrorMessage
+                    name="dateOfJoining"
+                    component="p"
+                    className="text-red-500 text-sm"
                   />
                 </div>
                 <div className="mb-4">
                   <label className="block text-sm font-medium">
                     Nationality
                   </label>
-                  <input
-                    type="text"
+                  <Field
                     name="nationality"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                  <ErrorMessage
+                    name="nationality"
+                    component="p"
+                    className="text-red-500 text-sm"
                   />
                 </div>
                 <div className="mb-4">
                   <label className="block text-sm font-medium">Religion</label>
-                  <select
-                    name="selectReligion"
+                  <Field
+                    as="select"
+                    name="religion"
                     className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
                   >
                     <option value="" disabled selected>
@@ -678,35 +740,45 @@ function AddEmployee() {
                     <option value="Class 1">Sikh</option>
                     <option value="Class 2">Hindu</option>
                     <option value="Class 3">Muslim</option>
-                  </select>
+                  </Field>
                 </div>
                 <div className="mb-4">
                   <label className="block text-sm font-medium">Caste</label>
-                  <select
-                    name="selectCaste"
+                  <Field
+                    as="select"
+                    name="caste"
                     className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
                   >
                     <option value="" disabled selected>
                       Caste
                     </option>
-                    <option value="Class 1">Sikh</option>
-                    <option value="Class 2">Hindu</option>
+                    <option value="Class 1">Brahimin</option>
+                    <option value="Class 2">Chettri</option>
                     <option value="Class 3">Muslim</option>
-                  </select>
+                  </Field>
                 </div>{" "}
                 <div className="mb-4 ">
                   <label className="block text-sm font-medium">
                     Blood Group
                   </label>
-                  <select
-                    name="selecBlood"
+                  <Field
+                    as="select"
+                    name="bloodGroup"
                     className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
                   >
-                    <option value="">O+</option>
-                    <option value="Class 1">O-</option>
-                    <option value="Class 2">A+</option>
-                    <option value="Class 3">AB+</option>
-                  </select>
+                    <option value="" disabled selected>
+                      BloodGroup
+                    </option>
+                    <option value="O+">O+</option>
+                    <option value="A+">A+</option>
+                    <option value="AB+">AB+</option>
+                    <option value="O-">O-</option>
+                  </Field>
+                  <ErrorMessage
+                    name="bloodGroup"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
                 </div>
                 <div className="mb-4 relative">
                   <label className="block text-sm font-medium">
@@ -732,10 +804,14 @@ function AddEmployee() {
                   <label className="block text-sm font-medium">
                     Educationals Details
                   </label>
-                  <input
-                    type="text"
-                    placeholder="Details"
+                  <Field
+                    name="educationalDetails"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                  <ErrorMessage
+                    name="educationalDetails"
+                    component="p"
+                    className="text-red-500 text-sm"
                   />
                 </div>
 
@@ -743,10 +819,14 @@ function AddEmployee() {
                   <label className="block text-sm font-medium">
                     Experience
                   </label>
-                  <input
-                    type="text"
-                    placeholder="Details"
+                  <Field
+                    name="experience"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
+                  />
+                  <ErrorMessage
+                    name="experience"
+                    component="p"
+                    className="text-red-500 text-sm"
                   />
                 </div>
 
@@ -754,17 +834,24 @@ function AddEmployee() {
                   <label className="block text-sm font-medium">
                     Main Subject
                   </label>
-                  <select
+                  <Field
+                    as="select"
                     name="mainSubject"
                     className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
                   >
                     <option value="" disabled selected>
-                      Subject
+                      Main Subject
                     </option>
-                    <option value="Class 1">English</option>
-                    <option value="Class 2">Maths</option>
-                    <option value="Class 3">Science</option>
-                  </select>
+                    <option value="Math">Maths</option>
+                    <option value="Science">Science</option>
+                    <option value="Social">Social</option>
+                    <option value="English">English</option>
+                  </Field>
+                  <ErrorMessage
+                    name="mainSubject"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
                 </div>
 
                 {/* Complementry subjects */}
@@ -821,7 +908,8 @@ function AddEmployee() {
               </div>
               <div className=" mb-4">
                 <label htmlFor="">Remarks Notes</label>
-                <input
+                <Field
+                  name="remarks"
                   placeholder="Details"
                   type="text"
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
@@ -833,7 +921,7 @@ function AddEmployee() {
               <div className="">
                 <button
                   type="button"
-                  onClick={handleReset}
+                  onClick={resetForm}
                   className="bg-pink-500 text-white font-semibold px-6 py-2 rounded-3xl shadow-md hover:bg-pink-600"
                 >
                   Reset
@@ -842,8 +930,9 @@ function AddEmployee() {
               <div className="">
                 <button
                   type="submit"
-                  onClick={handleSubmit}
+                  
                   className="bg-pink-500 text-white font-semibold px-6 py-2 rounded-3xl shadow-md hover:bg-pink-600"
+                  
                 >
                   Submit
                 </button>

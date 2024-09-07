@@ -3,7 +3,7 @@ import { MdOutlineFileUpload } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 
 function AdmissionForm() {
-  const [formData, setFormData] = useState({
+  const initialFormValues = {
     studentFirstName: "",
     studentMiddleName: "",
     studentLastName: "",
@@ -14,6 +14,7 @@ function AdmissionForm() {
     phoneNumber: "",
     alternatePhoneNumber: "",
     classOfAdmission: "",
+
     fatherFirstName: "",
     fatherMiddleName: "",
     fatherLastName: "",
@@ -24,6 +25,7 @@ function AdmissionForm() {
     motherLastName: "",
     motherAadharNumber: "",
     motherOccupation: "",
+
     guardianFirstName: "",
     guardianMiddleName: "",
     guardianLastName: "",
@@ -32,8 +34,34 @@ function AdmissionForm() {
     relationWithGuardian: "",
     guardianPhoneNumber: "",
     sameAsFatherMother: false,
-  });
 
+    pAddress1:"",
+    ptownVillageCity:"",
+    pdistrict:"",
+    pstate:"",
+    pcountry:"",
+    pzipCode:"",
+
+    cAddress1:"",
+    ctownVillageCity:"",
+    cdistrict:"",
+    cstate:"",
+    ccountry:"",
+    czipCode:"",
+
+    nationality:"",
+    religion:"",
+    caste:"",
+    bloodGruop:"",
+    personalIdentification:"",
+    disease:"",
+    lastAttendance:"",
+    transferCertificate:"",
+    remarks:"",
+    
+    
+  };
+const [formData,setFormData]=useState(initialFormValues)
   // State for managing errors
   const [errors, setErrors] = useState({});
 
@@ -152,6 +180,26 @@ function AdmissionForm() {
           "Guardian's Phone Number must be a 10-digit number";
       }
     }
+    //validations for permanent address
+    if(!formData.pAddress1){
+      errors.pAddress1="Permanent Address is required";
+    }
+    if(!formData.ptownVillageCity){
+      errors.ptownVillageCity="Mention town/village/city";
+    }
+    if(!formData.pdistrict){
+      errors.pdistrict="Select district";
+    }
+    if(!formData.pstate){
+      errors.pstate="Select State";
+
+    }
+    if(!formData.pcountry){
+      errors.pcountry="Select Country";
+    }
+    if(!formData.pzipCode){
+      errors.pzipCode="Mention zip code"
+    }
 
     // Return validation result
     setErrors(errors);
@@ -167,36 +215,7 @@ function AdmissionForm() {
       localStorage.setItem("formData", JSON.stringify(formData));
 
       // Reset the form data after submission
-      setFormData({
-        studentFirstName: "",
-        studentMiddleName: "",
-        studentLastName: "",
-        gender: "",
-        dateOfBirth: "",
-        aadharNumber: "",
-        motherTongue: "",
-        phoneNumber: "",
-        alternatePhoneNumber: "",
-        classOfAdmission: "",
-        fatherFirstName: "",
-        fatherMiddleName: "",
-        fatherLastName: "",
-        fatherAadharNumber: "",
-        fatherOccupation: "",
-        motherFirstName: "",
-        motherMiddleName: "",
-        motherLastName: "",
-        motherAadharNumber: "",
-        motherOccupation: "",
-        guardianFirstName: "",
-        guardianMiddleName: "",
-        guardianLastName: "",
-        guardianAadharNumber: "",
-        guardianOccupation: "",
-        relationWithGuardian: "",
-        guardianPhoneNumber: "",
-        sameAsFatherMother: false,
-      });
+      setFormData(initialFormValues);
 
       setErrors({});
     } else {
@@ -208,6 +227,9 @@ function AdmissionForm() {
   const handleUploadClick = () => {
     fileInputRef.current.click();
   };
+  const handleReset=()=>{
+    setFormData(initialFormValues);
+  }
 
   return (
     <div className="bg-pink-100 min-h-screen p-8">
@@ -327,7 +349,7 @@ function AdmissionForm() {
 
             {/* Student Photo */}
             <div className="mb-4 relative">
-              <label className="block text-sm font-medium">Sent Photo</label>
+              <label className="block text-sm font-medium">Student Photo</label>
               <input
                 type="file"
                 ref={fileInputRef}
@@ -735,8 +757,14 @@ function AdmissionForm() {
               <label className="block text-sm font-medium">Address 1</label>
               <input
                 type="text"
+                name="pAddress1"
+                value={formData.pAddress1}
+                onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
+               {errors.pAddress1 && (
+                <p className="text-red-500 text-sm">{errors.pAddress1}</p>
+              )}
             </div>
 
             <div className="mb-4 col-span-2">
@@ -745,14 +773,23 @@ function AdmissionForm() {
               </label>
               <input
                 type="text"
+                name="ptownVillageCity"
+                value={formData.ptownVillageCity}
+                onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
+              {errors.ptownVillageCity && (
+                <p className="text-red-500 text-sm">{errors.ptownVillageCity}</p>
+              )}
             </div>
 
             <div className="mb-4">
               <label className="block text-sm font-medium">District</label>
               <select
-                name="selectCountry"
+                
+                name="pdistrict"
+                value={formData.pdistrict}
+                onChange={handleChange}
                 className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
               >
                 <option value="" disabled selected>
@@ -762,12 +799,17 @@ function AdmissionForm() {
                 <option value="Class 2">India</option>
                 <option value="Class 3">China</option>
               </select>
+              {errors.pdistrict && (
+                <p className="text-red-500 text-sm">{errors.pdistrict}</p>
+              )}
             </div>
 
             <div className="mb-4 ">
               <label className="block text-sm font-medium">State</label>
               <select
-                name="selectCountry"
+                name="pstate"
+                value={formData.pstate}
+                onChange={handleChange}
                 className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
               >
                 <option value="" disabled selected>
@@ -777,12 +819,17 @@ function AdmissionForm() {
                 <option value="Class 2">India</option>
                 <option value="Class 3">China</option>
               </select>
+              {errors.pstate && (
+                <p className="text-red-500 text-sm">{errors.pstate}</p>
+              )}
             </div>
 
             <div className="mb-4">
               <label className="block text-sm font-medium">Country</label>
               <select
-                name="selectCountry"
+                name="pcountry"
+                value={formData.pcountry}
+                onChange={handleChange}
                 className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
               >
                 <option value="" disabled selected>
@@ -792,13 +839,22 @@ function AdmissionForm() {
                 <option value="Class 2">India</option>
                 <option value="Class 3">China</option>
               </select>
+              {errors.pcountry && (
+                <p className="text-red-500 text-sm">{errors.pcountry}</p>
+              )}
             </div>
             <div className="mb-4">
               <label className="block text-sm font-medium">Zip Code</label>
               <input
                 type="text"
+                name="pzipCode"
+                value={formData.pzipCode}
+                onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
+              {errors.pzipCode && (
+                <p className="text-red-500 text-sm">{errors.pzipCode}</p>
+              )}
             </div>
           </div>
         </section>
@@ -816,7 +872,7 @@ function AdmissionForm() {
               <input
                 type="checkbox"
                 name="sameAsFatherMother"
-                checked={formData.sameAsFatherMother}
+                checked={formData.sameAsPermanentAddress}
                 onChange={handleChange}
                 className="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded-3xl"
               />
@@ -828,7 +884,10 @@ function AdmissionForm() {
             <div className="mb-4 col-span-2">
               <label className="block text-sm font-medium">Address 1</label>
               <input
+              name="cAddress1"
                 type="text"
+                value={formData.cAddress1}
+                onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
             </div>
@@ -838,7 +897,10 @@ function AdmissionForm() {
                 Town/Village/City
               </label>
               <input
+              name="ctownVillageCity"
                 type="text"
+                value={formData.ctownVillageCity}
+                onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
             </div>
@@ -846,7 +908,9 @@ function AdmissionForm() {
             <div className="mb-4">
               <label className="block text-sm font-medium">District</label>
               <select
-                name="selectCountry"
+                name="cdistrict"
+                value={formData.cdistrict}
+                onChange={handleChange}
                 className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
               >
                 <option value="" disabled selected>
@@ -861,7 +925,9 @@ function AdmissionForm() {
             <div className="mb-4 ">
               <label className="block text-sm font-medium">State</label>
               <select
-                name="selectCountry"
+                name="cstate"
+                value={formData.cstate}
+                onChange={handleChange}
                 className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
               >
                 <option value="" disabled selected>
@@ -876,7 +942,9 @@ function AdmissionForm() {
             <div className="mb-4">
               <label className="block text-sm font-medium">Country</label>
               <select
-                name="selectCountry"
+                name="ccountry"
+                value={formData.ccountry}
+                onChange={handleChange}
                 className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
               >
                 <option value="" disabled selected>
@@ -891,6 +959,8 @@ function AdmissionForm() {
               <label className="block text-sm font-medium">Zip Code</label>
               <input
                 type="text"
+                name="czipCode"
+                value={formData.czipCode}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
             </div>
@@ -911,16 +981,21 @@ function AdmissionForm() {
               <label className="block text-sm font-medium">Nationality</label>
               <input
                 type="text"
-                name="fatherFirstName"
-                value={formData.fatherFirstName}
+                name="nationality"
+                value={formData.nationality}
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
+              {errors.nationality && (
+                <p className="text-red-500 text-sm">{errors.nationality}</p>
+              )}
             </div>
             <div className="mb-4">
               <label className="block text-sm font-medium">Religion</label>
               <select
-                name="selectReligion"
+                name="religion"
+                value={formData.religion}
+                onChange={handleChange}
                 className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
               >
                 <option value="" disabled selected>
@@ -934,7 +1009,9 @@ function AdmissionForm() {
             <div className="mb-4">
               <label className="block text-sm font-medium">Caste</label>
               <select
-                name="selectCaste"
+                name="caste"
+                value={formData.caste}
+                onChange={handleChange}
                 className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
               >
                 <option value="" disabled selected>
@@ -948,7 +1025,9 @@ function AdmissionForm() {
             <div className="mb-4 ">
               <label className="block text-sm font-medium">Blood Group</label>
               <select
-                name="selecBlood"
+                name="bloodGroup"
+                value={formData.bloodGruop}
+                onChange={handleChange}
                 className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
               >
                 <option value="">O+</option>
@@ -963,8 +1042,8 @@ function AdmissionForm() {
               </label>
               <input
                 type="text"
-                name="fatherOccupation"
-                value={formData.fatherOccupation}
+                name="personalIdentification"
+                value={formData.personalIdentification}
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
@@ -977,6 +1056,9 @@ function AdmissionForm() {
             <input
               placeholder="Details"
               type="text"
+              name="disease"
+              value={formData.disease}
+              onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
             />
           </div>
@@ -986,6 +1068,9 @@ function AdmissionForm() {
               <input
                 placeholder="Details"
                 type="text"
+                name="lastAttendance"
+                value={formData.lastAttendance}
+                onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
             </div>
@@ -994,6 +1079,9 @@ function AdmissionForm() {
               <input
                 placeholder="Details"
                 type="text"
+                name="transferCertificate"
+                value={formData.transferCertificate}
+                onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
             </div>
@@ -1003,6 +1091,9 @@ function AdmissionForm() {
             <input
               placeholder="Details"
               type="text"
+              name="remarks"
+              value={formData.remarks}
+              onChange={handleChange}
               className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
             />
           </div>
@@ -1011,7 +1102,8 @@ function AdmissionForm() {
         <div className="flex flex-row justify-center gap-6 py-10">
           <div className="">
             <button
-              type="submit"
+              type="button"
+              onClick={handleReset}
               className="bg-pink-500 text-white font-semibold px-6 py-2 rounded-3xl shadow-md hover:bg-pink-600"
             >
               Reset

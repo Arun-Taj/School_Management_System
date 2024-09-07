@@ -45,8 +45,8 @@ function TableChart() {
 
       // Get the dimensions of the chart
       const { width, height } = chartArea;
-      const fontSize = (height / 114).toFixed(2);
-      ctx.font = `${fontSize}em sans-serif`;
+      const fontSize = height/4;
+      ctx.font = `bold ${fontSize}px sans-serif `;
       ctx.textBaseline = "middle";
       ctx.textAlign = "center";
       ctx.fillStyle = "#000"; // Text color

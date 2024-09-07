@@ -25,7 +25,8 @@ const Sidebar = () => {
   const menuItems = [
     { name: 'Dashboard', icon: MdHome, link: '/' },
     {
-      name: 'Students', icon: FaUsers, link: '/students',
+      // name: 'Students', icon: FaUsers, link: '/students',
+      name: 'Students', icon: FaUsers, 
       subMenu: [
         { name: 'Add New', link: '/students/admissionForm' },
         { name: 'All Students', link: '/students/allStudents' },
@@ -34,7 +35,8 @@ const Sidebar = () => {
       ]
     },
     {
-      name: 'Employees', icon: MdBusinessCenter, link: '/employees',
+      // name: 'Employees', icon: MdBusinessCenter, link: '/employees',
+      name: 'Employees', icon: MdBusinessCenter, 
       subMenu: [
         { name: 'Add New', link: '/employees/employeeForm' },
         { name: 'All Employees', link: '/employees/allEmployees' },
@@ -42,7 +44,8 @@ const Sidebar = () => {
       ]
     },
     {
-      name: 'Accounts', icon: MdAccountBalanceWallet, link: '/accounts',
+      // name: 'Accounts', icon: MdAccountBalanceWallet, link: '/accounts',
+      name: 'Accounts', icon: MdAccountBalanceWallet,
       subMenu: [
         { name: 'Chart Of Account', link: '/accounts/chart' },
         { name: 'Add Income', link: '/accounts/addIncome' },
@@ -51,7 +54,8 @@ const Sidebar = () => {
       ]
     },
     {
-      name: 'Fees', icon: FaMoneyBill, link: '/fees',
+      // name: 'Fees', icon: FaMoneyBill, link: '/fees',
+      name: 'Fees', icon: FaMoneyBill,
       subMenu: [
         { name: 'Fee Receipt', link: '/fees/feeReceipt' },
         { name: 'Fee Report', link: '/fees/feeReport' },
@@ -59,7 +63,8 @@ const Sidebar = () => {
       ]
     },
     {
-      name: 'Attendance', icon: FaHandPaper, link: '/attendance',
+      // name: 'Attendance', icon: FaHandPaper, link: '/attendance',
+      name: 'Attendance', icon: FaHandPaper, 
       subMenu: [
         { name: 'Mark Student Attendance', link: '/attendance/markStudent' },
         { name: 'Student Attendance Report', link: '/attendance/studentReport' },
@@ -68,7 +73,8 @@ const Sidebar = () => {
       ]
     },
     {
-      name: 'Exam', icon: FaEdit, link: '/exam',
+      // name: 'Exam', icon: FaEdit, link: '/exam',
+      name: 'Exam', icon: FaEdit, 
       subMenu: [
         { name: 'Create New Exam', link: '/exam/createExam' },
         { name: 'Edit or Delete', link: '/exam/updateExam' },
@@ -76,7 +82,9 @@ const Sidebar = () => {
       ]
     },
     {
-      name: 'Configuration', icon: FaCog, link: '/config',
+      // name: 'Configuration', icon: FaCog, link: '/config',
+      name: 'Configuration', icon: FaCog, 
+
       subMenu: [
         { name: 'Classes', link: '/config/classes' },
       ]
