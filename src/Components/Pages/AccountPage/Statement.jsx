@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState,useRef} from "react";
 import { MdAccountBalanceWallet } from "react-icons/md";
 import { IoSearch } from "react-icons/io5";
 import { FiRefreshCcw } from "react-icons/fi";
@@ -9,6 +9,66 @@ import StatementTable from "./StatementTable";
 import {IoIosArrowDropleft,IoIosArrowDropright} from 'react-icons/io'
 
 const Statement = () => {
+
+  const [fromDate, setFromDate] = useState(""); // Store from date
+  const [toDate, setToDate] = useState(""); // Store to date
+  const [filterType, setFilterType] = useState("all"); // To track "This Month" or "All" filter
+
+  // Function to handle the search button click and filter dates
+  const handleSearch = () => {
+    if (fromDate && toDate) {
+      setFilterType("range");
+    }
+  };
+
+  // Function to handle "This Month" button click
+  const handleThisMonth = () => {
+    setFilterType("thisMonth");
+  };
+
+  // Function to reset filters when the refresh button is clicked
+  const handleRefresh = () => {
+    setFromDate("");
+    setToDate("");
+    setFilterType("all");
+  };
+   // Function to print only the StatementTable
+   const handlePrint = () => {
+    const printWindow = window.open("", "", "width=800,height=600");
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Print Statement</title>
+          <style>
+            table {
+              width: 100%;
+              border-collapse: collapse;
+            }
+            th, td {
+              padding: 8px;
+              text-align: left;
+              border: 1px solid #ddd;
+            }
+            th {
+              background-color: #f4f4f4;
+            }
+            tr:nth-child(even) {
+              background-color: #f9f9f9;
+            }
+          </style>
+        </head>
+        <body>
+          ${tableRef.current.innerHTML}
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+  };
+  const tableRef = useRef(); // Create a ref for the table
+
   return (
     <div className="p-8 bg-pink-100">
       <div className="flex gap-4  bg-white  rounded-3xl p-2 ">
@@ -27,46 +87,54 @@ const Statement = () => {
       </div>
       <div className="flex flex-row items-center justify-between">
         <div className="flex flex-row p-2 gap-4 mt-4 items-center">
-          <input type="date" name="" id="" className="rounded-3xl p-2" />
+          <input
+            type="date"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+            className="rounded-3xl p-2"
+          />
           <p>To</p>
-          <input type="date" name="" id="" className="rounded-3xl p-2" />
-          {/* Search Bar */}
+          <input
+            type="date"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            className="rounded-3xl p-2"
+          />
 
-          <div className="flex items-center  bg-white rounded-full ">
-            {/* Right Side: Search Icon */}
-            <IoSearch className="text-gray-600 ml-2" size={24} />
-            {/* Input Field */}
-            <input
-              type="text"
-              placeholder="Statement"
-              className=" py-2 pl-2  placeholder-black bg-transparent focus:outline-none"
-            />
+          {/* Search Button */}
+          <div className="flex items-center bg-white rounded-full">
+            <button onClick={handleSearch}>
+              <IoSearch className="text-gray-600 my-2 mx-4" size={24} />
+            </button>
           </div>
 
-          {/* <div className="bg-white p-3 rounded-full border border-[#BCA8EA]">
-              <FiRefreshCcw />
-            </div> */}
-          
-          <span className="flex items-center justify-center  bg-white rounded-full ">
-            {/* Right Side: Search Icon */}
-            <SlCalender className="text-gray-600 ml-3" size={24} />
-            {/* Input Field */}
-            <input
-              type="text"
-              placeholder="Statement"
-              className=" py-2 pl-2  placeholder-black bg-transparent focus:outline-none"
-            />
+          {/* "This Month" Button */}
+          <span className="flex items-center justify-center  bg-white rounded-full">
+            <SlCalender className="text-gray-600 ml-3" size={24} onClick={handleThisMonth}/>
+            <button onClick={handleThisMonth} className="py-2 px-2 bg-transparent">
+              This Month
+            </button>
           </span>
-         
-        </div>
-        <div className="flex flex-row">
-          <MdLocalPrintshop size={24} className="text-gray-600 ml-4" />
-          <IoFilterSharp className="text-gray-600 ml-4" size={24} />
-          <FiRefreshCcw size={24} className="text-gray-600 ml-4" />
         </div>
 
+        <div className="flex flex-row space-x-4 items-center">
+          {/* Print Button */}
+          <button onClick={handlePrint} className="bg-blue-500  px-2   py-2 rounded-md transition duration-300 hover:bg-blue-600 hover:shadow-lg hover:scale-105">
+            <MdLocalPrintshop size={24} className="text-black " />
+          </button>
+          <button className="bg-gray-500  px-2 py-2 rounded-md transition duration-300 hover:bg-gray-600 hover:shadow-lg hover:scale-105">
+            <IoFilterSharp className="text-white " size={24} />
+          </button>
+          
+          <button onClick={handleRefresh} className="border border-[#BCA8EA] p-2 rounded-full bg-white cursor-pointer hover:bg-[#BCA8EA] hover:text-white transition-colors duration-100">
+            <FiRefreshCcw size={24} className="text-gray-600 " />
+          </button>
+        </div>
       </div>
-      <div className="pt-6"><StatementTable/></div>
+
+      <div className="pt-6" ref={tableRef}>
+        <StatementTable filterType={filterType} fromDate={fromDate} toDate={toDate} />
+      </div>
       <div className="mt-4 flex justify-between items-center pb-10">
         <div className="flex space-x-2 items-center">
           <button className="px-3 py-2 border border-gray-400 rounded-full ">

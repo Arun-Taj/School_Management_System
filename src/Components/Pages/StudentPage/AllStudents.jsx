@@ -400,7 +400,7 @@ const AllStudents = () => {
                             className="p-1 text-black w-8 h-8 flex justify-center items-center transition-colors duration-300 hover:bg-red-600 hover:text-white"
                             onClick={() => handleDelete(index)}
                           >
-                            <RiDeleteBin6Line className="text-lg" />
+                            <RiDeleteBin6Line className="hover:text-lg" />
                           </button>
                         </div>
                       )}
