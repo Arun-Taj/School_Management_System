@@ -33,7 +33,7 @@ const ClassResult = () => {
       </div>
 
 
-<h1 className='text-center font-bold text-xl pt-10'>Class Wise Report (Bulk)</h1>
+<h1 className='text-center font-bold text-xl pt-10'>Class Wise Result (Bulk)</h1>
       <div className='flex flex-row justify-center gap-4 pt-10'>
         
       <span className=" text-center ">

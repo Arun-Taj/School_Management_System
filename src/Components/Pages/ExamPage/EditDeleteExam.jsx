@@ -21,7 +21,7 @@ const EditDeleteExam = () => {
 
         {/* "Add New" text */}
         <div>
-          <span className="text-gray-700 font-medium">Edit Exam</span>
+          <span className="text-gray-700 font-medium">Edit or Delete Exam</span>
         </div>
       </div>
 

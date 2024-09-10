@@ -5,7 +5,6 @@ import { FaEye } from "react-icons/fa6";
 import { MdChevronRight } from "react-icons/md";
 import { MdChevronLeft } from "react-icons/md";
 
-
 const AddWholeClsData = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(10);
@@ -61,7 +60,6 @@ const AddWholeClsData = () => {
     setCurrentRecords(updatedRecords);
     setEditingIndex(null);
   };
-
 
   return (
     <div className="p-8 bg-pink-100 min-h-screen">
@@ -119,7 +117,6 @@ const AddWholeClsData = () => {
                     <th
                       key={header}
                       className="p-2 whitespace-nowrap min-w-[150px]"
-                      
                     >
                       {header}
                     </th>
@@ -150,7 +147,9 @@ const AddWholeClsData = () => {
                           <input
                             type="number"
                             value={editingMarks[subject]}
-                            onChange={(e) => handleInputChange(subject, e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange(subject, e.target.value)
+                            }
                             className="w-14 rounded-full pl-1"
                           />
                         ) : (
@@ -183,41 +182,40 @@ const AddWholeClsData = () => {
         </div>
 
         {/* Pagination */}
-
-        <div className="flex justify-between items-center mt-4 pl-2">
-          <div className="flex items-center space-x-2">
-            {[10, 25, 50].map((size) => (
-              <button
+      </div>
+      <div className="flex justify-between items-center mt-4 pl-2">
+        <div className="flex items-center space-x-2">
+          {[10, 25, 50].map((size) => (
+            <button
               key={size}
               onClick={() => setRecordsPerPage(size)}
               className="p-2 px-3 rounded-full border border-gray-300"
             >
               {size}
             </button>
-            ))}
-            <span className="text-sm">Records per page</span>
-          </div>
+          ))}
+          <span className="text-sm">Records per page</span>
+        </div>
 
-          <div className="flex space-x-1 items-center pr-2">
+        <div className="flex space-x-1 items-center pr-2">
           <p>Showing 1 to 10 of 15 records</p>
-              <button
-                onClick={() => paginate(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="p-1 rounded-full border border-gray-300"
-              >
-                < MdChevronLeft size={24} />
-              </button>
-              <p className="border border-gray-400 px-3 py-1 rounded-full">
-                {currentPage}
-              </p>
-              <button
-                onClick={() => paginate(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="p-1 rounded-full border border-gray-300"
-              >
-                <MdChevronRight size={24} />
-              </button>
-            </div>
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="p-1 rounded-full border border-gray-300"
+          >
+            <MdChevronLeft size={24} />
+          </button>
+          <p className="border border-gray-400 px-3 py-1 rounded-full">
+            {currentPage}
+          </p>
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="p-1 rounded-full border border-gray-300"
+          >
+            <MdChevronRight size={24} />
+          </button>
         </div>
       </div>
       <div className="flex justify-center pt-10">

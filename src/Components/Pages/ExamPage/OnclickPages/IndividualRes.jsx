@@ -1,19 +1,29 @@
 import React, { useRef, useState, useEffect } from "react";
 import { FaEdit } from "react-icons/fa";
 import { MdLocalPrintshop } from "react-icons/md";
+import { useLocation } from "react-router-dom";
 
-const StdResSearch = () => {
+const IndividualRes = () => {
   const tableRef = useRef();
-  
-  // Define state for subjects and marks
-  const [subjects, setSubjects] = useState([
-    { subject: "English", total: 100, obtained: 84 },
-    { subject: "Math", total: 100, obtained: 94 },
-    { subject: "Science", total: 100, obtained: 98 },
-    { subject: "Social", total: 100, obtained: 64 },
-    { subject: "MIL", total: 100, obtained: 50 },
-    { subject: "Computer Science", total: 100, obtained: 77 },
-  ]);
+  const location = useLocation();
+
+  // Retrieve student data from the state passed through navigate
+  const { enrollmentId, studentName, rollNo, marks } = location.state || {};
+
+  const [subjects, setSubjects] = useState([]);
+
+  // Initialize state for marks
+  useEffect(() => {
+    if (marks) {
+      // Convert the marks object to an array for rendering in the table
+      const subjectsArray = Object.entries(marks).map(([subject, obtained]) => ({
+        subject,
+        total: 100,
+        obtained,
+      }));
+      setSubjects(subjectsArray);
+    }
+  }, [marks]);
 
   const [totalMarks, setTotalMarks] = useState(0);
   const [obtainedMarks, setObtainedMarks] = useState(0);
@@ -24,7 +34,7 @@ const StdResSearch = () => {
     const total = subjects.reduce((sum, subject) => sum + subject.total, 0);
     const obtained = subjects.reduce((sum, subject) => sum + subject.obtained, 0);
     const percent = (obtained / total) * 100;
-    
+
     setTotalMarks(total);
     setObtainedMarks(obtained);
     setPercentage(percent.toFixed(2));
@@ -80,23 +90,15 @@ const StdResSearch = () => {
               <div className="space-y-1">
                 <p className="text-sm">
                   <span className="font-semibold pr-3">Enrollment ID:</span>
-                  01249999
+                  {enrollmentId}
                 </p>
                 <p className="text-sm">
                   <span className="font-semibold pr-3">Student Name:</span>
-                  Rahul Kumar Debnath
-                </p>
-                <p className="text-sm">
-                  <span className="font-semibold pr-3">Father's Name:</span>
-                  Rakhai Kumar Debnath
-                </p>
-                <p className="text-sm">
-                  <span className="font-semibold pr-3">Class:</span>
-                  Class 08
+                  {studentName}
                 </p>
                 <p className="text-sm">
                   <span className="font-semibold pr-3">Roll No:</span>
-                  35
+                  {rollNo}
                 </p>
               </div>
             </div>
@@ -165,4 +167,4 @@ const StdResSearch = () => {
   );
 };
 
-export default StdResSearch;
+export default IndividualRes;

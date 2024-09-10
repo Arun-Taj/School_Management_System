@@ -146,9 +146,9 @@ const CreateExam = () => {
                           >
                             <span>{subject}</span>
                             <div className=" flex justify-center items-center gap-2">
-                              <button className="bg-white border border-gray-300 px-2 rounded-full">
-                                Total Exam Mark
-                              </button>
+                              <input type="text" placeholder="Total Exam Mark" className="bg-white border border-gray-300 px-2 rounded-full w-28">
+                                
+                              </input>
                               <button className="">
                                 <RiDeleteBin6Line />
                               </button>

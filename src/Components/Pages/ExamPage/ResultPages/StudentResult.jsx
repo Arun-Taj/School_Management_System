@@ -79,16 +79,16 @@ const StudentResult = () => {
               <input
                 type="text"
                 placeholder="Search"
-                className="flex-grow px-4 py-2 text-gray-600 placeholder-gray-500 bg-transparent focus:outline-none"
+                className="flex-grow px-4 py-2 text-black placeholder-gray-500 bg-transparent focus:outline-none items-center text-center"
               />
 
               {/* Right Side: Search Icon */}
-              <IoSearch className="text-gray-600 mr-4" size={24} />
+              <IoSearch className="text-gray-600 mr-4" size={24} onClick={handleResultClick}/>
             </div>
           </div>
-          <div className="border border-[#BCA8EA] p-2 bg-white rounded-full">
+          {/* <div className="border border-[#BCA8EA] p-2 bg-white rounded-full">
             <FiRefreshCcw />
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="flex justify-center pt-8">

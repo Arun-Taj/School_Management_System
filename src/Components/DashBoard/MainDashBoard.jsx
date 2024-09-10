@@ -41,6 +41,7 @@ import StudentResult from '../Pages/ExamPage/ResultPages/StudentResult'
 import StdResSearch from '../Pages/ExamPage/OnclickPages/StdResSearch';
 import ClassResult from '../Pages/ExamPage/ResultPages/ClassResult';
 import ClsResSearch from '../Pages/ExamPage/OnclickPages/ClsResSearch';
+import IndividualRes from '../Pages/ExamPage/OnclickPages/IndividualRes';
 
 // import Fees from '../Pages/FeePage/Fees';
 import FeeReceipt from '../Pages/FeePage/FeeReceipt'
@@ -134,6 +135,7 @@ function MainDashBoard() {
               <Route path='/exam/studentReport' element={<StudentResult/>} />
               <Route path='/exam/studentResult' element={<StdResSearch/>} />
               <Route path='/exam/classResult' element={<ClsResSearch/>} />
+              <Route path='/exam/classReport/search/individualRes' element={<IndividualRes/>} />
               <Route path='/exam/classReport' element={<ClassResult/>} />
 
               {/* <Route path="/config" element={<Configuration />} /> */}
