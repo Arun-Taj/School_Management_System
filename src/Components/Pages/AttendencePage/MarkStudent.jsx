@@ -68,8 +68,6 @@ const MarkStudent = () => {
   const [rows, setRows] = useState(initialRows);
 
   // State to toggle sort direction (ascending/descending)
-  const [sortByRoll, setSortByRoll] = useState(true);
-  const [sortByName, setSortByName] = useState(false);
 
   // State to show/hide the sorting options popup
   const [showSortOptions, setShowSortOptions] = useState(false);
@@ -142,35 +140,35 @@ const MarkStudent = () => {
       </div>
 
       <div className="flex justify-between my-10">
-      <div className="flex gap-4 items-center">
-      <input
-        type="date"
-        value={searchDate}
-        onChange={(e) => setSearchDate(e.target.value)}
-        className="p-2 rounded-3xl border border-gray-300"
-      />
+        <div className="flex gap-4 items-center">
+          <input
+            type="date"
+            value={searchDate}
+            onChange={(e) => setSearchDate(e.target.value)}
+            className="p-2 rounded-3xl border border-gray-300"
+          />
 
-      <select
-        value={selectedClass}
-        onChange={(e) => setSelectedClass(e.target.value)}
-        className="rounded-3xl bg-white p-2 border border-gray-300"
-      >
-        <option value="" disabled>
-          Select Class
-        </option>
-        <option value="Class 1">Class 1</option>
-        <option value="Class 2">Class 2</option>
-        <option value="Class 3">Class 3</option>
-      </select>
+          <select
+            value={selectedClass}
+            onChange={(e) => setSelectedClass(e.target.value)}
+            className="rounded-3xl bg-white p-2 border border-gray-300"
+          >
+            <option value="" disabled>
+              Select Class
+            </option>
+            <option value="Class 1">Class 1</option>
+            <option value="Class 2">Class 2</option>
+            <option value="Class 3">Class 3</option>
+          </select>
 
-      {/* Search button */}
-      <div
-      className="bg-white p-2 px-4 rounded-full border border-gray-300 cursor-pointer transition-all duration-200 hover:bg-gray-100 hover:shadow-md"
-      onClick={handleSearch}
-    >
-      <IoSearch className="text-gray-600" />
-    </div>
-    </div>
+          {/* Search button */}
+          <div
+            className="bg-white p-2 px-4 rounded-full border border-gray-300 cursor-pointer transition-all duration-200 hover:bg-gray-100 hover:shadow-md"
+            onClick={handleSearch}
+          >
+            <IoSearch className="text-gray-600" />
+          </div>
+        </div>
         <div className="flex flex-row gap-4 justify-end items-center">
           <div className=" ">
             <div
@@ -178,8 +176,10 @@ const MarkStudent = () => {
               onClick={() => setShowSortOptions((prev) => !prev)}
             >
               {/* Left Side: Three-Line Menu Icon */}
-              <IoFilterSharp className="text-gray-600 hover:text-blue-500 transform hover:scale-110 transition-transform duration-200" size={24} />
-
+              <IoFilterSharp
+                className="text-gray-600 hover:text-blue-500 transform hover:scale-110 transition-transform duration-200"
+                size={24}
+              />
             </div>
             {/* Sorting Options Popup */}
             {showSortOptions && (
@@ -209,11 +209,11 @@ const MarkStudent = () => {
             )}
           </div>
           <div
-      className="border border-[#BCA8EA] p-2 bg-white rounded-full cursor-pointer transition-all duration-200 hover:bg-[#F3E8FF] hover:shadow-lg"
-      onClick={handleRefresh}
-    >
-      <FiRefreshCcw className="text-gray-600 transition-transform duration-200 hover:rotate-180" />
-    </div>
+            className="border border-[#BCA8EA] p-2 bg-white rounded-full cursor-pointer transition-all duration-200 hover:bg-[#F3E8FF] hover:shadow-lg"
+            onClick={handleRefresh}
+          >
+            <FiRefreshCcw className="text-gray-600 transition-transform duration-200 hover:rotate-180" />
+          </div>
         </div>
       </div>
 
@@ -303,7 +303,10 @@ const MarkStudent = () => {
         </div>
       </div>
       <div className="flex justify-center">
-        <button className="bg-pink-500 text-white py-2 px-8 rounded-full hover:bg-pink-600" onClick={handleSubmit}>
+        <button
+          className="bg-pink-500 text-white py-2 px-8 rounded-full hover:bg-pink-600"
+          onClick={handleSubmit}
+        >
           Submit
         </button>
       </div>
