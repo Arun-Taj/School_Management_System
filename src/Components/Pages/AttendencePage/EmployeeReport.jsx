@@ -1,5 +1,5 @@
 import React,{useState} from "react";
-import { FaUser } from "react-icons/fa";
+import {FaHandPaper} from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import { FiRefreshCcw } from "react-icons/fi";
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
@@ -51,7 +51,7 @@ const EmployeeReport = () => {
     <div className="bg-pink-100 p-8 min-h-screen">
       <div className="flex gap-4 bg-white rounded-3xl p-2">
         <div className="flex items-center space-x-2">
-          <FaUser className="text-gray-700" />
+          <FaHandPaper className="text-gray-700" />
           <span className="text-gray-700 font-medium">Attendance</span>
         </div>
 

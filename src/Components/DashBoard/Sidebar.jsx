@@ -59,7 +59,7 @@ const Sidebar = () => {
       subMenu: [
         { name: 'Fee Receipt', link: '/fees/feeReceipt' },
         { name: 'Fee Report', link: '/fees/feeReport' },
-        { name: 'Fee Defaulter', link: '/fees/feeDefaulter' },
+        // { name: 'Fee Defaulter', link: '/fees/feeDefaulter' },
       ]
     },
     {
