@@ -33,7 +33,7 @@ const SelectField = ({ label, options }) => (
 // Reusable Contact Info Component
 const ContactInfo = ({ Icon, label, info }) => (
   <div className="flex flex-col">
-    <span className="material-icons text-gray-600 mr-2 flex items-center gap-2">
+    <span className="material-icons text-gray-600 mr-2 flex items-center gap-2 font-extrabold">
       <Icon />
       {label}
     </span>
@@ -115,7 +115,7 @@ const Profile = () => {
         <div className="col-span-2">
           <div className="grid grid-cols-4 gap-4">
             <div>
-              <p className="text-center">School Name</p>
+              <p className="text-center">School Logo</p>
               <div className="flex flex-col bg-white items-center rounded-lg p-4 border">
                 <div className="w-24 h-24 bg-gray-200 rounded-lg">
                   {logoFile ? (
@@ -227,7 +227,7 @@ const Profile = () => {
               className="bg-pink-500 p-2 px-6 rounded-full "
               onClick={handleSubmit}
             >
-              Submit
+              Update
             </button>
           </div>
         </div>
@@ -259,9 +259,9 @@ const Profile = () => {
                 "Lorem ipsum dolor sit amet consectetur. Feugiat id."}
             </p>
             {/* School Board */}
-            <p className="text-gray-600 text-center mb-4">
+            {/* <p className="text-gray-600 text-center mb-4">
               {displayedProfile.schoolBoard || "CBSE"}
-            </p>
+            </p> */}
             <hr className="my-4" />
 
             {/* Contact Information */}
