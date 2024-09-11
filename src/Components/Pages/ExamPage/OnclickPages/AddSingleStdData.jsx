@@ -93,7 +93,7 @@ const AddSingleStdData = () => {
       <p className="flex items-center justify-center font-bold pt-10 text-2xl pb-6">
         Insert Obtained Marks
       </p>
-      <div className=" max-w-5xl bg-white py-4 rounded-lg shadow-lg">
+      <div className=" max-w-6xl bg-white py-4 rounded-lg shadow-lg">
         <div className="">
           <div className="overflow-x-auto">
             <table className=" text-center border-collapse">

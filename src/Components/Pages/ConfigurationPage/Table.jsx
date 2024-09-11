@@ -1,27 +1,19 @@
-import React from 'react'
-import { RiDeleteBin6Line } from 'react-icons/ri';
-import {IoIosArrowDropleft,IoIosArrowDropright} from 'react-icons/io'
+import React from "react";
+import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdEdit } from "react-icons/md";
-const Table = () => {
-    const rows = Array(7).fill({
-       
-        class:"class 01",
-        classTeacher:"Ram Kumar Sharma",
-        montlyFees:"700",
+import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
 
-        
-      });
-    
+const Table = ({ rows, handleEdit, handleDelete }) => {
   return (
     <div>
-    <div className="overflow-x-auto rounded-2xl shadow-lg">
+      <div className="overflow-x-auto rounded-2xl shadow-lg">
         <table className="w-full border-collapse border border-gray-300 bg-white rounded-lg overflow-hidden">
-          <thead className="">
-            <tr className="">
+          <thead>
+            <tr>
               <th className="p-2 py-6">Class</th>
               <th className="p-2 py-6">Class Teacher</th>
               <th className="p-2 py-6">Monthly Fees</th>
-              <th className='p-2 py-6'>Actions</th>
+              <th className="p-2 py-6">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -34,11 +26,12 @@ const Table = () => {
               >
                 <td className="p-2 text-center">{row.class}</td>
                 <td className="p-2 text-center">{row.classTeacher}</td>
-                <td className="p-2 text-center">{row.montlyFees}</td>
-                
-                <td className="p-2 text-center">
-                  <button className="p-1 text-black flex items-center gap-4 ">
-                    <MdEdit/>
+                <td className="p-2 text-center">{row.monthlyFees}</td>
+                <td className="p-2 text-center flex justify-around">
+                  <button className="p-1 text-black flex items-center" onClick={() => handleEdit(index)}>
+                    <MdEdit />
+                  </button>
+                  <button className="p-1 text-black flex items-center" onClick={() => handleDelete(index)}>
                     <RiDeleteBin6Line />
                   </button>
                 </td>
@@ -58,25 +51,25 @@ const Table = () => {
           <button className="px-3 py-2 border border-gray-400 rounded-full ">
             50
           </button>
-          <p>Records per page </p>
+          <p>Records per page</p>
         </div>
         <div className="flex flex-row items-center">
-          <div className="text-sm text-gray-600 ">
-            Showing 1 to 25 of 78 records
+          <div className="text-sm text-gray-600">
+            Showing 1 to {rows.length} of {rows.length} records
           </div>
           <div className="flex space-x-2 items-center">
-            <button className="px-3  ">
+            <button className="px-3">
               <IoIosArrowDropleft size={30} />
             </button>
             <p className="border border-gray-700 px-2 rounded-full"> 1</p>
-            <button className="px-3 ">
+            <button className="px-3">
               <IoIosArrowDropright size={30} />
             </button>
           </div>
         </div>
       </div>
-      </div>
-  )
-}
+    </div>
+  );
+};
 
-export default Table
+export default Table;

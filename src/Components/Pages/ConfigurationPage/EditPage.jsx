@@ -46,12 +46,28 @@ const EditPage = () => {
           <h2 className="text-center text-2xl font-bold mb-6">
             Update Subjects
           </h2>
-          <input
-            type="text"
-            placeholder="Class 01"
-            className="w-full border-2 border-purple-300 rounded-full py-2 px-4 mb-6 text-center focus:outline-none focus:border-purple-500"
-          />
-
+          <select
+              name=""
+              id=""
+              className="p-3 px-4 mb-4 rounded-3xl bg-white  border border-blue-500 w-96"
+            >
+              <option value="" disabled selected>
+                Select Class
+              </option>
+              <option value="">Class Nursery</option>
+              <option value="">Class LKG</option>
+              <option value="">Class UKG</option>
+              <option value="">Class 01</option>
+              <option value="">Class 02</option>
+              <option value="">Class 03</option>
+              <option value="">Class 04</option>
+              <option value="">Class 05</option>
+              <option value="">Class 06</option>
+              <option value="">Class 07</option>
+              <option value="">Class 08</option>
+              <option value="">Class 09</option>
+              <option value="">Class 10</option>
+            </select>
           {subjects.map((subject, index) => (
             <div key={index} className="flex justify-between mb-4">
               <select
