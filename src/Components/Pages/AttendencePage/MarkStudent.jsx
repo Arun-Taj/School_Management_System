@@ -163,10 +163,10 @@ const MarkStudent = () => {
 
           {/* Search button */}
           <div
-            className="bg-white p-2 px-4 rounded-full border border-gray-300 cursor-pointer transition-all duration-200 hover:bg-gray-100 hover:shadow-md"
+            className="bg-white p-2 px-4 rounded-full border border-gray-300 cursor-pointer transition-all duration-200 hover:bg-indigo-200 hover:shadow-md"
             onClick={handleSearch}
           >
-            <IoSearch className="text-gray-600" />
+            <IoSearch className="text-gray-600 text-xl cursor-pointer transition-colors duration-300 hover:text-blue-600" />
           </div>
         </div>
         <div className="flex flex-row gap-4 justify-end items-center">
@@ -177,7 +177,7 @@ const MarkStudent = () => {
             >
               {/* Left Side: Three-Line Menu Icon */}
               <IoFilterSharp
-                className="text-gray-600 hover:text-blue-500 transform hover:scale-110 transition-transform duration-200"
+                className="text-gray-600 hover:text-blue-500 transform hover:scale-110 transition-transform duration-200 text-xl"
                 size={24}
               />
             </div>

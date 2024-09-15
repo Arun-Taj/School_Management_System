@@ -118,11 +118,11 @@ const ChartAccount = () => {
                 placeholder="Search"
                 value={searchTerm}
                 onChange={handleSearch}
-                className="py-2 text-gray-600 placeholder-gray-500 bg-transparent focus:outline-none"
+                className="py-2 text-gray-600 placeholder-gray-500 bg-transparent focus:outline-none "
               />
-              <IoSearch className="text-gray-600 mr-4" size={24} />
+              <IoSearch className="text-gray-600 mr-4 cursor-pointer transition-colors duration-300 hover:text-blue-500" size={24} />
             </div>
-            <div className="bg-white p-3 rounded-full border border-[#BCA8EA] cursor-pointer" onClick={handleRefresh}>
+            <div className="bg-white p-3 rounded-full border border-[#BCA8EA] cursor-pointer hover:bg-[#BCA8EA] hover:text-white transition-colors duration-100" onClick={handleRefresh}>
               <FiRefreshCcw />
             </div>
           </div>

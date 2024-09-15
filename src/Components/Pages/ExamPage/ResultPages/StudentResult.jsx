@@ -70,7 +70,7 @@ const StudentResult = () => {
           <div className="w-96 ">
             <div className="flex items-center  bg-white rounded-full ">
               {/* Left Side: Three-Line Menu Icon */}
-              <IoFilterSharp className="text-gray-600 ml-4" size={24} />
+              <IoFilterSharp className="text-gray-600 ml-4 cursor-pointer" size={24} />
 
               {/* Vertical Line Divider */}
               <div className="w-px h-6 bg-gray-600 mx-4"></div>
@@ -83,7 +83,7 @@ const StudentResult = () => {
               />
 
               {/* Right Side: Search Icon */}
-              <IoSearch className="text-gray-600 mr-4" size={24} onClick={handleResultClick}/>
+              <IoSearch className="text-gray-600 mr-4 cursor-pointer" size={24} onClick={handleResultClick}/>
             </div>
           </div>
           {/* <div className="border border-[#BCA8EA] p-2 bg-white rounded-full">

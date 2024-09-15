@@ -1,15 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaHandPaper } from "react-icons/fa";
-import { IoSearch } from "react-icons/io5";
-import { FiRefreshCcw } from "react-icons/fi";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { MdChevronRight, MdChevronLeft } from "react-icons/md";
-import EmployeeTable from "./Components/EmployeeTable";
-import EmpSearch from "./Components/EmpSearch";
-
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-
 
 // Function to get the number of days in a given month and year
 const getMonthDates = (year, month) => {
@@ -24,10 +15,7 @@ const generateAttendance = (days) => {
   );
 };
 
-const EmployeeReport = () => {
-
-  const [selectedDate, setSelectedDate] = useState(null);
-
+const EmployeeTable = () => {
   const now = new Date();
   const [currentMonthIndex, setCurrentMonthIndex] = useState(now.getMonth());
   const [year, setYear] = useState(now.getFullYear());
@@ -35,7 +23,7 @@ const EmployeeReport = () => {
   // Get dates for the currently selected month
   const dates = getMonthDates(year, currentMonthIndex);
 
-  // Sample data for demonstration
+  // Sample data for demonstration, now dynamic based on selected month
   const employees = [
     {
       employeeId: "012345",
@@ -49,51 +37,6 @@ const EmployeeReport = () => {
     {
       employeeId: "012346",
       name: "Sita Sharma",
-      type: "Teacher",
-      attendance: generateAttendance(dates.length), // Dynamically set attendance based on the current month's number of days
-      totalP: generateAttendance(dates.length).filter((a) => a === "P").length,
-      totalA: generateAttendance(dates.length).filter((a) => a === "A").length,
-      totalL: generateAttendance(dates.length).filter((a) => a === "L").length,
-    },
-    {
-      employeeId: "012347",
-      name: "Arjun Singh",
-      type: "Teacher",
-      attendance: generateAttendance(dates.length), // Dynamically set attendance based on the current month's number of days
-      totalP: generateAttendance(dates.length).filter((a) => a === "P").length,
-      totalA: generateAttendance(dates.length).filter((a) => a === "A").length,
-      totalL: generateAttendance(dates.length).filter((a) => a === "L").length,
-    },
-    {
-      employeeId: "012348",
-      name: "Meera Joshi",
-      type: "Teacher",
-      attendance: generateAttendance(dates.length), // Dynamically set attendance based on the current month's number of days
-      totalP: generateAttendance(dates.length).filter((a) => a === "P").length,
-      totalA: generateAttendance(dates.length).filter((a) => a === "A").length,
-      totalL: generateAttendance(dates.length).filter((a) => a === "L").length,
-    },
-    {
-      employeeId: "012349",
-      name: "Vikram Patel",
-      type: "Teacher",
-      attendance: generateAttendance(dates.length), // Dynamically set attendance based on the current month's number of days
-      totalP: generateAttendance(dates.length).filter((a) => a === "P").length,
-      totalA: generateAttendance(dates.length).filter((a) => a === "A").length,
-      totalL: generateAttendance(dates.length).filter((a) => a === "L").length,
-    },
-    {
-      employeeId: "012350",
-      name: "Anita Roy",
-      type: "Teacher",
-      attendance: generateAttendance(dates.length), // Dynamically set attendance based on the current month's number of days
-      totalP: generateAttendance(dates.length).filter((a) => a === "P").length,
-      totalA: generateAttendance(dates.length).filter((a) => a === "A").length,
-      totalL: generateAttendance(dates.length).filter((a) => a === "L").length,
-    },
-    {
-      employeeId: "012351",
-      name: "Rajesh Kumar",
       type: "Teacher",
       attendance: generateAttendance(dates.length), // Dynamically set attendance based on the current month's number of days
       totalP: generateAttendance(dates.length).filter((a) => a === "P").length,
@@ -122,18 +65,7 @@ const EmployeeReport = () => {
   };
 
   const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December",
   ];
 
   // References for date and attendance scroll containers
@@ -158,53 +90,17 @@ const EmployeeReport = () => {
     }
   }, []);
 
+
   return (
-    <div className="bg-pink-100 p-8 min-h-screen">
-      <div className="flex gap-4 bg-white rounded-3xl p-2">
-        <div className="flex items-center space-x-2">
-          <FaHandPaper className="text-gray-700" />
-          <span className="text-gray-700 font-medium">Attendance</span>
-        </div>
-
-        {/* Vertical divider */}
-        <div className="border-l border-gray-700 h-6"></div>
-
-        {/* "Add New" text */}
-        <div>
-          <span className="text-gray-700 font-medium">
-            Employee Attendance Report
-          </span>
-        </div>
-      </div>
-
-      <div className="flex justify-between my-10">
-        <div className="flex gap-4 items-center">
-        <DatePicker
-      selected={selectedDate}
-      onChange={(date) => setSelectedDate(date)}
-      dateFormat="MM/yyyy"
-      showMonthYearPicker
-      className="p-2 rounded-3xl border border-gray-300 text-center w-32 cursor-pointer"
-      placeholderText="mm-yyy"
-    />
-          <div className="bg-white p-2 px-4 rounded-full border border-gray-300 cursor-pointer">
-            <IoSearch />
-          </div>
-        </div>
-        <div className="flex flex-row gap-4 justify-end items-center">
-          <div className="border border-[#BCA8EA] p-2 bg-white rounded-full">
-            <FiRefreshCcw />
-          </div>
-        </div>
-      </div>
-
-      {/* Months Slider */}
-      <div className="flex items-center justify-center mb-4">
+    <div >
+     
+       {/* Months Slider */}
+       <div className="flex items-center justify-center mb-4">
         <button onClick={handlePreviousMonth}>
           <FaChevronLeft className="text-gray-600 hover:text-gray-800" />
         </button>
         <h2 className="mx-4 text-lg font-semibold">
-          {months[currentMonthIndex]} {year}{" "}
+          {months[currentMonthIndex]} {year}
         </h2>
         <button onClick={handleNextMonth}>
           <FaChevronRight className="text-gray-600 hover:text-gray-800" />
@@ -231,10 +127,7 @@ const EmployeeReport = () => {
                   >
                     <div className="flex">
                       {dates.map((date) => (
-                        <div
-                          key={date}
-                          className="p-2 min-w-[40px] text-center"
-                        >
+                        <div key={date} className="p-2 min-w-[40px] text-center">
                           {date}
                         </div>
                       ))}
@@ -248,10 +141,7 @@ const EmployeeReport = () => {
             </thead>
             <tbody>
               {employees.map((employee, index) => (
-                <tr
-                  key={employee.employeeId}
-                  className={index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"}
-                >
+                <tr key={employee.employeeId} className={index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"}>
                   <td className="p-2 text-center">{employee.employeeId}</td>
                   <td className="p-2 text-center">{employee.name}</td>
                   <td className="p-2 text-center">{employee.type}</td>
@@ -259,14 +149,11 @@ const EmployeeReport = () => {
                     {/* Scrollable Attendance (Sync with Date Scroll) */}
                     <div
                       ref={(el) => (attendanceScrollRefs.current[index] = el)}
-                      className="flex overflow-x-hidden max-w-[500px]" // Changed overflow to hidden
+                      className="flex overflow-x-hidden max-w-[500px]"  // Changed overflow to hidden
                     >
                       <div className="flex">
                         {employee.attendance.map((status, i) => (
-                          <div
-                            key={`${employee.employeeId}-${i}-${status}`}
-                            className="p-2 min-w-[40px] text-center"
-                          >
+                          <div key={`${employee.employeeId}-${i}-${status}`} className="p-2 min-w-[40px] text-center">
                             {status}
                           </div>
                         ))}
@@ -304,10 +191,8 @@ const EmployeeReport = () => {
           </button>
         </div>
       </div>
-      <EmpSearch />
-      <EmployeeTable />
     </div>
   );
 };
 
-export default EmployeeReport;
+export default EmployeeTable;

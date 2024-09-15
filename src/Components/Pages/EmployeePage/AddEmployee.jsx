@@ -499,10 +499,10 @@ function AddEmployee() {
                     <option value="" disabled selected>
                       District
                     </option>
-                    <option value="teacher">Chennai</option>
-                    <option value="peon">Jhapa</option>
-                    <option value="">Lakhanau</option>
-                    <option value="labAssistance">Morang</option>
+                    <option value="chennai">Chennai</option>
+                    <option value="Jhapa">Jhapa</option>
+                    <option value="lakhanau">Lakhanau</option>
+                    <option value="morang">Morang</option>
                   </Field>
                   <ErrorMessage
                     name="district"
@@ -543,10 +543,10 @@ function AddEmployee() {
                     <option value="" disabled selected>
                       Country
                     </option>
-                    <option value="teacher">Nepal</option>
-                    <option value="peon">India</option>
-                    <option value="">China</option>
-                    <option value="labAssistance">Bhutan</option>
+                    <option value="nepal">Nepal</option>
+                    <option value="india">India</option>
+                    <option value="china">China</option>
+                    <option value="bhutan">Bhutan</option>
                   </Field>
                   <ErrorMessage
                     name="country"

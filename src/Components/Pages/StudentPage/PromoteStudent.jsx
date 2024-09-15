@@ -88,7 +88,7 @@ const PromoteStudent = () => {
                 <td className="p-2 text-center">{row.gender}</td>
                 <td className="p-2 text-center">{row.class}</td>
                 <td className="p-2 text-center">{row.rollNo}</td>
-                <td className="p-2  ">
+                <td className="p-2 text-center">
                   <select className="border border-gray-400 rounded-3xl p-2 px-10 bg-white">
                     <option value="09" disabled selected>Select Class</option>
                     <option value="09">Class 09</option>

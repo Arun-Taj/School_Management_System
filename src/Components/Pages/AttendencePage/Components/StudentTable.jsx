@@ -1,14 +1,6 @@
-import React, { useState,useRef,useEffect } from "react";
-import { FaHandPaper } from "react-icons/fa";
-import { IoSearch } from "react-icons/io5";
-import { FiRefreshCcw } from "react-icons/fi";
+import React, { useState, useRef, useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { MdChevronRight, MdChevronLeft } from "react-icons/md";
-import Table from "./Components/StudentTable";
-import SearchCompo from "./Components/StdSearch";
-
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 
 // Function to get the number of days in a given month and year
 const getMonthDates = (year, month) => {
@@ -23,10 +15,7 @@ const generateAttendance = (days) => {
   );
 };
 
-const StudentAttendanceReport = () => {
-
-
-  
+const Table = () => {
   const now = new Date();
   const [currentMonthIndex, setCurrentMonthIndex] = useState(now.getMonth());
   const [year, setYear] = useState(now.getFullYear());
@@ -53,60 +42,6 @@ const StudentAttendanceReport = () => {
       totalP: generateAttendance(dates.length).filter((a) => a === "P").length,
       totalA: generateAttendance(dates.length).filter((a) => a === "A").length,
       totalL: generateAttendance(dates.length).filter((a) => a === "L").length,
-    },
-    {
-      rollNo: 37,
-      name: "Ravi Kumar",
-      class: "06",
-      attendance: generateAttendance(30),
-      totalP: generateAttendance(30).filter((a) => a === "P").length,
-      totalA: generateAttendance(30).filter((a) => a === "A").length,
-      totalL: generateAttendance(30).filter((a) => a === "L").length,
-    },
-    {
-      rollNo: 38,
-      name: "Priya Singh",
-      class: "07",
-      attendance: generateAttendance(30),
-      totalP: generateAttendance(30).filter((a) => a === "P").length,
-      totalA: generateAttendance(30).filter((a) => a === "A").length,
-      totalL: generateAttendance(30).filter((a) => a === "L").length,
-    },
-    {
-      rollNo: 39,
-      name: "Amit Verma",
-      class: "04",
-      attendance: generateAttendance(30),
-      totalP: generateAttendance(30).filter((a) => a === "P").length,
-      totalA: generateAttendance(30).filter((a) => a === "A").length,
-      totalL: generateAttendance(30).filter((a) => a === "L").length,
-    },
-    {
-      rollNo: 40,
-      name: "Neha Gupta",
-      class: "08",
-      attendance: generateAttendance(30),
-      totalP: generateAttendance(30).filter((a) => a === "P").length,
-      totalA: generateAttendance(30).filter((a) => a === "A").length,
-      totalL: generateAttendance(30).filter((a) => a === "L").length,
-    },
-    {
-      rollNo: 41,
-      name: "Karan Mehta",
-      class: "09",
-      attendance: generateAttendance(30),
-      totalP: generateAttendance(30).filter((a) => a === "P").length,
-      totalA: generateAttendance(30).filter((a) => a === "A").length,
-      totalL: generateAttendance(30).filter((a) => a === "L").length,
-    },
-    {
-      rollNo: 42,
-      name: "Simran Kaur",
-      class: "10",
-      attendance: generateAttendance(30),
-      totalP: generateAttendance(30).filter((a) => a === "P").length,
-      totalA: generateAttendance(30).filter((a) => a === "A").length,
-      totalL: generateAttendance(30).filter((a) => a === "L").length,
     },
   ];
 
@@ -155,92 +90,12 @@ const StudentAttendanceReport = () => {
     }
   }, []);
 
-  const [selectedClass, setSelectedClass] = useState("");
-  const [selectedDate, setSelectedDate] = useState("");
-  const [filteredStudents, setFilteredStudents] = useState(students);
-
-  // Handle search functionality (Modified)
-  const handleSearch = () => {
-    const filtered = students.filter((student) => {
-      const isClassMatch = selectedClass ? student.class === selectedClass : true;
-      const isDateMatch = selectedDate
-        ? new Date(selectedDate).getMonth() === currentMonthIndex
-        : true;
-      return isClassMatch && isDateMatch;
-    });
-    setFilteredStudents(filtered);
-  };
-
-  // Handle refresh functionality (Modified)
-  const handleRefresh = () => {
-    setSelectedClass("");
-    setSelectedDate("");
-    setFilteredStudents(students); // Reset to original data
-  };
-
-
 
   return (
-    <div className="bg-pink-100 p-8 min-h-screen">
-      <div className="flex gap-4 bg-white rounded-3xl p-2">
-        <div className="flex items-center space-x-2">
-          <FaHandPaper className="text-gray-700" />
-          <span className="text-gray-700 font-medium">Attendance</span>
-        </div>
-
-        {/* Vertical divider */}
-        <div className="border-l border-gray-700 h-6"></div>
-
-        {/* "Add New" text */}
-        <div>
-          <span className="text-gray-700 font-medium">
-            Student Attendance Report
-          </span>
-        </div>
-      </div>
-
-      <div className="flex justify-between my-10">
-        <div className="flex gap-4 items-center">
-          <select
-            value={selectedClass}
-            onChange={(e) => setSelectedClass(e.target.value)}
-            className="rounded-3xl bg-white p-2 border border-gray-300"
-          >
-            <option value="" selected disabled>
-              Select Class
-            </option>
-            <option value="class 01">Class 01</option>
-            <option value="class 02">Class 02</option>
-            <option value="class 03">Class 03</option>
-            <option value="class 04">Class 04</option>
-            <option value="class 05">Class 05</option>
-            <option value="class 06">Class 06</option>
-            <option value="class 07">Class 07</option>
-            <option value="class 08">Class 08</option>
-            <option value="class 09">Class 09</option>
-            <option value="class 10">Class 10</option>
-          </select>
-          <DatePicker
-      selected={selectedDate}
-      onChange={(date) => setSelectedDate(date)}
-      dateFormat="MM/yyyy"
-      showMonthYearPicker
-      className="p-2 rounded-3xl border border-gray-300 text-center w-32 cursor-pointer"
-      placeholderText="mm-yyy"
-    />
-          <div className="bg-white p-2 px-4 rounded-full border border-gray-300 hover:bg-indigo-200" onClick={handleSearch}>
-            <IoSearch className="cursor-pointer transition-colors duration-300 hover:text-blue-500 text-xl"/>
-          </div>
-        </div>
-        <div className="flex flex-row gap-4 justify-end items-center">
-          <div className="border border-[#BCA8EA] p-2 bg-white rounded-full cursor-pointer transition-all duration-200 hover:bg-[#F3E8FF] hover:shadow-lg" onClick={handleRefresh}>
-            <FiRefreshCcw  className="text-gray-600 transition-transform duration-200 hover:rotate-180 text-xl"/>
-          </div>
-        </div>
-      </div>
-
-      {/* Months Slider */}
-      <div className="flex items-center justify-center mb-4">
+    <div >
+     
+       {/* Months Slider */}
+       <div className="flex items-center justify-center mb-4">
         <button onClick={handlePreviousMonth}>
           <FaChevronLeft className="text-gray-600 hover:text-gray-800" />
         </button>
@@ -336,12 +191,8 @@ const StudentAttendanceReport = () => {
           </button>
         </div>
       </div>
-
-      {/* Search */}
-      <SearchCompo/>
-      <Table/>
     </div>
   );
 };
 
-export default StudentAttendanceReport;
+export default Table;

@@ -132,10 +132,10 @@ const MarkEmployee = () => {
             className="p-2 rounded-3xl border border-gray-300"
           />
           <div
-            className="bg-white p-2 px-4 rounded-full border border-gray-300 cursor-pointer transition-all duration-200 hover:bg-gray-100 hover:shadow-md"
+            className="bg-white p-2 px-4 rounded-full border border-gray-300 cursor-pointer transition-all duration-200 hover:bg-indigo-200 hover:shadow-md"
             onClick={handleSearch}
           >
-            <IoSearch className="text-gray-600" />
+            <IoSearch className="cursor-pointer transition-colors duration-300 hover:text-blue-600 text-xl"/>
           </div>
         </div>
         <div className="flex flex-row gap-4 justify-end items-center">
