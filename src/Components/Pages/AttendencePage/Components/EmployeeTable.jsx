@@ -37,7 +37,7 @@ const EmployeeTable = () => {
     {
       employeeId: "012346",
       name: "Sita Sharma",
-      type: "Teacher",
+      type: "Finance Manager",
       attendance: generateAttendance(dates.length), // Dynamically set attendance based on the current month's number of days
       totalP: generateAttendance(dates.length).filter((a) => a === "P").length,
       totalA: generateAttendance(dates.length).filter((a) => a === "A").length,
@@ -114,7 +114,7 @@ const EmployeeTable = () => {
             <thead>
               <tr className="bg-white">
                 <th className="p-2 text-center">Employee ID</th>
-                <th className="p-2 text-center">Name</th>
+                <th className="p-2 text-center min-w-[200px]">Name</th>
                 <th className="p-2 text-center">Type</th>
                 <th className="p-2 text-center">
                   <p className="">Date</p>

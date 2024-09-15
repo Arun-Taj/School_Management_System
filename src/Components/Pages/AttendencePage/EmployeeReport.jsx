@@ -187,13 +187,16 @@ const EmployeeReport = () => {
       className="p-2 rounded-3xl border border-gray-300 text-center w-32 cursor-pointer"
       placeholderText="mm-yyy"
     />
-          <div className="bg-white p-2 px-4 rounded-full border border-gray-300 cursor-pointer">
-            <IoSearch />
+          <div className="bg-white p-2 px-4 rounded-full border border-gray-300 cursor-pointer hover:bg-indigo-200">
+            <IoSearch className="cursor-pointer transition-colors duration-300 hover:text-blue-600 text-xl"/>
           </div>
         </div>
         <div className="flex flex-row gap-4 justify-end items-center">
-          <div className="border border-[#BCA8EA] p-2 bg-white rounded-full">
-            <FiRefreshCcw />
+        <div
+            className="border border-[#BCA8EA] p-2 bg-white rounded-full cursor-pointer transition-all duration-200 hover:bg-[#F3E8FF] hover:shadow-lg"
+            
+          >
+            <FiRefreshCcw className="text-gray-600 transition-transform duration-200 hover:rotate-180 text-xl " />
           </div>
         </div>
       </div>
@@ -218,7 +221,7 @@ const EmployeeReport = () => {
             <thead>
               <tr className="bg-white">
                 <th className="p-2 text-center">Employee ID</th>
-                <th className="p-2 text-center">Name</th>
+                <th className="p-2 text-center min-w-[200px]">Name</th>
                 <th className="p-2 text-center">Type</th>
                 <th className="p-2 text-center">
                   <p className="">Date</p>

@@ -180,7 +180,7 @@ const MarkEmployee = () => {
             className="border border-[#BCA8EA] p-2 bg-white rounded-full cursor-pointer transition-all duration-200 hover:bg-[#F3E8FF] hover:shadow-lg"
             onClick={handleRefresh}
           >
-            <FiRefreshCcw className="text-gray-600 transition-transform duration-200 hover:rotate-180" />
+            <FiRefreshCcw className="text-gray-600 transition-transform duration-200 hover:rotate-180 text-xl " />
           </div>
         </div>
       </div>
