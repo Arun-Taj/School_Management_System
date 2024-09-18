@@ -100,6 +100,9 @@ const [formData,setFormData]=useState(initialFormValues)
           cAddress1: "",
           ctownVillageCity: "",
           cdistrict: "",
+          cstate:"",
+          ccountry:"",
+          czipCode:"",
         };
       }
   
