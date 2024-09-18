@@ -3,6 +3,7 @@ import { MdOutlineFileUpload } from "react-icons/md";
 import { IoIosArrowDropright } from "react-icons/io";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import Select from "react-select";
 
 const SchoolDetails = ({ onAdminClick }) => {
   const fileInputRef = useRef(null);
@@ -42,6 +43,26 @@ const SchoolDetails = ({ onAdminClick }) => {
     console.log(values);
     onAdminClick();
   };
+  const options = [
+    { value: "jhapa", label: "Jhapa" },
+    { value: "morang", label: "Morang" },
+    { value: "kathmandu", label: "Kathmandu" },
+    { value: "biratnagar", label: "Biratnagar" },
+    { value: "other", label: "Other" },
+  ];
+
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      borderColor: "#5011DD",
+      borderRadius: "20px",
+      
+    }),
+    placeholder: (provided) => ({
+      ...provided,
+      color: "#A0AEC0", // Gray color for placeholder
+    }),
+  };
 
   return (
     <div
@@ -65,7 +86,7 @@ const SchoolDetails = ({ onAdminClick }) => {
                     type="text"
                     name="schoolName"
                     placeholder="Name of School"
-                    className="w-full border border-gray-300 rounded-3xl px-4 py-2 placeholder-black"
+                    className="w-full text-black border border-[#5011DD] rounded-3xl px-4 py-2 "
                   />
                   <ErrorMessage
                     name="schoolName"
@@ -85,7 +106,7 @@ const SchoolDetails = ({ onAdminClick }) => {
                   <button
                     type="button"
                     onClick={handleUploadClick}
-                    className="w-full bg-white border border-gray-300 rounded-3xl px-4 p-2 flex flex-row items-start justify-between"
+                    className="w-full text-gray-400 bg-white border border-[#5011DD]  rounded-3xl px-4 p-2 flex flex-row items-start justify-between"
                   >
                     Upload Logo <MdOutlineFileUpload />
                   </button>
@@ -100,14 +121,14 @@ const SchoolDetails = ({ onAdminClick }) => {
                     type="text"
                     name="tagLine"
                     placeholder="Tag line (optional)"
-                    className="w-full border border-gray-300 rounded-3xl px-4 py-2 placeholder-black"
+                    className="w-full text-black border border-[#5011DD]  rounded-3xl px-4 py-2 "
                   />
                 </div>
                 <div className="col-span-1">
                   <Field
                     as="select"
                     name="schoolBoard"
-                    className="w-full bg-white border border-gray-300 rounded-3xl px-4 py-2"
+                    className="w-full text-black bg-white border border-[#5011DD]  rounded-3xl px-4 py-2"
                   >
                     <option value="" disabled>
                       School Board
@@ -129,7 +150,7 @@ const SchoolDetails = ({ onAdminClick }) => {
                     type="text"
                     name="address1"
                     placeholder="Address 1"
-                    className="w-full border border-gray-300 rounded-3xl px-4 py-2 placeholder-black"
+                    className="w-full text-black border border-[#5011DD]  rounded-3xl px-4 py-2 "
                   />
                   <ErrorMessage
                     name="address1"
@@ -142,7 +163,7 @@ const SchoolDetails = ({ onAdminClick }) => {
                     type="text"
                     name="city"
                     placeholder="Town / Village / City"
-                    className="w-full border border-gray-300 rounded-3xl px-4 py-2 placeholder-black"
+                    className="w-full text-black border border-[#5011DD]  rounded-3xl px-4 py-2 "
                   />
                   <ErrorMessage
                     name="city"
@@ -153,20 +174,11 @@ const SchoolDetails = ({ onAdminClick }) => {
               </div>
               <div className="grid grid-cols-4 gap-4">
                 <div className="col-span-1">
-                  <Field
-                    as="select"
-                    name="district"
-                    className="w-full bg-white border border-gray-300 rounded-3xl px-4 py-2"
-                  >
-                    <option value="" disabled>
-                      District
-                    </option>
-                    <option value="jhapa">Jhapa</option>
-                    <option value="morang">Morang</option>
-                    <option value="kathmandu">Kathmandu</option>
-                    <option value="biratnagar">Biratnagar</option>
-                    <option value="other">Other</option>
-                  </Field>
+                  <Select
+                    styles={customStyles}
+                    options={options}
+                    placeholder="District"
+                  />
                   <ErrorMessage
                     name="district"
                     component="div"
@@ -178,7 +190,7 @@ const SchoolDetails = ({ onAdminClick }) => {
                   <Field
                     as="select"
                     name="state"
-                    className="w-full bg-white border border-gray-300 rounded-3xl px-4 py-2"
+                    className="w-full text-gray-400 bg-white border border-[#5011DD]  rounded-3xl px-4 py-2"
                   >
                     <option value="" disabled>
                       State
@@ -198,7 +210,7 @@ const SchoolDetails = ({ onAdminClick }) => {
                   <Field
                     as="select"
                     name="country"
-                    className="w-full bg-white border border-gray-300 rounded-3xl px-4 py-2"
+                    className="w-full text-gray-400 bg-white border border-[#5011DD]  rounded-3xl px-4 py-2"
                   >
                     <option value="" disabled>
                       Country
@@ -219,7 +231,7 @@ const SchoolDetails = ({ onAdminClick }) => {
                     type="text"
                     name="pinCode"
                     placeholder="Pin Code"
-                    className="w-full border border-gray-300 rounded-3xl px-4 py-2 placeholder-black"
+                    className="w-full text-gray-400 border border-[#5011DD]  rounded-3xl px-4 py-2 placeholder-black"
                   />
                   <ErrorMessage
                     name="pinCode"

@@ -8,7 +8,7 @@ function AddEmployee() {
   // Select complimentry logic
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [district, SetDistrict] = useState("District");
+  const [district, SetDistrict] = useState("district");
 
   const options = ["Python", "C++", "DSA"];
 
@@ -585,6 +585,7 @@ function AddEmployee() {
                     className="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded-3xl"
                     onChange={(e) => {
                       const isChecked = e.target.checked;
+                      setFieldValue("sameAsPermanentAddress", isChecked);
                       if (isChecked) {
                         setFieldValue("currentAddress1", values.address1);
                         setFieldValue(

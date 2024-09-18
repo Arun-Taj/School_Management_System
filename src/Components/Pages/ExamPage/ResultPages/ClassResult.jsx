@@ -24,7 +24,7 @@ const ClassResult = () => {
 
         {/* "Add New" text */}
         <div>
-          <span className="text-gray-700 font-medium">Edit Exam</span>
+          <span className="text-gray-700 font-medium">Result</span>
         </div>
         <div className="border-l border-gray-700 h-6"></div>
         <div>
