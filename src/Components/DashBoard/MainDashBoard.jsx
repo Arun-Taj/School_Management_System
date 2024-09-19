@@ -126,7 +126,7 @@ function MainDashBoard() {
               {/* <Route path="/exam" element={<Exam />} /> */}
               <Route path='/exam/createExam' element={<CreateExam/>} />
               <Route path='/exam/updateExam' element={<EditDeleteExam/>} />
-              <Route path="/exam/edit" element={<Edit/>} />
+              <Route path="/exam/updateExam/edit" element={<Edit/>} />
               <Route path='/exam/updateExamMarks' element={<UpdateMarks/>} />
               <Route path="/exam/search" element={<Search/>} />
               <Route path="/exam/search/addWholeClsData" element={<AddWholeClsData/>} />

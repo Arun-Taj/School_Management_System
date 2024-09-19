@@ -62,7 +62,7 @@ const AddWholeClsData = () => {
   };
 
   return (
-    <div className="p-8 bg-pink-100 min-h-screen">
+    <div className="p-8 bg-pink-100 min-h-screen ">
       <div className="flex gap-4 bg-white rounded-3xl p-2">
         <div className="flex items-center space-x-2">
           <FaEdit className="text-gray-700" />
@@ -94,11 +94,12 @@ const AddWholeClsData = () => {
         Insert Obtained Marks (Class 08)
       </p>
 
-      <div className=" max-w-5xl bg-white py-4 rounded-lg shadow-lg">
-        <div className="">
-          <div className="overflow-x-auto">
+      <div className=" max-w-7xl bg-white py-4 rounded-lg shadow-lg">
+        <div className="overflow-x-auto">
+          <div className="max-h-[400px] overflow-y-auto">
             <table className=" text-center border-collapse">
-              <thead>
+              <thead className="sticky top-0">
+                
                 <tr className="bg-white">
                   {[
                     "Enrollment ID",
@@ -123,7 +124,7 @@ const AddWholeClsData = () => {
                   ))}
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="">
                 {currentRecords.map((record, index) => (
                   <tr
                     key={index}
@@ -180,9 +181,10 @@ const AddWholeClsData = () => {
             </table>
           </div>
         </div>
-
-        {/* Pagination */}
       </div>
+
+
+      {/* Pagination */}
       <div className="flex justify-between items-center mt-4 pl-2">
         <div className="flex items-center space-x-2">
           {[10, 25, 50].map((size) => (

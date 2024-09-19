@@ -6,7 +6,7 @@ const EditDeleteExam = () => {
   const navigate = useNavigate();
 
   const handleEditClick = () => {
-    navigate("/exam/edit"); // Navigate to the edit page
+    navigate("/exam/updateExam/edit"); // Navigate to the edit page
   };
   return (
     <div className="p-8 bg-pink-100 min-h-full">

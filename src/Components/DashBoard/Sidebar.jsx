@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   FaUser,
@@ -18,9 +18,74 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [expandedMenu, setExpandedMenu] = useState(null);
   const [expandedSubMenu, setExpandedSubMenu] = useState(null);
+  const [activeSubMenu, setActiveSubMenu] = useState(null);
+  const [activeNestedSubMenu, setActiveNestedSubMenu] = useState(null); // Track active nested submenu
 
-  // Get the current URL location
   const location = useLocation();
+
+  // Load active submenu, menu, and nested submenu from localStorage on component mount
+  useEffect(() => {
+    try {
+      const storedMenu = localStorage.getItem("expandedMenu");
+      const storedSubMenu = localStorage.getItem("activeSubMenu");
+      const storedNestedSubMenu = localStorage.getItem("activeNestedSubMenu");
+
+      if (storedMenu) {
+        setExpandedMenu(JSON.parse(storedMenu));
+      }
+      if (storedSubMenu) {
+        setActiveSubMenu(JSON.parse(storedSubMenu));
+      }
+      if (storedNestedSubMenu) {
+        setActiveNestedSubMenu(JSON.parse(storedNestedSubMenu));
+      }
+    } catch (error) {
+      console.error("Error parsing localStorage data:", error);
+      // Clear the invalid localStorage data if necessary
+      localStorage.removeItem("expandedMenu");
+      localStorage.removeItem("activeSubMenu");
+      localStorage.removeItem("activeNestedSubMenu");
+    }
+  }, []);
+
+  // Store the current active menu, submenu, and nested submenu in localStorage
+  useEffect(() => {
+    localStorage.setItem("expandedMenu", JSON.stringify(expandedMenu));
+    localStorage.setItem("activeSubMenu", JSON.stringify(activeSubMenu));
+    localStorage.setItem(
+      "activeNestedSubMenu",
+      JSON.stringify(activeNestedSubMenu)
+    );
+  }, [expandedMenu, activeSubMenu, activeNestedSubMenu]);
+
+  // Update active submenu and nested submenu based on the current location
+  useEffect(() => {
+    menuItems.forEach((menu, index) => {
+      if (menu.subMenu) {
+        menu.subMenu.forEach((subMenu) => {
+          if (location.pathname.includes(subMenu.link)) {
+            setExpandedMenu(index);
+            setActiveSubMenu(subMenu.name);
+          }
+
+          // Check if submenu contains nested submenus
+          if (subMenu.subSubMenu) {
+            subMenu.subSubMenu.forEach((nestedSub) => {
+              if (location.pathname.includes(nestedSub.link)) {
+                setExpandedMenu(index);
+                setActiveSubMenu(subMenu.name);
+                setActiveNestedSubMenu(nestedSub.name);
+              }
+            });
+          }
+        });
+      } else if (location.pathname === menu.link) {
+        setExpandedMenu(null);
+        setActiveSubMenu(null);
+        setActiveNestedSubMenu(null);
+      }
+    });
+  }, [location.pathname]);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -41,6 +106,23 @@ const Sidebar = () => {
   const isMenuActive = (subMenu) => {
     // Check if any of the subMenu items match the current location
     return subMenu?.some((subItem) => location.pathname === subItem.link);
+  };
+
+  const [expandedNestedSubMenu, setExpandedNestedSubMenu] = useState(null);
+  const toggleNestedSubMenu = (menuName) => {
+    setExpandedNestedSubMenu(
+      expandedNestedSubMenu === menuName ? null : menuName
+    );
+  };
+
+  const handleSubMenuClick = (subMenuKey) => {
+    setActiveSubMenu(subMenuKey === activeSubMenu ? null : subMenuKey);
+  };
+
+  const handleNestedSubMenuClick = (nestedSubMenuKey) => {
+    setActiveNestedSubMenu(
+      nestedSubMenuKey === activeNestedSubMenu ? null : nestedSubMenuKey
+    );
   };
 
   const menuItems = [
@@ -105,21 +187,34 @@ const Sidebar = () => {
       ],
     },
     {
-      // name: 'Exam', icon: FaEdit, link: '/exam',
       name: "Exam",
       icon: FaEdit,
       subMenu: [
         { name: "Create New Exam", link: "/exam/createExam" },
         { name: "Edit or Delete", link: "/exam/updateExam" },
         { name: "Add/Update Exam Marks", link: "/exam/updateExamMarks" },
+        {
+          name: "Result",
+          subSubMenu: [
+            { name: "Student Wise Result", link: "/exam/studentReport" },
+            { name: "Class Wise Result", link: "/exam/classReport" },
+          ],
+        },
       ],
     },
     {
-      // name: 'Configuration', icon: FaCog, link: '/config',
       name: "Configuration",
       icon: FaCog,
-
-      subMenu: [{ name: "Classes", link: "/config/classes" }],
+      subMenu: [
+        { name: "Classes", link: "/config/classes" },
+        {
+          name: "Subjects",
+          subSubMenu: [
+            { name: "Create Subjects", link: "/config/createSub" },
+            { name: "Assign Subjects", link: "/config/assignSub" },
+          ],
+        },
+      ],
     },
   ];
 
@@ -153,7 +248,6 @@ const Sidebar = () => {
                   to={item.link}
                   className={`flex items-center hover:text-[#5011DD] hover:font-bold transition-colors duration-200 ${
                     (location.pathname === item.link ||
-                      isMenuActive(item.subMenu) ||
                       expandedMenu === index) &&
                     "text-[#5011DD] font-bold"
                   }`}
@@ -161,7 +255,6 @@ const Sidebar = () => {
                   <item.icon
                     className={`mr-2 text-xl ${
                       (location.pathname === item.link ||
-                        isMenuActive(item.subMenu) ||
                         expandedMenu === index) &&
                       "text-[#5011DD]"
                     }`}
@@ -183,109 +276,61 @@ const Sidebar = () => {
               <div className="ml-6">
                 {item.subMenu.map((subItem, subIndex) => (
                   <div key={subIndex}>
-                    <Link
-                      to={subItem.link}
-                      className={`block text-black py-1 hover:text-[#5011DD] hover:font-bold transition-colors duration-200 ${
-                        location.pathname === subItem.link &&
-                        "text-[#5011DD] font-bold"
-                      }`}
-                    >
-                      {subItem.name}
-                    </Link>
+                    <div className="flex items-center justify-between">
+                      <Link
+                        to={subItem.link}
+                        className={`block py-1 hover:text-[#5011DD] hover:font-bold transition-colors duration-200 ${
+                          location.pathname === subItem.link ||
+                          activeSubMenu === subItem.name
+                            ? "text-[#5011DD] font-bold"
+                            : ""
+                        }`}
+                        onClick={() => handleSubMenuClick(subItem.name)}
+                      >
+                        {subItem.name}
+                      </Link>
+                      {subItem.subSubMenu && (
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent click from bubbling up
+                            activeSubMenu === subItem.name
+                              ? setActiveSubMenu(null)
+                              : setActiveSubMenu(subItem.name);
+                          }}
+                        >
+                          {activeSubMenu === subItem.name ? (
+                            <FaMinus className="cursor-pointer"/>
+                          ) : (
+                            <FaPlus className="cursor-pointer"/>
+                          )}
+                        </span>
+                      )}
+                    </div>
+                    {subItem.subSubMenu && activeSubMenu === subItem.name && (
+                      <div className="ml-6">
+                        {subItem.subSubMenu.map(
+                          (nestedSubItem, nestedIndex) => (
+                            <Link
+                              key={nestedIndex}
+                              to={nestedSubItem.link}
+                              className={`block py-1 hover:text-[#5011DD] hover:font-bold transition-colors duration-200 ${
+                                location.pathname === nestedSubItem.link ||
+                                activeNestedSubMenu === nestedSubItem.name
+                                  ? "text-[#5011DD] font-bold"
+                                  : ""
+                              }`}
+                              onClick={() =>
+                                handleNestedSubMenuClick(nestedSubItem.name)
+                              }
+                            >
+                              {nestedSubItem.name}
+                            </Link>
+                          )
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
-                {item.name === "Exam" && (
-                  <>
-                    <div
-                      className={`flex items-center justify-between text-black py-2 cursor-pointer ${
-                        expandedSubMenu === "result" ||
-                        location.pathname.includes("/exam/studentReport") ||
-                        location.pathname.includes("/exam/classReport")
-                          ? "text-[#5011DD] font-bold"
-                          : ""
-                      }`}
-                    >
-                      <span className="hover:text-[#5011DD] hover:font-bold transition-colors duration-200">
-                        Result
-                      </span>
-                      <div onClick={toggleResultSubMenu}>
-                        {expandedSubMenu === "result" ? (
-                          <FaMinus className="text-black cursor-pointer" />
-                        ) : (
-                          <FaPlus className="text-black cursor-pointer" />
-                        )}
-                      </div>
-                    </div>
-                    {expandedSubMenu === "result" && (
-                      <div className="ml-6">
-                        <Link
-                          to="/exam/studentReport"
-                          className={`block text-black py-1 hover:text-[#5011DD] hover:font-bold transition-colors duration-200 ${
-                            location.pathname === "/exam/studentReport" &&
-                            "text-[#5011DD] font-bold"
-                          }`}
-                        >
-                          Student Wise Result
-                        </Link>
-                        <Link
-                          to="/exam/classReport"
-                          className={`block text-black py-1 hover:text-[#5011DD] hover:font-bold transition-colors duration-200 ${
-                            location.pathname === "/exam/classReport" &&
-                            "text-[#5011DD] font-bold"
-                          }`}
-                        >
-                          Class Wise Result
-                        </Link>
-                      </div>
-                    )}
-                  </>
-                )}
-                {item.name === "Configuration" && (
-                  <>
-                    <div
-                      className={`flex items-center justify-between text-black py-2 cursor-pointer ${
-                        expandedSubMenu === "subjects" ||
-                        location.pathname.includes("/config/createSub") ||
-                        location.pathname.includes("/config/assignSub")
-                          ? "text-[#5011DD] font-bold"
-                          : ""
-                      }`}
-                    >
-                      <span className="hover:text-[#5011DD] hover:font-bold transition-colors duration-200">
-                        Subjects
-                      </span>
-                      <div onClick={toggleSubjectSubMenu}>
-                        {expandedSubMenu === "subjects" ? (
-                          <FaMinus className="text-black cursor-pointer" />
-                        ) : (
-                          <FaPlus className="text-black cursor-pointer" />
-                        )}
-                      </div>
-                    </div>
-                    {expandedSubMenu === "subjects" && (
-                      <div className="ml-6">
-                        <Link
-                          to="/config/createSub"
-                          className={`block text-black py-1 hover:text-[#5011DD] hover:font-bold transition-colors duration-200 ${
-                            location.pathname === "/config/createSub" &&
-                            "text-[#5011DD] font-bold"
-                          }`}
-                        >
-                          Create Subjects
-                        </Link>
-                        <Link
-                          to="/config/assignSub"
-                          className={`block text-black py-1 hover:text-[#5011DD] hover:font-bold transition-colors duration-200 ${
-                            location.pathname === "/config/assignSub" &&
-                            "text-[#5011DD] font-bold"
-                          }`}
-                        >
-                          Assign Subjects
-                        </Link>
-                      </div>
-                    )}
-                  </>
-                )}
               </div>
             )}
           </div>

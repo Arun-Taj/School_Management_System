@@ -366,7 +366,7 @@ const FeeReport = () => {
       </div>
 
       {/* Table */}
-      <div className="max-w-5xl bg-white py-4 rounded-lg shadow-lg">
+      <div className="max-w-screen-lg bg-white py-4 rounded-lg shadow-lg">
         <div className="overflow-x-auto ">
           <div className="max-h-[400px] overflow-y-auto">
             <table
