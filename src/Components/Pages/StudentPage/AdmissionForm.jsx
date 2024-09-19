@@ -304,7 +304,7 @@ const [formData,setFormData]=useState(initialFormValues)
           <div className="grid grid-cols-6  gap-4 mt-6">
             {/* Student's First Name */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">
+              <label className="font-sans text-base font-bold leading-5 text-left">
                 Student's First Name
               </label>
               <input
@@ -323,7 +323,7 @@ const [formData,setFormData]=useState(initialFormValues)
 
             {/* Student's Middle Name */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">
+              <label className="font-sans text-base font-bold leading-5 text-left">
                 Student's Middle Name
               </label>
               <input
@@ -337,7 +337,7 @@ const [formData,setFormData]=useState(initialFormValues)
 
             {/* Student's Last Name */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">
+              <label className="font-sans text-base font-bold leading-5 text-left">
                 Student's Last Name
               </label>
               <input
@@ -354,7 +354,7 @@ const [formData,setFormData]=useState(initialFormValues)
 
             {/* Gender */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">Gender</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Gender</label>
               <select
                 name="gender"
                 value={formData.gender}
@@ -373,7 +373,7 @@ const [formData,setFormData]=useState(initialFormValues)
 
             {/* Date of Birth */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">Date of Birth</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Date of Birth</label>
               <input
                 type="date"
                 name="dateOfBirth"
@@ -388,7 +388,7 @@ const [formData,setFormData]=useState(initialFormValues)
 
             {/* Student Photo */}
             <div className="mb-4 relative">
-              <label className="block text-sm font-medium">Student Photo</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Student Photo</label>
               <input
                 type="file"
                 ref={fileInputRef}
@@ -408,7 +408,7 @@ const [formData,setFormData]=useState(initialFormValues)
           <div className="grid grid-cols-6  gap-4">
             {/* Aadhar Number */}
             <div className="mb-4 col-span-2">
-              <label className="block text-sm font-medium">Aadhar Number</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Aadhar Number</label>
               <input
                 type="text"
                 name="aadharNumber"
@@ -423,7 +423,7 @@ const [formData,setFormData]=useState(initialFormValues)
 
             {/* Mother Tongue */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">Mother Tongue</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Mother Tongue</label>
               <input
                 type="text"
                 name="motherTongue"
@@ -435,7 +435,7 @@ const [formData,setFormData]=useState(initialFormValues)
 
             {/* Phone Number */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">Phone Number</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Phone Number</label>
               <input
                 type="tel"
                 name="phoneNumber"
@@ -448,7 +448,7 @@ const [formData,setFormData]=useState(initialFormValues)
               )}
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium">
+              <label className="font-sans text-base font-bold leading-5 text-left">
                 Alternate Phone No.
               </label>
               <input
@@ -461,7 +461,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
             {/* Class of Admission */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">
+              <label className="font-sans text-base font-bold leading-5 text-left">
                 Class of Admission
               </label>
               <select
@@ -500,7 +500,7 @@ const [formData,setFormData]=useState(initialFormValues)
           <div className="grid grid-cols-6  gap-4 mt-6">
             {/* Father's First Name */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">
+              <label className="font-sans text-base font-bold leading-5 text-left">
                 Father's First Name
               </label>
               <input
@@ -516,7 +516,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
             {/* Father's Middle Name */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">
+              <label className="font-sans text-base font-bold leading-5 text-left">
                 Father's Middle Name
               </label>
               <input
@@ -529,7 +529,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
             {/* Father's Last Name */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">
+              <label className="font-sans text-base font-bold leading-5 text-left">
                 Father's Last Name
               </label>
               <input
@@ -545,7 +545,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>{" "}
             {/* Father's Aadhar Number */}
             <div className="mb-4 col-span-2">
-              <label className="block text-sm font-medium">Aadhar Number</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Aadhar Number</label>
               <input
                 type="text"
                 name="fatherAadharNumber"
@@ -559,7 +559,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
             {/* Father's Occupation */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">Occupation</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Occupation</label>
               <input
                 type="text"
                 name="fatherOccupation"
@@ -574,7 +574,7 @@ const [formData,setFormData]=useState(initialFormValues)
           <div className="grid grid-cols-6  gap-4">
             {/* Mother's First Name */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">
+              <label className="font-sans text-base font-bold leading-5 text-left">
                 Mother's First Name
               </label>
               <input
@@ -590,7 +590,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
             {/* Mother's Middle Name */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">
+              <label className="font-sans text-base font-bold leading-5 text-left">
                 Mother's Middle Name
               </label>
               <input
@@ -603,7 +603,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
             {/* Mother's Last Name */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">
+              <label className="font-sans text-base font-bold leading-5 text-left">
                 Mother's Last Name
               </label>
               <input
@@ -619,7 +619,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
             {/* Mother's Aadhar Number */}
             <div className="mb-4 col-span-2">
-              <label className="block text-sm font-medium">Aadhar Number</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Aadhar Number</label>
               <input
                 type="text"
                 name="motherAadharNumber"
@@ -633,7 +633,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
             {/* Mother's Occupation */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">Occupation</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Occupation</label>
               <input
                 type="text"
                 name="motherOccupation"
@@ -676,7 +676,7 @@ const [formData,setFormData]=useState(initialFormValues)
           <div className="grid grid-cols-6 gap-4 mt-6">
             {/* Guardian's First Name */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">
+              <label className="font-sans text-base font-bold leading-5 text-left">
                 Guardian's First Name
               </label>
               <input
@@ -694,7 +694,7 @@ const [formData,setFormData]=useState(initialFormValues)
 
             {/* Guardian's Middle Name */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">
+              <label className="font-sans text-base font-bold leading-5 text-left">
                 Guardian's Middle Name
               </label>
               <input
@@ -708,7 +708,7 @@ const [formData,setFormData]=useState(initialFormValues)
 
             {/* Guardian's Last Name */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">
+              <label className="font-sans text-base font-bold leading-5 text-left">
                 Guardian's Last Name
               </label>
               <input
@@ -725,7 +725,7 @@ const [formData,setFormData]=useState(initialFormValues)
 
             {/* Guardian's Aadhar Number */}
             <div className="mb-4 col-span-2">
-              <label className="block text-sm font-medium">Aadhar Number</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Aadhar Number</label>
               <input
                 type="text"
                 name="guardianAadharNumber"
@@ -740,7 +740,7 @@ const [formData,setFormData]=useState(initialFormValues)
 
             {/* Guardian's Occupation */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">Occupation</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Occupation</label>
               <input
                 type="text"
                 name="guardianOccupation"
@@ -754,7 +754,7 @@ const [formData,setFormData]=useState(initialFormValues)
           <div className="grid grid-cols-4  gap-4">
             {/* Relation with Local Guardian */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">
+              <label className="font-sans text-base font-bold leading-5 text-left">
                 Relation with Local Guardian
               </label>
               <input
@@ -771,7 +771,7 @@ const [formData,setFormData]=useState(initialFormValues)
 
             {/* Phone Number */}
             <div className="mb-4">
-              <label className="block text-sm font-medium">Phone Number</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Phone Number</label>
               <input
                 type="tel"
                 name="guardianPhoneNumber"
@@ -796,7 +796,7 @@ const [formData,setFormData]=useState(initialFormValues)
           <hr className="border-gray-600" />
           <div className="grid grid-cols-7 gap-4 mt-6">
             <div className="mb-4 col-span-2">
-              <label className="block text-sm font-medium">Address 1</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Address 1</label>
               <input
                 type="text"
                 name="pAddress1"
@@ -810,7 +810,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
 
             <div className="mb-4 col-span-2">
-              <label className="block text-sm font-medium">
+              <label className="font-sans text-base font-bold leading-5 text-left">
                 Town/Village/City
               </label>
               <input
@@ -826,7 +826,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium">District</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">District</label>
               <select
                 
                 name="pdistrict"
@@ -847,7 +847,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
 
             <div className="mb-4 ">
-              <label className="block text-sm font-medium">State</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">State</label>
               <select
                 name="pstate"
                 value={formData.pstate}
@@ -867,7 +867,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium">Country</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Country</label>
               <select
                 name="pcountry"
                 value={formData.pcountry}
@@ -886,7 +886,7 @@ const [formData,setFormData]=useState(initialFormValues)
               )}
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium">Pin Code</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Pin Code</label>
               <input
                 type="text"
                 name="pzipCode"
@@ -924,7 +924,7 @@ const [formData,setFormData]=useState(initialFormValues)
           <hr className="border-gray-600" />
           <div className="grid grid-cols-7 gap-4 mt-4">
             <div className="mb-4 col-span-2">
-              <label className="block text-sm font-medium">Address 1</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Address 1</label>
               <input
               name="cAddress1"
                 type="text"
@@ -935,7 +935,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
 
             <div className="mb-4 col-span-2">
-              <label className="block text-sm font-medium">
+              <label className="font-sans text-base font-bold leading-5 text-left">
                 Town/Village/City
               </label>
               <input
@@ -948,7 +948,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium">District</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">District</label>
               <select
                 name="cdistrict"
                 value={formData.cdistrict}
@@ -965,7 +965,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
 
             <div className="mb-4 ">
-              <label className="block text-sm font-medium">State</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">State</label>
               <select
                 name="cstate"
                 value={formData.cstate}
@@ -982,7 +982,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium">Country</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Country</label>
               <select
                 name="ccountry"
                 value={formData.ccountry}
@@ -998,7 +998,7 @@ const [formData,setFormData]=useState(initialFormValues)
               </select>
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium">Pin Code</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Pin Code</label>
               <input
                 type="text"
                 name="czipCode"
@@ -1020,7 +1020,7 @@ const [formData,setFormData]=useState(initialFormValues)
           <hr className="border-gray-600" />
           <div className="grid grid-cols-6  gap-4 mb-4 mt-6">
             <div className="mb-4">
-              <label className="block text-sm font-medium">Nationality</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Nationality</label>
               <input
                 type="text"
                 name="nationality"
@@ -1033,7 +1033,7 @@ const [formData,setFormData]=useState(initialFormValues)
               )}
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium">Religion</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Religion</label>
               <select
                 name="religion"
                 value={formData.religion}
@@ -1049,7 +1049,7 @@ const [formData,setFormData]=useState(initialFormValues)
               </select>
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium">Caste</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Caste</label>
               <select
                 name="caste"
                 value={formData.caste}
@@ -1065,7 +1065,7 @@ const [formData,setFormData]=useState(initialFormValues)
               </select>
             </div>{" "}
             <div className="mb-4 ">
-              <label className="block text-sm font-medium">Blood Group</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">Blood Group</label>
               <select
                 name="bloodGroup"
                 value={formData.bloodGroup}
@@ -1085,7 +1085,7 @@ const [formData,setFormData]=useState(initialFormValues)
               )}
             </div>
             <div className="mb-4 col-span-2">
-              <label className="block text-sm font-medium">
+              <label className="font-sans text-base font-bold leading-5 text-left">
                 Personal Identification Marks
               </label>
               <input
@@ -1098,7 +1098,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
           </div>
           <div className=" mb-4">
-            <label htmlFor="">
+            <label htmlFor="" className="font-sans text-base font-bold leading-5 text-left">
               Is the boy/girl suffering from any disease ? If so, give details
             </label>
             <input
@@ -1112,7 +1112,7 @@ const [formData,setFormData]=useState(initialFormValues)
           </div>
           <div className="grid grid-cols-2 gap-4 mt-8 mb-4">
             <div>
-              <label htmlFor="">Institution last attendence (if any)</label>
+              <label htmlFor="" className="font-sans text-base font-bold leading-5 text-left">Institution last attendence (if any)</label>
               <input
                 placeholder="Details"
                 type="text"
@@ -1123,7 +1123,7 @@ const [formData,setFormData]=useState(initialFormValues)
               />
             </div>
             <div>
-              <label htmlFor="">Transfer Certificate No. & Date (if any)</label>
+              <label htmlFor="" className="font-sans text-base font-bold leading-5 text-left">Transfer Certificate No. & Date (if any)</label>
               <input
                 placeholder="Details"
                 type="text"
@@ -1135,7 +1135,7 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
           </div>
           <div className=" mb-4">
-            <label htmlFor="">Remarks (note)</label>
+            <label htmlFor="" className="font-sans text-base font-bold leading-5 text-left">Remarks (note)</label>
             <input
               placeholder="Details"
               type="text"

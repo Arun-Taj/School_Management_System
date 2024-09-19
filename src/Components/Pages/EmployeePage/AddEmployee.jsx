@@ -157,7 +157,7 @@ function AddEmployee() {
               <hr className="border-gray-600" />
               <div className="grid grid-cols-6  gap-4 mt-6">
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     First Name
                   </label>
                   <Field
@@ -172,7 +172,7 @@ function AddEmployee() {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Middle Name
                   </label>
                   <Field
@@ -182,7 +182,7 @@ function AddEmployee() {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">Last Name</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">Last Name</label>
                   <Field
                     name="employeeLastName"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
@@ -196,7 +196,7 @@ function AddEmployee() {
 
                 {/* Gender */}
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">Gender</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">Gender</label>
                   <Field
                     as="select"
                     name="gender"
@@ -216,7 +216,7 @@ function AddEmployee() {
 
                 {/* Date of Birth */}
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Date of Birth
                   </label>
                   <Field
@@ -233,7 +233,7 @@ function AddEmployee() {
 
                 {/* Employee Photo */}
                 <div className="mb-4 relative">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Employee Photo
                   </label>
                   <Field name="file">
@@ -274,7 +274,7 @@ function AddEmployee() {
               <div className="grid grid-cols-6  gap-4">
                 {/* Aadhar Number */}
                 <div className="mb-4 col-span-2">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Aadhar Number
                   </label>
                   <Field
@@ -289,7 +289,7 @@ function AddEmployee() {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Phone Number
                   </label>
                   <Field
@@ -305,7 +305,7 @@ function AddEmployee() {
 
                 {/* Phone Number */}
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Alternate Phone No.
                   </label>
                   <Field
@@ -319,7 +319,7 @@ function AddEmployee() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">Email</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">Email</label>
                   <Field
                     name="email"
                     type="email"
@@ -333,7 +333,7 @@ function AddEmployee() {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Employee Role
                   </label>
                   <Field
@@ -370,7 +370,7 @@ function AddEmployee() {
               <div className="grid grid-cols-6  gap-4 mt-6">
                 {/* Father's First Name */}
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Father's First Name
                   </label>
                   <Field
@@ -385,7 +385,7 @@ function AddEmployee() {
                 </div>
                 {/* Father's Middle Name */}
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Father's Middle Name
                   </label>
                   <Field
@@ -395,7 +395,7 @@ function AddEmployee() {
                 </div>
                 {/* Father's Last Name */}
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Father's Last Name
                   </label>
                   <Field
@@ -410,7 +410,7 @@ function AddEmployee() {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Husband's First Name
                   </label>
                   <Field
@@ -425,7 +425,7 @@ function AddEmployee() {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Husband's Middle Name
                   </label>
                   <Field
@@ -435,7 +435,7 @@ function AddEmployee() {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Husband's Last Name
                   </label>
                   <Field
@@ -462,7 +462,7 @@ function AddEmployee() {
               <hr className="border-gray-600" />
               <div className="grid grid-cols-7 gap-4 mt-6">
                 <div className="mb-4 col-span-2">
-                  <label className="block text-sm font-medium">Address 1</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">Address 1</label>
                   <Field
                     name="address1"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
@@ -475,7 +475,7 @@ function AddEmployee() {
                 </div>
 
                 <div className="mb-4 col-span-2">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Town/Village/City
                   </label>
                   <Field
@@ -490,7 +490,7 @@ function AddEmployee() {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">District</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">District</label>
                   <Field
                     as="select"
                     name="district"
@@ -512,7 +512,7 @@ function AddEmployee() {
                 </div>
 
                 <div className="mb-4 ">
-                  <label className="block text-sm font-medium">State</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">State</label>
                   <Field
                     as="select"
                     name="state"
@@ -534,7 +534,7 @@ function AddEmployee() {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">Country</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">Country</label>
                   <Field
                     as="select"
                     name="country"
@@ -555,7 +555,7 @@ function AddEmployee() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">Pin Code</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">Pin Code</label>
                   <Field
                     name="zipCode"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
@@ -615,7 +615,7 @@ function AddEmployee() {
 
               <div className="grid grid-cols-7 gap-4 pt-4">
                 <div className="mb-4 col-span-2">
-                  <label className="block text-sm font-medium">Address 1</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">Address 1</label>
                   <Field
                     name="currentAddress1"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
@@ -623,7 +623,7 @@ function AddEmployee() {
                 </div>
 
                 <div className="mb-4 col-span-2">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Town/Village/City
                   </label>
                   <Field
@@ -632,7 +632,7 @@ function AddEmployee() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">District</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">District</label>
                   <Field
                     as="select"
                     name="currentDistrict"
@@ -648,7 +648,7 @@ function AddEmployee() {
                   </Field>
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">State</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">State</label>
                   <Field
                     as="select"
                     name="currentState"
@@ -664,7 +664,7 @@ function AddEmployee() {
                   </Field>
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">Country</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">Country</label>
                   <Field
                     as="select"
                     name="currentCountry"
@@ -680,7 +680,7 @@ function AddEmployee() {
                   </Field>
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">Pin Code</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">Pin Code</label>
                   <Field
                     name="currentZipCode"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
@@ -700,7 +700,7 @@ function AddEmployee() {
               <hr className="border-gray-600" />
               <div className="grid grid-cols-6  gap-4 mb-4 mt-6">
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Date of Joining
                   </label>
                  <Field
@@ -715,7 +715,7 @@ function AddEmployee() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Nationality
                   </label>
                   <Field
@@ -729,7 +729,7 @@ function AddEmployee() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">Religion</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">Religion</label>
                   <Field
                     as="select"
                     name="religion"
@@ -744,7 +744,7 @@ function AddEmployee() {
                   </Field>
                 </div>
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">Caste</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">Caste</label>
                   <Field
                     as="select"
                     name="caste"
@@ -759,7 +759,7 @@ function AddEmployee() {
                   </Field>
                 </div>{" "}
                 <div className="mb-4 ">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Blood Group
                   </label>
                   <Field
@@ -782,7 +782,7 @@ function AddEmployee() {
                   />
                 </div>
                 <div className="mb-4 relative">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Upload Bio-Data
                   </label>
                   <input
@@ -802,7 +802,7 @@ function AddEmployee() {
               </div>
               <div className="grid grid-cols-6 gap-4">
                 <div className="mb-4 col-span-2">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Educational Qualification
                   </label>
                   <Field
@@ -817,7 +817,7 @@ function AddEmployee() {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Experience
                   </label>
                   <Field
@@ -832,7 +832,7 @@ function AddEmployee() {
                 </div>
 
                 <div className="mb-4 ">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Main Subject
                   </label>
                   <Field
@@ -857,7 +857,7 @@ function AddEmployee() {
 
                 {/* Complementry subjects */}
                 <div className="mb-4 col-span-2">
-                  <label className="block text-sm font-medium">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
                     Complimentary Subjects
                   </label>
                   <div className="relative">
@@ -908,7 +908,7 @@ function AddEmployee() {
                 </div>
               </div>
               <div className=" mb-4">
-                <label htmlFor="">Remarks (note)</label>
+                <label htmlFor="" className="font-sans text-base font-bold leading-5 text-left">Remarks (note)</label>
                 <Field
                   name="remarks"
                   placeholder="Details"
