@@ -229,12 +229,9 @@ const AllStudents = () => {
             />
           </div>
         </div>
-        <div
-          className="border border-[#BCA8EA] p-2 rounded-full bg-white cursor-pointer hover:bg-[#BCA8EA] hover:text-white transition-colors duration-100"
-          onClick={handleRefresh}
-        >
-          <FiRefreshCcw />
-        </div>
+        <div className="border border-[#BCA8EA] p-2 bg-white rounded-full cursor-pointer transition-all duration-200 hover:bg-[#F3E8FF] hover:shadow-lg" onClick={handleRefresh}>
+            <FiRefreshCcw  className="text-gray-600 transition-transform duration-200 hover:rotate-180 text-xl"/>
+          </div>
       </div>
 
       <div className="overflow-x-auto rounded-2xl shadow-lg">

@@ -193,7 +193,7 @@ const Classes = () => {
           <div className="flex justify-around gap-4">
             <button
               className="mt-10 bg-red-500 rounded-3xl text-white p-1 px-4 font-bold"
-              onClick={() => handleRemove(index)}
+              onClick={() => handleRemove(subjectList.length - 1)} // Remove the last subject entry
             >
               Remove
             </button>

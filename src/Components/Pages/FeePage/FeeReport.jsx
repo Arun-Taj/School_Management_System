@@ -333,7 +333,7 @@ const FeeReport = () => {
               placeholder="Enrollment Id"
               value={searchId}
               onChange={(e) => setSearchId(e.target.value)}
-              className="flex-grow px-4 py-2 text-gray-600 placeholder-black bg-transparent focus:outline-none "
+              className="flex-grow px-4 py-2  placeholder-black bg-transparent focus:outline-none "
             />
             {/* Right Side: Search Icon */}
             <IoSearch
