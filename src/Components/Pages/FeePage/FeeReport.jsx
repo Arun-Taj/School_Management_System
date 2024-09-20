@@ -239,7 +239,11 @@ const FeeReport = () => {
 
   // Handle delete functionality
   const handleDelete = () => {
-    setRows([]);
+    const confirmDelete = window.confirm("Are you sure you want to delete?");
+    if(confirmDelete){
+      setRows([]);
+    }
+    
   };
 
   //for checkbox
@@ -366,7 +370,7 @@ const FeeReport = () => {
       </div>
 
       {/* Table */}
-      <div className="max-w-screen-lg bg-white py-4 rounded-lg shadow-lg">
+      <div className="max-w-screen-xl bg-white py-4 rounded-lg shadow-lg">
         <div className="overflow-x-auto ">
           <div className="max-h-[400px] overflow-y-auto">
             <table

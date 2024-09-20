@@ -22,8 +22,12 @@ const CreateSubject = () => {
   };
 
   const handleDeleteSubject = (index) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete?");
+  if(confirmDelete){
     const updatedSubjects = subjects.filter((_, i) => i !== index);
     setSubjects(updatedSubjects); // Update the subjects state
+  }
+    
   };
 
   return (

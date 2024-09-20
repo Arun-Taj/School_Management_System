@@ -74,7 +74,9 @@ const Classes = () => {
 
   const handleDeleteClass = (index) => {
     // Find the original index in the `rows` array
-    const originalIndex = rows.findIndex(
+    const confirmDelete = window.confirm("Are you sure you want to delete this item?");
+    if(confirmDelete){
+      const originalIndex = rows.findIndex(
       (row) =>
         row.class === filteredRows[index].class &&
         row.classTeacher === filteredRows[index].classTeacher &&
@@ -84,6 +86,8 @@ const Classes = () => {
     const updatedRows = rows.filter((_, i) => i !== originalIndex); // Delete from the original rows
     setRows(updatedRows);
     setFilteredRows(updatedRows); // Update filtered rows after deletion
+    }
+    
   };
 
   const handleSearch = () => {

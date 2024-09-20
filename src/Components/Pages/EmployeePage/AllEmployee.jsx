@@ -148,10 +148,16 @@ const AllEmployee = () => {
 
   // Function to delete a row
   const handleDelete = (index) => {
-    const newRows = filteredRows.filter((_, i) => i !== index);
-    setRows(newRows);
-    setFilteredRows(newRows);
-  };
+    // Show confirmation dialog
+    const confirmDelete = window.confirm("Are you sure you want to delete this item?");
+    
+    // Proceed with deletion if confirmed
+    if (confirmDelete) {
+        const newRows = filteredRows.filter((_, i) => i !== index);
+        setRows(newRows);
+        setFilteredRows(newRows);
+    }
+};
 
   // Function to handle edit
   const handleEdit = (index) => {

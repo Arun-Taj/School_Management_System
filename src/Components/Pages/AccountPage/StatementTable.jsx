@@ -53,9 +53,16 @@ const StatementTable = ({ filterType, fromDate, toDate }) => {
 
   // Function to delete a row
   const handleDelete = (index) => {
-    const updatedExpenses = expenses.filter((_, i) => i !== index);
-    setExpenses(updatedExpenses);
-  };
+    // Show confirmation dialog
+    const confirmDelete = window.confirm("Are you sure you want to delete this expense?");
+    
+    // Proceed with deletion if confirmed
+    if (confirmDelete) {
+        const updatedExpenses = expenses.filter((_, i) => i !== index);
+        setExpenses(updatedExpenses);
+    }
+};
+
 
   return (
     <div className="bg-white rounded-2xl shadow-lg">

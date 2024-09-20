@@ -41,10 +41,17 @@ const ChartAccount = () => {
 
   // Function to handle delete
   const handleDelete = (index) => {
-    const newRows = filteredRows.filter((_, i) => i !== index);
-    setRows(newRows);
-    setFilteredRows(newRows);
-  };
+    // Show confirmation dialog
+    const confirmDelete = window.confirm("Are you sure you want to delete this item?");
+    
+    // Proceed with deletion if confirmed
+    if (confirmDelete) {
+        const newRows = filteredRows.filter((_, i) => i !== index);
+        setRows(newRows);
+        setFilteredRows(newRows);
+    }
+};
+
 
   // Function to add new chart of account
   const handleSaveHead = () => {
