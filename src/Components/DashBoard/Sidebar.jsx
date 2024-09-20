@@ -95,26 +95,6 @@ const Sidebar = () => {
     setExpandedMenu(expandedMenu === index ? null : index);
   };
 
-  const toggleResultSubMenu = () => {
-    setExpandedSubMenu(expandedSubMenu === "result" ? null : "result");
-  };
-
-  const toggleSubjectSubMenu = () => {
-    setExpandedSubMenu(expandedSubMenu === "subjects" ? null : "subjects");
-  };
-
-  const isMenuActive = (subMenu) => {
-    // Check if any of the subMenu items match the current location
-    return subMenu?.some((subItem) => location.pathname === subItem.link);
-  };
-
-  const [expandedNestedSubMenu, setExpandedNestedSubMenu] = useState(null);
-  const toggleNestedSubMenu = (menuName) => {
-    setExpandedNestedSubMenu(
-      expandedNestedSubMenu === menuName ? null : menuName
-    );
-  };
-
   const handleSubMenuClick = (subMenuKey) => {
     setActiveSubMenu(subMenuKey === activeSubMenu ? null : subMenuKey);
   };
