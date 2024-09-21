@@ -9,7 +9,7 @@ function TableChart() {
     labels: ["Remaining", "Collected"],
     datasets: [
       {
-        data: [35000, 35000], // Remaining and Collected values
+        data: [35000, 35000],
         backgroundColor: ["#FF6384", "#36A2EB"],
         hoverBackgroundColor: ["#FF6384", "#36A2EB"],
         borderWidth: 0,
@@ -18,21 +18,20 @@ function TableChart() {
   };
 
   const options = {
-    cutout: "70%", // Adjust the size of the inner circle
+    cutout: "70%",
     plugins: {
       legend: {
-        display: false, // Hide the legend
+        display: false,
       },
       tooltip: {
-        enabled: false, // Hide the tooltip
+        enabled: false,
       },
       centerText: {
-        text: "", // Placeholder for custom text
+        text: "",
       },
     },
   };
 
-  // Custom plugin to draw text in the center of the doughnut
   const centerTextPlugin = {
     id: "centerText",
     beforeDraw: (chart) => {
@@ -42,37 +41,29 @@ function TableChart() {
       if (!chartArea) return;
 
       ctx.save();
-
-      // Get the dimensions of the chart
       const { width, height } = chartArea;
-      const fontSize = height/4;
-      ctx.font = `bold ${fontSize}px sans-serif `;
+      const fontSize = height / 4;
+      ctx.font = `bold ${fontSize}px sans-serif`;
       ctx.textBaseline = "middle";
       ctx.textAlign = "center";
-      ctx.fillStyle = "#000"; // Text color
-
-      // Draw the text in the center of the doughnut
+      ctx.fillStyle = "#000";
       const textX = width / 2;
       const textY = height / 2;
-
       ctx.fillText(centerText, textX, textY);
       ctx.restore();
     },
   };
 
-  // Register the custom plugin
   ChartJS.register(centerTextPlugin);
+
   return (
-    <div className="grid grid-cols-5 gap-4 ">
-      {/* Class Wise Report */}
-      <div className="col-span-3 bg-white rounded-lg shadow-md w-full h-full">
-        <p className="text-[20px] font-bold mb-4 text-center">
-          Class Wise Report
-        </p>
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 ">
+      <div className="col-span-1 lg:col-span-3 bg-white rounded-lg shadow-md w-full h-full">
+        <p className="text-xl font-bold mb-4 text-center">Class Wise Report</p>
         <div className="overflow-x-auto w-full">
-          <table className="w-full   overflow-hidden">
+          <table className="w-full overflow-hidden">
             <thead>
-              <tr className="bg-white text-center text-sm">
+              <tr className="bg-white text-center text-xs lg:text-sm">
                 <th className="p-2">Class</th>
                 <th className="p-2">Present Today</th>
                 <th className="p-2">Absent Today</th>
@@ -105,44 +96,47 @@ function TableChart() {
       </div>
 
       {/* Estimated Fee This Month */}
-      <div className="col-span-2 ">
-        <div className="grid grid-cols-2 gap-4 h-full">
-          {/* Estimated Fee This Month */}
-          <div className="col-span-2 bg-white p-6 rounded-xl shadow-md">
-            <div className="text-center text-[20px] font-bold mb-4">
-              Estimated Fee This Month
-            </div>{" "}
-            <div className="text-center text-base mt-4">
-              Estimation
+      <div className="col-span-1 lg:col-span-2 space-y-4">
+        {/* Estimated Fee This Month */}
+        <div className="bg-white p-6 rounded-xl shadow-md text-center h-auto flex flex-col items-center">
+          <div className="text-lg md:text-xl font-bold mb-4">Estimated Fee This Month</div>
+          <div className="text-sm md:text-base mt-4">Estimation</div>
+          <div className="text-xl md:text-2xl font-bold">₹ 35,000</div>
+
+          {/* Flex container for collection and remaining */}
+          <div className="flex flex-col md:flex-row justify-around items-center mt-4 w-full">
+            <div className="text-center md:w-[30%]">
+              <p className="text-sm md:text-base">Collection</p>
+              <p className="text-xl md:text-2xl font-bold">₹ 35,000</p>
             </div>
-            <div className="text-center text-[24px] font-bold">₹ 35,000</div>
-            <div className="flex justify-around items-center">
-              <div className="text-center">
-                <p className="text-base">Collection</p>
-                <p className="text-[24px] font-bold">₹ 35,000</p>
-              </div>
-              <div className="w-1/3">
-                <Doughnut data={doughnutData} options={options} />
-              </div>
-              <div className="text-center">
-                <p className="text-base">Remaining</p>
-                <p className="text-[24px] font-bold">₹ 35,000</p>
-              </div>
+
+            {/* Doughnut Chart */}
+            <div className="w-full md:w-[40%] flex justify-center mb-4">
+              <Doughnut data={doughnutData} options={options} />
+            </div>
+
+            {/* Remaining Amount */}
+            <div className="text-center md:w-[30%]">
+              <p className="text-sm md:text-base">Remaining</p>
+              <p className="text-xl md:text-2xl font-bold">₹ 35,000</p>
             </div>
           </div>
+        </div>
 
+        {/* Staff Present Today & Students Present Today */}
+        <div className="flex flex-col md:flex-row gap-4 h-auto">
           {/* Staff Present Today */}
-          <div className="col-span-1 bg-white p-6 rounded-xl shadow-md flex flex-col items-center">
-            <div className="text-center text-[20px] font-bold mb-4">
+          <div className="flex-1 bg-white p-6 rounded-xl shadow-md flex flex-col items-center">
+            <div className="text-center text-lg font-bold mb-4">
               Staff Present Today
             </div>
-            <div className="w-1/3 mb-4">
+            <div className="w-full md:w-[60%] flex justify-center mb-4">
               <Doughnut
                 data={{
                   labels: ["Remaining", "Present"],
                   datasets: [
                     {
-                      data: [13, 87], // Example data for staff present
+                      data: [100, 87],
                       backgroundColor: ["#E3E3E3", "#8B5CF6"],
                       borderWidth: 0,
                     },
@@ -153,7 +147,7 @@ function TableChart() {
                   plugins: {
                     ...options.plugins,
                     centerText: {
-                      text: "13", // Display the number of staff present
+                      text: "13",
                     },
                   },
                 }}
@@ -162,17 +156,17 @@ function TableChart() {
           </div>
 
           {/* Students Present Today */}
-          <div className="col-span-1 bg-white p-6 rounded-xl shadow-md flex flex-col items-center">
-            <div className="text-center text-[20px] font-bold mb-4">
+          <div className="flex-1 bg-white p-6 rounded-xl shadow-md flex flex-col items-center">
+            <div className="text-center text-lg font-bold mb-4">
               Students Present Today
             </div>
-            <div className="w-1/3 mb-4">
+            <div className="w-full md:w-[60%] flex justify-center mb-4">
               <Doughnut
                 data={{
                   labels: ["Remaining", "Present"],
                   datasets: [
                     {
-                      data: [400, 215], // Example data for students present
+                      data: [400, 400],
                       backgroundColor: ["#E3E3E3", "#8B5CF6"],
                       borderWidth: 0,
                     },
@@ -183,7 +177,7 @@ function TableChart() {
                   plugins: {
                     ...options.plugins,
                     centerText: {
-                      text: "215", // Display the number of students present
+                      text: "215",
                     },
                   },
                 }}
@@ -192,6 +186,9 @@ function TableChart() {
           </div>
         </div>
       </div>
+
+      
+    
     </div>
   );
 }

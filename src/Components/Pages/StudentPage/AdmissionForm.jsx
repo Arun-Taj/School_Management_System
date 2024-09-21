@@ -655,21 +655,7 @@ const [formData,setFormData]=useState(initialFormValues)
               <span>Guardian Informations</span>
             </h3>
             
-            {/* <div className="flex items-center mb-4">
-              <input
-                type="checkbox"
-                name="sameAsFatherMother"
-                checked={formData.sameAsFatherMother}
-                onChange={handleChange}
-                className="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded-3xl"
-              />
-              {errors.sameAsFatherMother && (
-                <p className="text-red-500 text-sm">{errors.sameAsFatherMother}</p>
-              )}
-              <label className="text-sm">
-                Same as Father & Mother Information
-              </label>
-            </div> */}
+            
           </div>
           <hr className="border-gray-600" />
 

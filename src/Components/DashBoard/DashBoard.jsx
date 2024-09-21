@@ -1,13 +1,12 @@
 import React from "react";
 import { CiUser } from "react-icons/ci";
 import { FaToolbox } from "react-icons/fa";
-
 import TableChart from "./Table&Chart";
 
 const Dashboard = () => {
   return (
     <div className="flex flex-col p-8 bg-pink-100 min-h-screen">
-      <div className="grid grid-cols-4 gap-4 pb-6 ">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 pb-6">
         {/* Total Students */}
         <div className="flex flex-col gap-4">
           <div className="bg-white p-4 rounded-xl shadow-md flex flex-col justify-between h-full">
@@ -29,7 +28,7 @@ const Dashboard = () => {
         </div>
 
         {/* Revenue and Expense */}
-        <div className="bg-white p-4 rounded-xl shadow-md col-span-1 flex flex-col justify-between h-full">
+        <div className="bg-white p-4 rounded-xl shadow-md col-span-1 md:col-span-1 flex flex-col justify-between h-full">
           <div>
             <div className="text-[20px] font-bold">Revenue</div>
             <div className="text-[48px] font-bold flex justify-between items-center">
@@ -58,8 +57,8 @@ const Dashboard = () => {
         </div>
 
         {/* Total Profit and Dues */}
-        <div className="col-span-2 flex flex-col gap-4">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="col-span-1 md:col-span-2 flex flex-col gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-green-300 p-4 rounded-xl shadow-md flex flex-col justify-between h-full">
               <div className="text-[20px] font-bold">Total Profit</div>
               <div className="text-[32px] font-bold flex justify-between items-center">
@@ -87,33 +86,35 @@ const Dashboard = () => {
 
           {/* Fee Collection Progress Bars */}
           <div className="bg-white p-4 rounded-xl shadow-md">
-            <div className="text-sm mb-2 flex justify-between">
-              <p>This Month Fee Collection</p>
-              <p>65%</p>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
-              <div className="bg-purple-500 h-2 rounded-full w-4/6"></div>
-            </div>
-            <div className="text-sm mb-2 flex justify-between">
-              <p>Last Month Fee Collection</p>
-              <p>65%</p>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
-              <div className="bg-purple-500 h-2 rounded-full w-3/6"></div>
-            </div>
-            <div className="text-sm mb-2 flex justify-between">
-              <p>This Year Fee Collection</p>
-              <p>65%</p>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
-              <div className="bg-purple-500 h-2 rounded-full w-4/6"></div>
-            </div>
+            {["This Month", "Last Month", "This Year"].map((label) => (
+              <>
+                <div key={label} className="text-sm mb-2 flex justify-between">
+                  <p>{label} Fee Collection</p>
+                  <p>65%</p>
+                </div>
+                {/* Progress Bar */}
+                <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+                  {/* Adjust width based on the collection percentage */}
+                  {label === "This Month" && (
+                    <div className="bg-purple-500 h-2 rounded-full w-4/6"></div>
+                  )}
+                  {label === "Last Month" && (
+                    <div className="bg-purple-500 h-2 rounded-full w-3/6"></div>
+                  )}
+                  {label === "This Year" && (
+                    <div className="bg-purple-500 h-2 rounded-full w-4/6"></div>
+                  )}
+                </div>
+              </>
+            ))}
           </div>
         </div>
+
       </div>
-      <div className="">
-        <TableChart />
-      </div>
+
+      {/* Table Chart Section */}
+      {/* Ensure it takes full width on smaller screens */}
+      <TableChart />
     </div>
   );
 };
