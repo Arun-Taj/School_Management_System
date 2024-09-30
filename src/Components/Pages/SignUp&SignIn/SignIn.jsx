@@ -34,7 +34,7 @@ const SignInForm = () => {
       formValues.username === loggedUser.username &&
       formValues.password === loggedUser.password
     ) {
-      navigate("/");
+      navigate("/dashboard");
     } else {
       // Set error messages for incorrect username/password
       setFormErrors({

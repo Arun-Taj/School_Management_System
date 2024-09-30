@@ -74,7 +74,7 @@ function MainDashBoard() {
           <Routes>
             {/* <Route path='/signup' element={<SignUpDetails/>} />
                  <Route path='/adminDetails' element={<AdminDetails/>} /> */}
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             {/* <Route path="/dashboard" element={<Dashboard />} /> */}
 
             <Route path="/profile" element={<Profile />} />
@@ -151,10 +151,7 @@ function MainDashBoard() {
       </div>
     </div>
 
-    // <SignUp/>
-    // <SignIn/>
-    // <SchoolDetails/>
-    // <SignUpDetails/>
+   
   );
 }
 

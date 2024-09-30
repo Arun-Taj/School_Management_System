@@ -92,7 +92,7 @@ const SignupForm = () => {
       localStorage.setItem("id",JSON.stringify(formData));
       
       setFormErrors({});
-      navigate("/signin")
+      navigate("/")
     }
   };
 

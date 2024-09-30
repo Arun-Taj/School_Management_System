@@ -106,7 +106,7 @@ const Sidebar = () => {
   };
 
   const menuItems = [
-    { name: "Dashboard", icon: MdHome, link: "/" },
+    { name: "Dashboard", icon: MdHome, link: "/dashboard" },
     {
       // name: 'Students', icon: FaUsers, link: '/students',
       name: "Students",

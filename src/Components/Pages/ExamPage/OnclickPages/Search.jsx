@@ -49,10 +49,16 @@ const Search = () => {
             className="p-2 bg-white rounded-full border border-gray-300 w-64 "
           >
             <option value="" disabled selected></option>
-            <option value="">Class 1</option>
-            <option value="">Class 2</option>
-            <option value="">Class 3</option>
-            <option value="">Class 4</option>
+            <option value="class 1">Class 1</option>
+            <option value="class 2">Class 2</option>
+            <option value="class 3">Class 3</option>
+            <option value="class 4">Class 4</option>
+            <option value="class 5">Class 5</option>
+            <option value="class 6">Class 6</option>
+            <option value="class 7">Class 7</option>
+            <option value="class 8">Class 8</option>
+            <option value="class 9">Class 9</option>
+            <option value="class 10">Class 10</option>
           </select>
         </div>
         <button
