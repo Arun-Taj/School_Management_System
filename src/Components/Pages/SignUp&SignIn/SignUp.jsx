@@ -41,7 +41,7 @@ const SignupForm = () => {
     const phoneRegex = /^\d{10}$/; // Updated regex for exactly 10 digits
     const usernameRegex = /^.{3,}$/;
     const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{6,}$/;
 
     if (!formData.email) {
       errors.email = "Email is required.";
@@ -65,7 +65,7 @@ const SignupForm = () => {
       errors.password = "Password is required.";
     } else if (!passwordRegex.test(formData.password)) {
       errors.password =
-        "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.";
+        "Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.";
     }
 
     if (!formData.confirmPassword) {
@@ -90,8 +90,9 @@ const SignupForm = () => {
       console.log("Form submitted successfully!");
 
       localStorage.setItem("id",JSON.stringify(formData));
-      navigate("/")
+      
       setFormErrors({});
+      navigate("/signin")
     }
   };
 
@@ -121,7 +122,7 @@ const SignupForm = () => {
                 placeholder="Email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full border border-solid border-[#5011DD] p-2 rounded-3xl"
+                className="w-full placeholder-black border  border-solid border-[#5011DD] p-2 rounded-3xl"
               />
               {formErrors.email && (
                 <p className="text-red-500 text-sm mt-1">{formErrors.email}</p>
@@ -134,7 +135,7 @@ const SignupForm = () => {
                 placeholder="Phone Number"
                 value={formData.phone}
                 onChange={handleChange}
-                className="w-full border border-solid border-[#5011DD] p-2 rounded-3xl"
+                className="w-full placeholder-black border border-solid border-[#5011DD] p-2 rounded-3xl"
               />
               {formErrors.phone && (
                 <p className="text-red-500 text-sm mt-1">{formErrors.phone}</p>
@@ -150,7 +151,7 @@ const SignupForm = () => {
               placeholder="Choose User Name"
               value={formData.username}
               onChange={handleChange}
-              className="w-full border border-solid border-[#5011DD] p-2 rounded-3xl"
+              className="w-full placeholder-black border border-solid border-[#5011DD] p-2 rounded-3xl"
             />
             {formErrors.username && (
               <p className="text-red-500 text-sm mt-1">{formErrors.username}</p>
@@ -165,7 +166,7 @@ const SignupForm = () => {
               placeholder="Choose Password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full border border-solid border-[#5011DD] p-2 rounded-3xl pr-10"
+              className="w-full placeholder-black border border-solid border-[#5011DD] p-2 rounded-3xl pr-10"
             />
             <span
               className="absolute right-2 top-3 cursor-pointer"
@@ -185,7 +186,7 @@ const SignupForm = () => {
               placeholder="Confirm Password"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="w-full border border-solid border-[#5011DD] p-2 rounded-3xl pr-10"
+              className="w-full placeholder-black border border-solid border-[#5011DD] p-2 rounded-3xl pr-10"
             />
             <span
               className="absolute right-2 top-3 cursor-pointer"
@@ -208,11 +209,11 @@ const SignupForm = () => {
               name="terms"
               checked={formData.terms}
               onChange={handleChange}
-              className="mr-2"
+              className="mr-2 cursor-pointer"
             />
             <label htmlFor="terms" className="text-sm">
-              Accept our{" "}
-              <a href="#" className="text-blue-500">
+              Accept our
+              <a href="#" className="text-black font-bold px-1">
                 Terms & Condition
               </a>
             </label>
@@ -235,7 +236,7 @@ const SignupForm = () => {
 
         <p className="text-center mt-4 text-sm">
           Already have an account?
-          <button type="button" className="text-blue-500" onClick={logInClick}>
+          <button type="button" className="text-black font-bold px-2" onClick={logInClick}>
             Log in
           </button>
         </p>

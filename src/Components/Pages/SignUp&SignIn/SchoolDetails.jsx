@@ -51,18 +51,18 @@ const SchoolDetails = ({ onAdminClick }) => {
     { value: "other", label: "Other" },
   ];
 
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      borderColor: "#5011DD",
-      borderRadius: "20px",
+  // const customStyles = {
+  //   control: (provided) => ({
+  //     ...provided,
+  //     borderColor: "#5011DD",
+  //     borderRadius: "20px",
       
-    }),
-    placeholder: (provided) => ({
-      ...provided,
-      color: "#A0AEC0", // Gray color for placeholder
-    }),
-  };
+  //   }),
+  //   placeholder: (provided) => ({
+  //     ...provided,
+  //     color: "#A0AEC0", // Gray color for placeholder
+  //   }),
+  // };
 
   return (
     <div
@@ -86,7 +86,7 @@ const SchoolDetails = ({ onAdminClick }) => {
                     type="text"
                     name="schoolName"
                     placeholder="Name of School"
-                    className="w-full text-black border border-[#5011DD] rounded-3xl px-4 py-2 "
+                    className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2 "
                   />
                   <ErrorMessage
                     name="schoolName"
@@ -106,7 +106,7 @@ const SchoolDetails = ({ onAdminClick }) => {
                   <button
                     type="button"
                     onClick={handleUploadClick}
-                    className="w-full text-gray-400 bg-white border border-[#5011DD]  rounded-3xl px-4 p-2 flex flex-row items-start justify-between"
+                    className="w-full  bg-white border border-[#5011DD]  rounded-3xl px-4 p-2 flex flex-row items-start justify-between"
                   >
                     Upload Logo <MdOutlineFileUpload />
                   </button>
@@ -121,14 +121,14 @@ const SchoolDetails = ({ onAdminClick }) => {
                     type="text"
                     name="tagLine"
                     placeholder="Tag line (optional)"
-                    className="w-full text-black border border-[#5011DD]  rounded-3xl px-4 py-2 "
+                    className="w-full placeholder-black border border-[#5011DD]  rounded-3xl px-4 py-2 "
                   />
                 </div>
                 <div className="col-span-1">
                   <Field
                     as="select"
                     name="schoolBoard"
-                    className="w-full text-black bg-white border border-[#5011DD]  rounded-3xl px-4 py-2"
+                    className="w-full placeholder-black bg-white border border-[#5011DD]  rounded-3xl px-4 py-2"
                   >
                     <option value="" disabled>
                       School Board
@@ -150,7 +150,7 @@ const SchoolDetails = ({ onAdminClick }) => {
                     type="text"
                     name="address1"
                     placeholder="Address 1"
-                    className="w-full text-black border border-[#5011DD]  rounded-3xl px-4 py-2 "
+                    className="w-full placeholder-black border border-[#5011DD]  rounded-3xl px-4 py-2 "
                   />
                   <ErrorMessage
                     name="address1"
@@ -163,7 +163,7 @@ const SchoolDetails = ({ onAdminClick }) => {
                     type="text"
                     name="city"
                     placeholder="Town / Village / City"
-                    className="w-full text-black border border-[#5011DD]  rounded-3xl px-4 py-2 "
+                    className="w-full placeholder-black  border border-[#5011DD]  rounded-3xl px-4 py-2 "
                   />
                   <ErrorMessage
                     name="city"
@@ -174,11 +174,18 @@ const SchoolDetails = ({ onAdminClick }) => {
               </div>
               <div className="grid grid-cols-4 gap-4">
                 <div className="col-span-1">
-                  <Select
-                    styles={customStyles}
-                    options={options}
-                    placeholder="District"
-                  />
+                <Field
+                    as="select"
+                    name="district"
+                    className="w-full  bg-white border border-[#5011DD]  rounded-3xl px-4 py-2"
+                  >
+                    <option value="" disabled>
+                      District
+                    </option>
+                    <option value="jhapa">Jhapa</option>
+                    <option value="morang">Morang</option>
+                    <option value="other">Other</option>
+                  </Field>
                   <ErrorMessage
                     name="district"
                     component="div"
@@ -190,7 +197,7 @@ const SchoolDetails = ({ onAdminClick }) => {
                   <Field
                     as="select"
                     name="state"
-                    className="w-full text-gray-400 bg-white border border-[#5011DD]  rounded-3xl px-4 py-2"
+                    className="w-full  bg-white border border-[#5011DD]  rounded-3xl px-4 py-2"
                   >
                     <option value="" disabled>
                       State
@@ -210,7 +217,7 @@ const SchoolDetails = ({ onAdminClick }) => {
                   <Field
                     as="select"
                     name="country"
-                    className="w-full text-gray-400 bg-white border border-[#5011DD]  rounded-3xl px-4 py-2"
+                    className="w-full  bg-white border border-[#5011DD]  rounded-3xl px-4 py-2"
                   >
                     <option value="" disabled>
                       Country
@@ -231,7 +238,7 @@ const SchoolDetails = ({ onAdminClick }) => {
                     type="text"
                     name="pinCode"
                     placeholder="Pin Code"
-                    className="w-full text-gray-400 border border-[#5011DD]  rounded-3xl px-4 py-2 placeholder-black"
+                    className="w-full  border border-[#5011DD]  rounded-3xl px-4 py-2 placeholder-black"
                   />
                   <ErrorMessage
                     name="pinCode"

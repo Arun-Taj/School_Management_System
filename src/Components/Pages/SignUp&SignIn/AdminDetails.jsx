@@ -104,7 +104,7 @@ const phoneRegExp = /^\d{10}$/;
                     name="firstName"
                     type="text"
                     placeholder="First Name"
-                    className="w-full border border-[#5011DD]  rounded-3xl px-4 py-2"
+                    className="w-full placeholder-black border border-[#5011DD]  rounded-3xl px-4 py-2"
                   />
                   <ErrorMessage
                     name="firstName"
@@ -117,7 +117,7 @@ const phoneRegExp = /^\d{10}$/;
                     name="middleName"
                     type="text"
                     placeholder="Middle Name"
-                    className="w-full border border-[#5011DD]  rounded-3xl px-4 py-2"
+                    className="w-full placeholder-black border border-[#5011DD]  rounded-3xl px-4 py-2"
                   />
                 </div>
                 <div>
@@ -125,7 +125,7 @@ const phoneRegExp = /^\d{10}$/;
                     name="lastName"
                     type="text"
                     placeholder="Last Name"
-                    className="w-full border border-[#5011DD] rounded-3xl px-4 py-2"
+                    className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
                   />
                   <ErrorMessage
                     name="lastName"
@@ -137,7 +137,7 @@ const phoneRegExp = /^\d{10}$/;
                   <Field
                     as="select"
                     name="gender"
-                    className="w-full text-gray-400 border border-[#5011DD] rounded-3xl px-4 py-2 bg-white"
+                    className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2 bg-white"
                   >
                     <option value="" disabled>
                       Gender
@@ -157,7 +157,7 @@ const phoneRegExp = /^\d{10}$/;
                     type="date"
                     name="dateOfBirth"
                     placeholder="Date of Birth"
-                    className="w-full text-gray-400 border border-[#5011DD] rounded-3xl px-4 py-2"
+                    className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
                   />
                   <ErrorMessage
                     name="dateOfBirth"
@@ -168,9 +168,9 @@ const phoneRegExp = /^\d{10}$/;
                 <div>
                   <Field
                     type="text"
-                    name="alternatePhoneNo"
-                    placeholder="Alternate Phone No."
-                    className="w-full border border-[#5011DD] rounded-3xl px-4 py-2"
+                    name="PhoneNo"
+                    placeholder="Phone No."
+                    className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
                   />
                 </div>
 
@@ -179,7 +179,7 @@ const phoneRegExp = /^\d{10}$/;
                     type="text"
                     name="aadhaarNumber"
                     placeholder="Aadhaar Number"
-                    className="w-full border border-[#5011DD] rounded-3xl px-4 py-2"
+                    className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
                   />
                   <ErrorMessage
                     name="aadhaarNumber"
@@ -201,7 +201,7 @@ const phoneRegExp = /^\d{10}$/;
                   <button
                     type="button"
                     onClick={() => fileInputRef1.current.click()}
-                    className="w-full text-gray-400 bg-white border border-[#5011DD] rounded-3xl px-8 py-2 flex items-center justify-between"
+                    className="w-full placeholder-black bg-white border border-[#5011DD] rounded-3xl px-8 py-2 flex items-center justify-between"
                   >
                     Upload Photo <MdOutlineFileUpload />
                   </button>
@@ -223,7 +223,7 @@ const phoneRegExp = /^\d{10}$/;
                     type="text"
                     name="address1"
                     placeholder="Address 1"
-                    className="w-full border border-[#5011DD] rounded-3xl px-4 py-2"
+                    className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
                   />
                   <ErrorMessage
                     name="address1"
@@ -237,7 +237,7 @@ const phoneRegExp = /^\d{10}$/;
                     type="text"
                     name="townVillageCity"
                     placeholder="Town / Village / City"
-                    className="w-full border border-[#5011DD] rounded-3xl px-4 py-2"
+                    className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
                   />
                   <ErrorMessage
                     name="townVillageCity"
@@ -252,7 +252,7 @@ const phoneRegExp = /^\d{10}$/;
                   <Field
                     as="select"
                     name="district"
-                    className="w-full text-gray-400 border border-[#5011DD] rounded-3xl px-4 py-2 bg-white"
+                    className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2 bg-white"
                   >
                     <option value="" disabled>
                       District
@@ -274,7 +274,7 @@ const phoneRegExp = /^\d{10}$/;
                   <Field
                     as="select"
                     name="state"
-                    className="w-full text-gray-400 border border-[#5011DD]  rounded-3xl px-4 py-2 bg-white"
+                    className="w-full placeholder-black border border-[#5011DD]  rounded-3xl px-4 py-2 bg-white"
                   >
                     <option value="" disabled>
                       State
@@ -294,7 +294,7 @@ const phoneRegExp = /^\d{10}$/;
                   <Field
                     as="select"
                     name="country"
-                    className="w-full text-gray-400 border border-[#5011DD] rounded-3xl px-4 py-2 bg-white"
+                    className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2 bg-white"
                   >
                     <option value="" disabled>
                       Country
@@ -315,7 +315,7 @@ const phoneRegExp = /^\d{10}$/;
                     type="text"
                     name="pinCode"
                     placeholder="Pin Code"
-                    className="w-full border border-[#5011DD] rounded-3xl px-4 py-2"
+                    className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
                   />
                   <ErrorMessage
                     name="pinCode"
@@ -331,7 +331,7 @@ const phoneRegExp = /^\d{10}$/;
                     type="text"
                     name="nationality"
                     placeholder="Nationality"
-                    className="w-full border border-[#5011DD] rounded-3xl px-4 py-2"
+                    className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
                   />
                   <ErrorMessage
                     name="nationality"
@@ -345,7 +345,7 @@ const phoneRegExp = /^\d{10}$/;
                     type="text"
                     name="religion"
                     placeholder="Religion"
-                    className="w-full border border-[#5011DD] rounded-3xl px-4 py-2"
+                    className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
                   />
                   <ErrorMessage
                     name="religion"
@@ -367,7 +367,7 @@ const phoneRegExp = /^\d{10}$/;
                   <button
                     type="button"
                     onClick={() => fileInputRef2.current.click()}
-                    className="w-full bg-white border border-[#5011DD] text-gray-400 rounded-3xl px-8 py-2 flex items-center justify-between"
+                    className="w-full bg-white border border-[#5011DD] placeholder-black rounded-3xl px-8 py-2 flex items-center justify-between"
                   >
                     Passport Photo <MdOutlineFileUpload />
                   </button>

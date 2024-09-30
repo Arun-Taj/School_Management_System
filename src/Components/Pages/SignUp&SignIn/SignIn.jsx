@@ -92,7 +92,7 @@ const [formValues, setFormValues] = useState(initialFormValues);
                 className="w-full border border-solid border-[#5011DD] p-2  pr-10 rounded-full"
               />
               <span
-                className="absolute right-2 top-1/2 transform -translate-y-1/2  cursor-pointer"
+                className="absolute right-2 top-3 cursor-pointer"
                 onClick={togglePasswordVisibility}
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -111,7 +111,7 @@ const [formValues, setFormValues] = useState(initialFormValues);
                   name="rememberMe"
                   checked={formValues.rememberMe}
                   onChange={handleChange}
-                  className="mr-2 "
+                  className="mr-2 cursor-pointer"
                 />
                 <label htmlFor="rememberMe" className="text-sm">
                   Remember Me
@@ -135,7 +135,7 @@ const [formValues, setFormValues] = useState(initialFormValues);
 
           <p className="text-center mt-4 text-sm">
             Don't have an account?
-            <button className="text-blue-500" onClick={handleSignUpClick}>
+            <button className="text-black font-bold px-2" onClick={handleSignUpClick}>
               Sign up
             </button>
           </p>
