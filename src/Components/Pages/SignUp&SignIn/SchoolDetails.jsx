@@ -67,9 +67,9 @@ const SchoolDetails = ({ onAdminClick }) => {
   return (
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center"
-      style={{ backgroundImage: `url('src/assets/black background.svg')` }}
+      style={{ backgroundImage: `url('src/assets/black_background.svg')` }}
     >
-      <div className="bg-pink-100 rounded-3xl p-6 w-full max-w-2xl py-32 mx-8">
+      <div className="bg-pink-100 rounded-3xl p-6 w-full max-w-2xl py-16 mx-8">
         <h1 className="text-center text-xl font-semibold mb-6">
           School Details
         </h1>
