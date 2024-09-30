@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
+// import image from './assets/image.svg';
+
 const SignInForm = () => {
   const navigate = useNavigate();
 
@@ -174,7 +176,7 @@ const SignInForm = () => {
                 points, with our powerful School Management Platform.
               </p>
               <img
-                src="src/assets/image.svg"
+                src="/image.svg"
                 alt="Manage Illustration"
                 className="mt-6 opacity-100"
               />

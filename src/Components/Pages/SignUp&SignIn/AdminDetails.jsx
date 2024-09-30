@@ -82,7 +82,7 @@ const phoneRegExp = /^\d{10}$/;
   return (
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center p-4"
-      style={{ backgroundImage: `url('src/assets/black background.svg')` }}
+      style={{ backgroundImage: `url('/black_background.svg')` }}
     >
       <div className="bg-pink-100 rounded-3xl p-4">
         <h1 className="text-center text-xl font-semibold mb-6">
