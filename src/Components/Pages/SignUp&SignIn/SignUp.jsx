@@ -11,7 +11,7 @@ const SignupForm = () => {
   //   navigate("/")
   // }
   const logInClick=()=>{
-    navigate('/signin')
+    navigate('/')
   }
 
   const [formData, setFormData] = useState({
@@ -107,8 +107,8 @@ const SignupForm = () => {
   return (
     <div className="justify-center items-center min-h-screen  flex flex-row ">
       
-      <div className="bg-white rounded-3xl p-8 w-full max-w-lg   ">
-        <p>Logo</p>
+      <div className="bg-white rounded-3xl p-8 w-full max-w-lg">
+        <div>Logo</div>
         <h2 className="text-2xl font-semibold mb-6 text-center">
           Register your account
         </h2> 
