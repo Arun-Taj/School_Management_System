@@ -154,7 +154,7 @@ const phoneRegExp = /^\d{10}$/;
                 </div>
                 <div>
                   <Field
-                    type="date"
+                    type="text"
                     name="dateOfBirth"
                     placeholder="Date of Birth"
                     className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
@@ -393,12 +393,7 @@ const phoneRegExp = /^\d{10}$/;
               >
                 <IoIosArrowDropleft size={24} className="cursor-pointer" />
               </button>
-              <button
-                type="submit"
-                className="bg-pink-500 rounded-full px-8 py-2"
-              >
-                Submit
-              </button>
+              
             </Form>
           )}
         </Formik>

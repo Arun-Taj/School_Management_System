@@ -248,7 +248,7 @@ const SchoolDetails = ({ onAdminClick }) => {
                 </div>
               </div>
 
-              <button type="submit">
+              <button type="button" onClick={onAdminClick}>
                 <IoIosArrowDropright size={24} />
               </button>
             </Form>
