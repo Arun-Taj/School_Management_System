@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-// import image from './assets/image.svg';
-
 const SignInForm = () => {
   const navigate = useNavigate();
 
@@ -15,7 +13,7 @@ const SignInForm = () => {
   const [formValues, setFormValues] = useState(initialFormValues);
   const [formErrors, setFormErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormValues({
@@ -26,35 +24,50 @@ const SignInForm = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    setIsSubmitted(true);
+    
+    // Retrieve the stored user data from localStorage
+    const loggedUser = JSON.parse(localStorage.getItem("user"));
+    
+    if (loggedUser) {
+      const { username: storedUsername, password: storedPassword } = loggedUser;
+      
+      // DEBUG: Check what values are being compared
+      console.log("Stored username:", storedUsername);
+      console.log("Stored password:", storedPassword);
+      console.log("Entered username:", formValues.username);
+      console.log("Entered password:", formValues.password);
 
-    const loggedUser = JSON.parse(localStorage.getItem("id")); // Ensure the key matches your registration key
-
-    // Check if the entered username and password match the stored values
-    if (
-      loggedUser &&
-      formValues.username === loggedUser.username &&
-      formValues.password === loggedUser.password
-    ) {
-      navigate("/dashboard");
+      // Case-insensitive username comparison
+      if (
+        formValues.username === storedUsername &&
+        formValues.password === storedPassword
+      ) {
+        navigate("/dashboard"); // Navigate to dashboard on successful login
+      } else {
+        // Set error messages for incorrect username/password
+        setFormErrors({
+          username:
+            formValues.username === ""
+              ? "User name is required!"
+              : formValues.username !== storedUsername
+              ? "Incorrect username"
+              : "",
+          password:
+            formValues.password === ""
+              ? "Password is required!"
+              : formValues.password !== storedPassword
+              ? "Incorrect password"
+              : "",
+        });
+      }
     } else {
-      // Set error messages for incorrect username/password
       setFormErrors({
-        username:
-          formValues.username === ""
-            ? "User name is required!"
-            : formValues.username !== loggedUser.username
-            ? "Incorrect username"
-            : "",
-        password:
-          formValues.password === ""
-            ? "Password is required!"
-            : formValues.password !== loggedUser.password
-            ? "Incorrect password"
-            : "",
+        username: "No registered user found",
+        password: "Please sign up first!",
       });
     }
   };
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -64,10 +77,9 @@ const SignInForm = () => {
   };
 
   return (
-    <div className=" flex min-h-screen ">
-      <div className="flex justify-center bg-white  w-full ">
+    <div className="flex min-h-screen">
+      <div className="flex justify-center bg-white w-full">
         {/* Left Side */}
-
         <div className="w-1/2 p-8 h-full">
           <div className="font-bold text-xl">Logo</div>
           <div className="flex justify-center pt-14">
@@ -81,7 +93,7 @@ const SignInForm = () => {
               </p>
               <form onSubmit={handleLogin}>
                 {/* Username */}
-                <div className="mb-4 ">
+                <div className="mb-4">
                   <input
                     type="text"
                     name="username"
@@ -105,7 +117,7 @@ const SignInForm = () => {
                     placeholder="Password"
                     value={formValues.password}
                     onChange={handleChange}
-                    className="w-full placeholder-black border border-solid border-[#5011DD] p-2  pr-10 rounded-full"
+                    className="w-full placeholder-black border border-solid border-[#5011DD] p-2 pr-10 rounded-full"
                   />
                   <span
                     className="absolute right-2 top-3 cursor-pointer"

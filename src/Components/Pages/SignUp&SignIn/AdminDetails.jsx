@@ -4,29 +4,13 @@ import { IoIosArrowDropleft } from "react-icons/io";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
-function AdminDetails({ onBackClick }) {
+function AdminDetails({ onBackClick, adminDetailsData, setAdminDetailsData,formRef  }) {
 
 
   const aadharRegExp = /^\d{12}$/;
 const phoneRegExp = /^\d{10}$/;
 
-  const initialValues = {
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    gender: "",
-    uploadPhoto: null,
-    dateOfBirth:"",
-    aadhaarNumber:"",
-    address1:"",
-    townVillageCity:"",
-    district:"",
-    state:"",
-    country:"",
-    pinCode:"",
-    nationality:"",
-    passportPhoto: null,
-  };
+  
 
   const fileInputRef1 = useRef(null);
   const fileInputRef2 = useRef(null);
@@ -79,6 +63,10 @@ const phoneRegExp = /^\d{10}$/;
       reader.readAsDataURL(file);
     }
   };
+  const handleSubmit = (values) => {
+    setAdminDetailsData(values); // Save the form data
+    onBackClick();
+  };
   return (
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center p-4"
@@ -89,15 +77,16 @@ const phoneRegExp = /^\d{10}$/;
           Admin Details
         </h1>
         <Formik
-          initialValues={initialValues}
+        innerRef={formRef} // Set Formik instance ref
+          initialValues={adminDetailsData}
           validationSchema={validationSchema}
-          onSubmit={(values) => {
-            console.log(values);
-            // Handle form submission
-          }}
+          onSubmit={handleSubmit}
+          enableReinitialize={true}  // Prevent resetting form on switch
+          //validateOnChange={true}
+    
         >
-          {({ setFieldValue }) => (
-            <Form className="space-y-4">
+          {({ setFieldValue, values }) => (
+            <Form className="space-y-4" >
               <div className="grid grid-cols-3 gap-3  ">
                 <div>
                   <Field
@@ -154,7 +143,7 @@ const phoneRegExp = /^\d{10}$/;
                 </div>
                 <div>
                   <Field
-                    type="text"
+                    type="number"
                     name="dateOfBirth"
                     placeholder="Date of Birth"
                     className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
@@ -167,7 +156,7 @@ const phoneRegExp = /^\d{10}$/;
                 </div>
                 <div>
                   <Field
-                    type="text"
+                    type="number"
                     name="PhoneNo"
                     placeholder="Phone No."
                     className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
@@ -176,7 +165,7 @@ const phoneRegExp = /^\d{10}$/;
 
                 <div className="col-span-2">
                   <Field
-                    type="text"
+                    type="number"
                     name="aadhaarNumber"
                     placeholder="Aadhaar Number"
                     className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
@@ -387,7 +376,7 @@ const phoneRegExp = /^\d{10}$/;
               </div>
 
               <button
-                type="button"
+                type="submit"
                 onClick={onBackClick}
                 className="mt-4 text-center"
               >

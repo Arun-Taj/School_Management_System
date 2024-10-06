@@ -3,27 +3,16 @@ import { MdOutlineFileUpload } from "react-icons/md";
 import { IoIosArrowDropright } from "react-icons/io";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import Select from "react-select";
 
-const SchoolDetails = ({ onAdminClick }) => {
+
+const SchoolDetails = ({ onAdminClick, schoolDetailsData, setSchoolDetailsData, formRef   }) => {
   const fileInputRef = useRef(null);
 
   const handleUploadClick = () => {
     fileInputRef.current.click();
   };
 
-  const initialValues = {
-    schoolName: "",
-    logo: "",
-    tagLine: "",
-    schoolBoard: "",
-    address1: "",
-    city: "",
-    district: "",
-    state: "",
-    country: "",
-    pinCode: "",
-  };
+ 
 
   const validationSchema = Yup.object({
     schoolName: Yup.string().required("School name is required"),
@@ -40,30 +29,12 @@ const SchoolDetails = ({ onAdminClick }) => {
   });
 
   const handleSubmit = (values) => {
-    console.log(values);
-    onAdminClick();
+    setSchoolDetailsData(values); // Save the form data
+    onAdminClick();  // Switch to admin form without submission
   };
-  const options = [
-    { value: "jhapa", label: "Jhapa" },
-    { value: "morang", label: "Morang" },
-    { value: "kathmandu", label: "Kathmandu" },
-    { value: "biratnagar", label: "Biratnagar" },
-    { value: "other", label: "Other" },
-  ];
 
-  // const customStyles = {
-  //   control: (provided) => ({
-  //     ...provided,
-  //     borderColor: "#5011DD",
-  //     borderRadius: "20px",
-      
-  //   }),
-  //   placeholder: (provided) => ({
-  //     ...provided,
-  //     color: "#A0AEC0", // Gray color for placeholder
-  //   }),
-  // };
 
+  
   return (
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center"
@@ -74,11 +45,14 @@ const SchoolDetails = ({ onAdminClick }) => {
           School Details
         </h1>
         <Formik
-          initialValues={initialValues}
+        innerRef={formRef} // Set Formik instance ref
+          initialValues={schoolDetailsData}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
+          enableReinitialize={true}  // Prevent resetting form on switch
+          //validateOnChange={true}  // Ensure the form updates parent state when fields change
         >
-          {({ setFieldValue }) => (
+          {({ setFieldValue}) => (
             <Form className="space-y-4">
               <div className="grid grid-cols-3 gap-4">
                 <div className="col-span-2">
@@ -248,7 +222,7 @@ const SchoolDetails = ({ onAdminClick }) => {
                 </div>
               </div>
 
-              <button type="button" onClick={onAdminClick}>
+              <button type="submit" onClick={onAdminClick}>
                 <IoIosArrowDropright size={24} />
               </button>
             </Form>
