@@ -22,10 +22,18 @@ const phoneRegExp = /^\d{10}$/;
     firstName: Yup.string().required("First Name is required"),
     lastName: Yup.string().required("Last Name is required"),
     gender: Yup.string().required("Gender is required"),
-    dateOfBirth: Yup.string().required("DOB is required"),
+    dateOfBirth: Yup.string().matches(
+      /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/(19|20)\d{2}$/,
+      "Date must be in MM/DD/YYYY format"
+    )
+    .required("DOB is required"),
     aadhaarNumber: Yup.string()
-    .matches(aadharRegExp, 'Aadhar Number must be exactly 12 digits')
-    .required('Aadhar number is required'),
+  .matches(/^[2-9]{1}[0-9]{11}$/, 'Aadhaar Number must be exactly 12 digits and cannot start with 0 or 1')
+  .required('Aadhaar number is required'),
+  phoneNumber: Yup.string()
+  .matches(/^[6-9]{1}[0-9]{9}$/, 'Phone No must be exactly 10 digits and start with 6, 7, 8, or 9')
+  .required('Phone number is required'),
+
     address1: Yup.string().required("Address required"),
     uploadPhoto: Yup.mixed().required("Photo is required"),
     townVillageCity: Yup.string().required("Town/village/city required"),
@@ -143,7 +151,7 @@ const phoneRegExp = /^\d{10}$/;
                 </div>
                 <div>
                   <Field
-                    type="number"
+                    type="text"
                     name="dateOfBirth"
                     placeholder="Date of Birth"
                     className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
@@ -156,16 +164,21 @@ const phoneRegExp = /^\d{10}$/;
                 </div>
                 <div>
                   <Field
-                    type="number"
-                    name="PhoneNo"
+                    type="text"
+                    name="phoneNumber"
                     placeholder="Phone No."
                     className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
+                  />
+                  <ErrorMessage
+                    name="phoneNumber"
+                    component="span"
+                    className="text-red-500 text-sm"
                   />
                 </div>
 
                 <div className="col-span-2">
                   <Field
-                    type="number"
+                    type="text"
                     name="aadhaarNumber"
                     placeholder="Aadhaar Number"
                     className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
