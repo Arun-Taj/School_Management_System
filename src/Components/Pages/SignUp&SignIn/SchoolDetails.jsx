@@ -1,40 +1,59 @@
-import React, { useRef } from "react";
+import React, { useRef,useState } from "react";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { IoIosArrowDropright } from "react-icons/io";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import StateDistrictSelect from "./StatesDistricts";
 import * as Yup from "yup";
 
-
-const SchoolDetails = ({ onAdminClick, schoolDetailsData, setSchoolDetailsData, formRef   }) => {
+const SchoolDetails = ({
+  onAdminClick,
+  schoolDetailsData,
+  setSchoolDetailsData,
+  formRef,
+}) => {
   const fileInputRef = useRef(null);
+  const [photoPreview, setPhotoPreview] = useState(null);
 
-  const handleUploadClick = () => {
-    fileInputRef.current.click();
+  const handleUploadClick = (event, setFieldValue) => {
+    const file = event.target.files[0];
+
+    // Check if the file exists
+    if (file) {
+      // File size check (250KB = 250 * 1024 bytes)
+      const maxFileSize = 250 * 1024;
+      if (file.size > maxFileSize) {
+        alert("File size exceeds 250KB. Please upload a smaller file.");
+        return;
+      }
+
+      setFieldValue("logo", file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
-
- 
 
   const validationSchema = Yup.object({
     schoolName: Yup.string().required("School name is required"),
-    logo: Yup.mixed().required("Logo is required"),
+    //logo: Yup.mixed().required("Logo is required"),
     schoolBoard: Yup.string().required("School Board is required"),
     address1: Yup.string().required("Address is required"),
-    city: Yup.string().required("City is required"),
+    //city: Yup.string().required("City/Village/State is required"),
     district: Yup.string().required("District required"),
     state: Yup.string().required("State required"),
     country: Yup.string().required("Country required"),
-    pinCode: Yup.string()
-      .matches(/^\d{5,6}$/, "Enter a valid Pin Code")
-      .required("Pin Code required"),
+    // pinCode: Yup.string()
+    //   .matches(/^\d{6}$/, "Enter a valid Pin Code with 6 digits")
+    //   .required("Pin Code required"),
   });
 
   const handleSubmit = (values) => {
     setSchoolDetailsData(values); // Save the form data
-    onAdminClick();  // Switch to admin form without submission
+    onAdminClick(); // Switch to admin form without submission
   };
 
-
-  
   return (
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center"
@@ -45,14 +64,14 @@ const SchoolDetails = ({ onAdminClick, schoolDetailsData, setSchoolDetailsData, 
           School Details
         </h1>
         <Formik
-        innerRef={formRef} // Set Formik instance ref
+          innerRef={formRef} // Set Formik instance ref
           initialValues={schoolDetailsData}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
-          enableReinitialize={true}  // Prevent resetting form on switch
+          enableReinitialize={true} // Prevent resetting form on switch
           //validateOnChange={true}  // Ensure the form updates parent state when fields change
         >
-          {({ setFieldValue}) => (
+          {({ setFieldValue, values }) => (
             <Form className="space-y-4">
               <div className="grid grid-cols-3 gap-4">
                 <div className="col-span-2">
@@ -68,27 +87,35 @@ const SchoolDetails = ({ onAdminClick, schoolDetailsData, setSchoolDetailsData, 
                     className="text-red-500 text-sm"
                   />
                 </div>
-                <div className="col-span-1 relative">
+                <div className="relative col-span-1">
                   <input
                     type="file"
                     ref={fileInputRef}
                     style={{ display: "none" }}
+                    accept="image/*"
                     onChange={(event) =>
-                      setFieldValue("logo", event.target.files[0])
+                      handleUploadClick(event, setFieldValue)
                     }
                   />
                   <button
                     type="button"
-                    onClick={handleUploadClick}
-                    className="w-full  bg-white border border-[#5011DD]  rounded-3xl px-4 p-2 flex flex-row items-start justify-between"
+                    onClick={() => fileInputRef.current.click()}
+                    className="w-full placeholder-black bg-white border border-[#5011DD] rounded-3xl px-8 py-2 flex items-center justify-between"
                   >
                     Upload Logo <MdOutlineFileUpload />
                   </button>
                   <ErrorMessage
                     name="logo"
-                    component="div"
+                    component="span"
                     className="text-red-500 text-sm"
                   />
+                  {photoPreview && (
+                    <img
+                      src={photoPreview}
+                      alt="Preview"
+                      className="mt-2 w-20 h-20 rounded-full object-cover"
+                    />
+                  )}
                 </div>
                 <div className="col-span-2">
                   <Field
@@ -109,9 +136,12 @@ const SchoolDetails = ({ onAdminClick, schoolDetailsData, setSchoolDetailsData, 
                     </option>
                     <option value="cbse">CBSE</option>
                     <option value="icse">ICSE</option>
-                    <option value="state">State Board</option>
+                    <option value="state_board">State Boards</option>
+                    <option value="nios">NIOS</option>
                     <option value="ib">IB</option>
-                    <option value="other">Other</option>
+                    <option value="igcse">IGCSE</option>
+                    <option value="cisce">CISCE</option>
+                    <option value="other_boards">Other Boards</option>
                   </Field>
                   <ErrorMessage
                     name="schoolBoard"
@@ -148,46 +178,6 @@ const SchoolDetails = ({ onAdminClick, schoolDetailsData, setSchoolDetailsData, 
               </div>
               <div className="grid grid-cols-4 gap-4">
                 <div className="col-span-1">
-                <Field
-                    as="select"
-                    name="district"
-                    className="w-full  bg-white border border-[#5011DD]  rounded-3xl px-4 py-2"
-                  >
-                    <option value="" disabled>
-                      District
-                    </option>
-                    <option value="jhapa">Jhapa</option>
-                    <option value="morang">Morang</option>
-                    <option value="other">Other</option>
-                  </Field>
-                  <ErrorMessage
-                    name="district"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
-                </div>
-
-                <div className="col-span-1">
-                  <Field
-                    as="select"
-                    name="state"
-                    className="w-full  bg-white border border-[#5011DD]  rounded-3xl px-4 py-2"
-                  >
-                    <option value="" disabled>
-                      State
-                    </option>
-                    <option value="koshi">Koshi</option>
-                    <option value="bagmati">Bagmati</option>
-                    <option value="other">Other</option>
-                  </Field>
-                  <ErrorMessage
-                    name="state"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
-                </div>
-
-                <div className="col-span-1">
                   <Field
                     as="select"
                     name="country"
@@ -196,14 +186,20 @@ const SchoolDetails = ({ onAdminClick, schoolDetailsData, setSchoolDetailsData, 
                     <option value="" disabled>
                       Country
                     </option>
-                    <option value="Nepal">Nepal</option>
+
                     <option value="india">India</option>
-                    <option value="other">Other</option>
                   </Field>
                   <ErrorMessage
                     name="country"
                     component="div"
                     className="text-red-500 text-sm mt-1"
+                  />
+                </div>
+                <div className="col-span-2">
+                  <StateDistrictSelect
+                    setFieldValue={setFieldValue}
+                    selectedState={values.state}
+                    selectedDistrict={values.district}
                   />
                 </div>
 

@@ -17,11 +17,13 @@ const SignupForm = ({ formData, setFormData, formRef, handleSubmit }) => {
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
-
+  const phoneRegExp = /^(?:[7-9]\d{9})$/;
   // Validation schema using Yup
   const validationSchema = Yup.object({
     email: Yup.string().email("Invalid email format").required("Email is required"),
-    phone: Yup.string().matches(/^\d{10}$/, "Phone number must be exactly 10 digits").required("Phone number is required"),
+    phoneNumber: Yup.string()
+    .matches(phoneRegExp, 'Number must exactly 10-digit starting with 7, 8, or 9')
+    .required('Phone number is required'),
     username: Yup.string().min(3, "Username must be at least 3 characters long").required("Username is required"),
     password: Yup.string().min(6, "Password must be at least 6 characters long").matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{6,}$/,
@@ -57,8 +59,8 @@ const SignupForm = ({ formData, setFormData, formRef, handleSubmit }) => {
                   <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
                 </div>
                 <div className="w-full mb-4">
-                  <Field type="text" name="phone" placeholder="Phone Number" className="w-full placeholder-black border border-solid border-[#5011DD] p-2 rounded-3xl" />
-                  <ErrorMessage name="phone" component="div" className="text-red-500 text-sm" />
+                  <Field type="text" name="phoneNumber" placeholder="Phone Number" className="w-full placeholder-black border border-solid border-[#5011DD] p-2 rounded-3xl" />
+                  <ErrorMessage name="phoneNumber" component="div" className="text-red-500 text-sm" />
                 </div>
               </div>
 

@@ -42,7 +42,7 @@ const SignUpDetails = () => {
     lastName: "",
     gender: "",
     uploadPhoto: null,
-    dateOfBirth:"",
+    dateOfBirth:null,
     aadhaarNumber:"",
     address1:"",
     townVillageCity:"",
@@ -51,6 +51,7 @@ const SignUpDetails = () => {
     country:"",
     pinCode:"",
     nationality:"",
+    religion:"",
     passportPhoto: null,
   });
 

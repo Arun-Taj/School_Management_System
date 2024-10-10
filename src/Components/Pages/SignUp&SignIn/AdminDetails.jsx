@@ -2,18 +2,26 @@ import React, { useRef, useState } from "react";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { IoIosArrowDropleft } from "react-icons/io";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import "react-datepicker/dist/react-datepicker.css";
+import { FaCalendarAlt } from "react-icons/fa";
+import DatePicker from "react-datepicker";
+import StateDistrictSelect from "./StatesDistricts";
 import * as Yup from "yup";
 
-function AdminDetails({ onBackClick, adminDetailsData, setAdminDetailsData,formRef  }) {
-
-
-  const aadharRegExp = /^\d{12}$/;
-const phoneRegExp = /^\d{10}$/;
-
-  
+function AdminDetails({
+  onBackClick,
+  adminDetailsData,
+  setAdminDetailsData,
+  formRef,
+}) {
+  const aadharRegExp = /^(?!0)\d{12}$/;
+  const phoneRegExp = /^(?:[7-9]\d{9})$/;
 
   const fileInputRef1 = useRef(null);
   const fileInputRef2 = useRef(null);
+  const [startDate, setStartDate] = useState(null);
+  const datePickerRef = useRef(null); // Use ref to control DatePicker
+
   const [photoPreview1, setPhotoPreview1] = useState(null); // Preview for first photo
   const [photoPreview2, setPhotoPreview2] = useState(null); // Preview for passport photo
 
@@ -22,35 +30,49 @@ const phoneRegExp = /^\d{10}$/;
     firstName: Yup.string().required("First Name is required"),
     lastName: Yup.string().required("Last Name is required"),
     gender: Yup.string().required("Gender is required"),
-    dateOfBirth: Yup.string().matches(
-      /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/(19|20)\d{2}$/,
-      "Date must be in MM/DD/YYYY format"
-    )
-    .required("DOB is required"),
-    aadhaarNumber: Yup.string()
-  .matches(/^[2-9]{1}[0-9]{11}$/, 'Aadhaar Number must be exactly 12 digits and cannot start with 0 or 1')
-  .required('Aadhaar number is required'),
-  phoneNumber: Yup.string()
-  .matches(/^[6-9]{1}[0-9]{9}$/, 'Phone No must be exactly 10 digits and start with 6, 7, 8, or 9')
-  .required('Phone number is required'),
 
+    dateOfBirth: Yup.date()
+      .nullable() // Allows for null values initially
+      .required("Date of Birth is required"), // Field is required
+
+    phoneNumber: Yup.string()
+      .matches(
+        phoneRegExp,
+        "Number must exactly 10-digit starting with 7, 8, or 9"
+      )
+      .required("Phone number is required"),
+    aadhaarNumber: Yup.string()
+      .matches(
+        aadharRegExp,
+        "Number must be exactly 12 digits and cannot start with 0"
+      )
+      .required("Aadhar number is required"),
     address1: Yup.string().required("Address required"),
-    uploadPhoto: Yup.mixed().required("Photo is required"),
-    townVillageCity: Yup.string().required("Town/village/city required"),
+    uploadPhoto: Yup.mixed().required("Photo  required"),
+    //townVillageCity: Yup.string().required("Town/village/city required"),
     district: Yup.string().required("District required"),
     state: Yup.string().required("State required"),
     country: Yup.string().required("Country required"),
     nationality: Yup.string().required("Nationality required"),
-    pinCode: Yup.string()
-      .matches(/^\d{5,6}$/, "Enter a valid Pin Code")
-      .required("Pin Code required"),
-    passportPhoto: Yup.mixed().required("Passport Photo is required"),
+    religion: Yup.string().required("Religion required"),
+    // pinCode: Yup.string()
+    //   .matches(/^\d{6}$/, "Enter a valid Pin Code with 6 digits")
+    //   .required("Pin Code required"),
+    passportPhoto: Yup.mixed().required("Passport Photo  required"),
   });
-
 
   const handlePhotoChange1 = (event, setFieldValue) => {
     const file = event.target.files[0];
+    
+    // Check if the file exists
     if (file) {
+      // File size check (250KB = 250 * 1024 bytes)
+      const maxFileSize = 250 * 1024;
+      if (file.size > maxFileSize) {
+        alert("File size exceeds 250KB. Please upload a smaller file.");
+        return;
+      }
+  
       setFieldValue("uploadPhoto", file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -59,10 +81,19 @@ const phoneRegExp = /^\d{10}$/;
       reader.readAsDataURL(file);
     }
   };
-
+  
   const handlePhotoChange2 = (event, setFieldValue) => {
     const file = event.target.files[0];
+    
+    // Check if the file exists
     if (file) {
+      // File size check (250KB = 250 * 1024 bytes)
+      const maxFileSize = 250 * 1024;
+      if (file.size > maxFileSize) {
+        alert("File size exceeds 250KB. Please upload a smaller file.");
+        return;
+      }
+  
       setFieldValue("passportPhoto", file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -75,6 +106,7 @@ const phoneRegExp = /^\d{10}$/;
     setAdminDetailsData(values); // Save the form data
     onBackClick();
   };
+
   return (
     <div
       className="min-h-screen bg-cover bg-center flex items-center justify-center p-4"
@@ -85,16 +117,15 @@ const phoneRegExp = /^\d{10}$/;
           Admin Details
         </h1>
         <Formik
-        innerRef={formRef} // Set Formik instance ref
+          innerRef={formRef} // Set Formik instance ref
           initialValues={adminDetailsData}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
-          enableReinitialize={true}  // Prevent resetting form on switch
+          enableReinitialize={true} // Prevent resetting form on switch
           //validateOnChange={true}
-    
         >
           {({ setFieldValue, values }) => (
-            <Form className="space-y-4" >
+            <Form className="space-y-4">
               <div className="grid grid-cols-3 gap-3  ">
                 <div>
                   <Field
@@ -149,12 +180,25 @@ const phoneRegExp = /^\d{10}$/;
                     className="text-red-500 text-sm"
                   />
                 </div>
-                <div>
-                  <Field
-                    type="text"
+                <div className="relative ">
+                  <DatePicker
+                    selected={values.dateOfBirth}
+                    onChange={(date) => {
+                      setFieldValue('dateOfBirth', date); // Update Formik state on date change
+                      setStartDate(date); // Optional: Update local state for other uses
+                    }}
+                    showYearDropdown // Enable year dropdown
+                    showMonthDropdown // Enable month dropdown
+                    dropdownMode="select" // Make dropdowns selectable
+                    dateFormat="MM/dd/yyyy" // Customize the date format
+                    placeholderText="Date of Birth"
+                    ref={datePickerRef}
                     name="dateOfBirth"
-                    placeholder="Date of Birth"
-                    className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
+                    className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2 cursor-pointer"
+                  />
+                  <FaCalendarAlt
+                    className="absolute cursor-pointer right-2 top-3   text-[#5011DD]" 
+                    onClick={() => datePickerRef.current.setFocus()}
                   />
                   <ErrorMessage
                     name="dateOfBirth"
@@ -166,7 +210,7 @@ const phoneRegExp = /^\d{10}$/;
                   <Field
                     type="text"
                     name="phoneNumber"
-                    placeholder="Phone No."
+                    placeholder="Alternate Phone No."
                     className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
                   />
                   <ErrorMessage
@@ -253,62 +297,25 @@ const phoneRegExp = /^\d{10}$/;
                 <div>
                   <Field
                     as="select"
-                    name="district"
-                    className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2 bg-white"
-                  >
-                    <option value="" disabled>
-                      District
-                    </option>
-                    <option value="jhapa">Jhapa</option>
-                    <option value="morang">Morang</option>
-                    <option value="kathmandu">Kathmandu</option>
-                    <option value="biratnagar">Biratnagar</option>
-                    <option value="other">Other</option>
-                  </Field>
-                  <ErrorMessage
-                    name="district"
-                    component="span"
-                    className="text-red-500 text-sm"
-                  />
-                </div>
-
-                <div>
-                  <Field
-                    as="select"
-                    name="state"
-                    className="w-full placeholder-black border border-[#5011DD]  rounded-3xl px-4 py-2 bg-white"
-                  >
-                    <option value="" disabled>
-                      State
-                    </option>
-                    <option value="koshi">Koshi</option>
-                    <option value="bagmati">Bagmati</option>
-                    <option value="other">Other</option>
-                  </Field>
-                  <ErrorMessage
-                    name="state"
-                    component="span"
-                    className="text-red-500 text-sm"
-                  />
-                </div>
-
-                <div>
-                  <Field
-                    as="select"
                     name="country"
                     className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2 bg-white"
                   >
                     <option value="" disabled>
                       Country
                     </option>
-                    <option value="nepal">Nepal</option>
                     <option value="india">India</option>
-                    <option value="other">Other</option>
                   </Field>
                   <ErrorMessage
                     name="country"
                     component="span"
                     className="text-red-500 text-sm"
+                  />
+                </div>
+                <div className="col-span-2">
+                  <StateDistrictSelect
+                    setFieldValue={setFieldValue}
+                    selectedState={values.state}
+                    selectedDistrict={values.district}
                   />
                 </div>
 
@@ -344,11 +351,21 @@ const phoneRegExp = /^\d{10}$/;
 
                 <div>
                   <Field
-                    type="text"
+                    as="select"
                     name="religion"
-                    placeholder="Religion"
-                    className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
-                  />
+                    className="w-full bg-white border border-[#5011DD] rounded-3xl px-4 py-2"
+                  >
+                    <option value="" selected disabled>
+                      Religion
+                    </option>
+                    <option value="hindu">Hindu</option>
+                    <option value="muslim">Muslim</option>
+                    <option value="christian">Christian</option>
+                    <option value="sikh">Sikh</option>
+                    <option value="buddhist">Buddhist</option>
+                    <option value="jain">Jain</option>
+                    <option value="others">Others</option>
+                  </Field>
                   <ErrorMessage
                     name="religion"
                     component="span"
@@ -395,7 +412,6 @@ const phoneRegExp = /^\d{10}$/;
               >
                 <IoIosArrowDropleft size={24} className="cursor-pointer" />
               </button>
-              
             </Form>
           )}
         </Formik>

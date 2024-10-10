@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
+import StateDistrictSelect from "../SignUp&SignIn/StatesDistricts";
 
 function AdmissionForm() {
   const initialFormValues = {
