@@ -35,12 +35,12 @@ function AdminDetails({
       .nullable() // Allows for null values initially
       .required("Date of Birth is required"), // Field is required
 
-    phoneNumber: Yup.string()
-      .matches(
-        phoneRegExp,
-        "Number must exactly 10-digit starting with 7, 8, or 9"
-      )
-      .required("Phone number is required"),
+    // altPhone: Yup.string()
+    //   .matches(
+    //     phoneRegExp,
+    //     "Number must exactly 10-digit starting with 7, 8, or 9"
+    //   )
+    //   .required("Phone number is required"),
     aadhaarNumber: Yup.string()
       .matches(
         aadharRegExp,
@@ -103,6 +103,7 @@ function AdminDetails({
     }
   };
   const handleSubmit = (values) => {
+   // console.log("Form submitted values:", values);
     setAdminDetailsData(values); // Save the form data
     onBackClick();
   };
@@ -209,15 +210,15 @@ function AdminDetails({
                 <div>
                   <Field
                     type="text"
-                    name="phoneNumber"
+                    name="altPhone"
                     placeholder="Alternate Phone No."
                     className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2"
                   />
-                  <ErrorMessage
-                    name="phoneNumber"
+                  {/* <ErrorMessage
+                    name="altPhone"
                     component="span"
                     className="text-red-500 text-sm"
-                  />
+                  /> */}
                 </div>
 
                 <div className="col-span-2">
@@ -412,6 +413,7 @@ function AdminDetails({
               >
                 <IoIosArrowDropleft size={24} className="cursor-pointer" />
               </button>
+              
             </Form>
           )}
         </Formik>

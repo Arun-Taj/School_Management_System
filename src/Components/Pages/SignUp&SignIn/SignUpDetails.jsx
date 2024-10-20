@@ -16,7 +16,7 @@ const SignUpDetails = () => {
   // State to collect form data
   const [formData, setFormData] = useState({
     email: "",
-    phone: "",
+    phoneNumber: "",
     username: "",
     password: "",
     confirmPassword: "",
@@ -43,6 +43,7 @@ const SignUpDetails = () => {
     gender: "",
     uploadPhoto: null,
     dateOfBirth:null,
+    altPhone:"",
     aadhaarNumber:"",
     address1:"",
     townVillageCity:"",
@@ -79,11 +80,22 @@ const SignUpDetails = () => {
     ) {
       console.log("All forms are valid!");
       // Ensure that formData is up-to-date
-    const updatedFormData = signUpFormRef.current.values;
-    setFormData(updatedFormData);  // Update formData state
+     // Get the updated values from Formik refs
+     const updatedFormData = signUpFormRef.current.values;
+     const updatedSchoolDetailsData = schoolDetailsRef.current.values;
+     const updatedAdminDetailsData = adminDetailsRef.current.values;
+ 
+     // Update the state to ensure we have the latest values
+     setFormData(updatedFormData);
+     setSchoolDetailsData(updatedSchoolDetailsData);
+     setAdminDetailsData(updatedAdminDetailsData);
 
-      console.log("Signup Data: ", formData);
+     // Log the latest form data
+    console.log("Signup Data: ", updatedFormData);
+    console.log("School Details Data: ", updatedSchoolDetailsData);
+    console.log("Admin Details Data: ", updatedAdminDetailsData);
 
+    // Store user data and redirect
       const userData = {
         username: updatedFormData.username, // Ensure username is stored in lowercase
         password: updatedFormData.password,
