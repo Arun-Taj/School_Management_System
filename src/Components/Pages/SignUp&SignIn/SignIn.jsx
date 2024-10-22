@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../../context/AuthContext";
+import MainDashboard from "../../DashBoard/MainDashBoard";
 
 const SignInForm = () => {
   const navigate = useNavigate();
+  const { login, auth } = useContext(AuthContext);
+
+
 
   const initialFormValues = {
     username: "",
@@ -14,6 +19,14 @@ const SignInForm = () => {
   const [formErrors, setFormErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
 
+
+  React.useEffect(() => {
+    if (auth.isAuthenticated) {
+      navigate("/dashboard"); //navigate 
+    }
+    
+  }, [auth, navigate]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormValues({
@@ -22,51 +35,88 @@ const SignInForm = () => {
     });
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     
-    // Retrieve the stored user data from localStorage
-    const loggedUser = JSON.parse(localStorage.getItem("user"));
-    
-    if (loggedUser) {
-      const { username: storedUsername, password: storedPassword } = loggedUser;
-      
-      // DEBUG: Check what values are being compared
-      console.log("Stored username:", storedUsername);
-      console.log("Stored password:", storedPassword);
-      console.log("Entered username:", formValues.username);
-      console.log("Entered password:", formValues.password);
+    // Reset any previous form errors
+    setFormErrors({});
+    // Check for empty username or password
+  if (!formValues.username || !formValues.password) {
+    setFormErrors({
+      username: !formValues.username ? "Username is required" : "",
+      password: !formValues.password ? "Password is required" : "",
+    });
+    return; // Stop execution if there are validation errors
+  }
 
-      // Case-insensitive username comparison
-      if (
-        formValues.username === storedUsername &&
-        formValues.password === storedPassword
-      ) {
-        navigate("/dashboard"); // Navigate to dashboard on successful login
-      } else {
-        // Set error messages for incorrect username/password
-        setFormErrors({
-          username:
-            formValues.username === ""
-              ? "User name is required!"
-              : formValues.username !== storedUsername
-              ? "Incorrect username"
-              : "",
-          password:
-            formValues.password === ""
-              ? "Password is required!"
-              : formValues.password !== storedPassword
-              ? "Incorrect password"
-              : "",
-        });
+    // Try logging in with the provided credentials
+    try {
+      // Call the login function from context
+      const loggedIn = await login(formValues.username, formValues.password);
+      
+      if (loggedIn) {
+        // If login is successful, navigate to dashboard
+        navigate("/dashboard");
       }
-    } else {
+    } catch (err) {
+      // Handle errors returned by login
       setFormErrors({
-        username: "No registered user found",
-        password: "Please sign up first!",
+        username: err.response?.data?.username || "",
+        password: err.response?.data?.password || "Incorrect username or password",
       });
     }
   };
+
+  
+  //   e.preventDefault();
+    
+  //   // try logging in with provided credentials
+  //   try {
+  //     await login(formValues.username, formValues.password);
+  //     alert("Login successful!");
+  //   } catch (err) {
+  //     alert(err.message);
+  //   }
+    
+  //   if (loggedUser) {
+  //     const { username: storedUsername, password: storedPassword } = loggedUser;
+      
+  //     // DEBUG: Check what values are being compared
+  //     console.log("Stored username:", storedUsername);
+  //     console.log("Stored password:", storedPassword);
+  //     console.log("Entered username:", formValues.username);
+  //     console.log("Entered password:", formValues.password);
+
+  //     // Case-insensitive username comparison
+  //     if (
+  //       formValues.username === storedUsername &&
+  //       formValues.password === storedPassword
+  //     ) {
+  //       navigate("/dashboard"); // Navigate to dashboard on successful login
+  //     } else {
+  //       // Set error messages for incorrect username/password
+  //       setFormErrors({
+  //         username:
+  //           formValues.username === ""
+  //             ? "User name is required!"
+  //             : formValues.username !== storedUsername
+  //             ? "Incorrect username"
+  //             : "",
+  //         password:
+  //           formValues.password === ""
+  //             ? "Password is required!"
+  //             : formValues.password !== storedPassword
+  //             ? "Incorrect password"
+  //             : "",
+  //       });
+  //     }
+  //   } else {
+  //     setFormErrors({
+  //       username: "No registered user found",
+  //       password: "Please sign up first!",
+  //     });
+  //   }
+  // };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -76,6 +126,7 @@ const SignInForm = () => {
     navigate("/signup");
   };
 
+  
   return (
     <div className="flex min-h-screen">
       <div className="flex justify-center bg-white w-full">
@@ -197,7 +248,7 @@ const SignInForm = () => {
         </div>
       </div>
     </div>
-  );
+  )
 };
 
 export default SignInForm;

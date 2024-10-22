@@ -185,13 +185,19 @@ function AdminDetails({
                   <DatePicker
                     selected={values.dateOfBirth}
                     onChange={(date) => {
-                      setFieldValue('dateOfBirth', date); // Update Formik state on date change
+                      // Format the selected date to YYYY-MM-DD and update Formik state
+                      const formattedDate = date.toISOString().slice(0, 10); // Extract date in YYYY-MM-DD format
+                      setFieldValue('dateOfBirth', formattedDate); // Update Formik state with the formatted date
                       setStartDate(date); // Optional: Update local state for other uses
                     }}
+                    // onChange={(date) => {
+                    //   setFieldValue('dateOfBirth', date); // Update Formik state on date change
+                    //   setStartDate(date); // Optional: Update local state for other uses
+                    // }}
                     showYearDropdown // Enable year dropdown
                     showMonthDropdown // Enable month dropdown
                     dropdownMode="select" // Make dropdowns selectable
-                    dateFormat="MM/dd/yyyy" // Customize the date format
+                    dateFormat="yyyy-MM-dd" // Customize the date format
                     placeholderText="Date of Birth"
                     ref={datePickerRef}
                     name="dateOfBirth"

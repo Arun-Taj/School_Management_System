@@ -1,5 +1,5 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React, {useContext} from "react";
+import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
 
 import Sidebar from "./Sidebar";
 import Dashboard from "./DashBoard";
@@ -56,13 +56,25 @@ import AccountSetting from "./Profile/AccountSetting";
 import AddWholeClsData from "../Pages/ExamPage/OnclickPages/AddWholeClsData";
 import AddSingleStdData from "../Pages/ExamPage/OnclickPages/AddSingleStdData";
 import EditPage from "../Pages/ConfigurationPage/EditPage";
-
 // import Dougnut from '../DashBoard/Dougnut';
 // import AdminDetails from '../Pages/SignUp&SignIn/AdminDetails';
+import SignIn from "../Pages/SignUp&SignIn/SignIn";
+
+import { AuthContext } from "../../context/AuthContext";
 
 function MainDashBoard() {
-  return (
-    <div className="flex ">
+
+  const {auth} = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (!auth.isAuthenticated) {
+      navigate("/"); //navigate to login page
+    }
+  }, [auth, navigate]);
+
+  return auth.isAuthenticated ? (
+      <div className="flex ">
       <div className="sticky top-0 h-screen z-10">
         <Sidebar className="h-full overflow-hidden" />
       </div>
@@ -73,7 +85,7 @@ function MainDashBoard() {
         <div className="flex-1  bg-gray-100">
           <Routes>
             {/* <Route path='/signup' element={<SignUpDetails/>} />
-                 <Route path='/adminDetails' element={<AdminDetails/>} /> */}
+                <Route path='/adminDetails' element={<AdminDetails/>} /> */}
             <Route path="/dashboard" element={<Dashboard />} />
             {/* <Route path="/dashboard" element={<Dashboard />} /> */}
 
@@ -150,9 +162,12 @@ function MainDashBoard() {
         </div>
       </div>
     </div>
-
-   
-  );
+    ) : (
+      <SignIn />
+    )
+  
+  
+  
 }
 
 export default MainDashBoard;

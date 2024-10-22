@@ -1,11 +1,25 @@
-import React from 'react';
-import {Link } from 'react-router-dom'
+import React, {useContext} from 'react';
+import {Link, useNavigate } from 'react-router-dom'
 import { FaRegUserCircle } from "react-icons/fa";
 import { MdOutlineSettings } from "react-icons/md";
 import { LuLogOut } from "react-icons/lu";
+import { AuthContext } from "../../../context/AuthContext";
 
 
 const ProfileDropDown = ({ isOpen }) => {
+
+  const {logout} = useContext(AuthContext);
+  const navigate = useNavigate();
+
+
+  const handleLogOut = () => {
+    logout();
+    //navigate to login page
+    navigate("/");
+  }
+
+
+
   return (
     <div className="relative inline-block text-left">
       {isOpen && (
@@ -33,6 +47,7 @@ const ProfileDropDown = ({ isOpen }) => {
             <a
               href="#"
               className="text-gray-700 flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100"
+              onClick={handleLogOut}
             >
               <LuLogOut/>
               Log Out
