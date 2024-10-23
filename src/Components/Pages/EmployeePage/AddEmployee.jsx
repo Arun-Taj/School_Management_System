@@ -129,10 +129,16 @@ function AddEmployee() {
     if (fileInputRef1.current) {
       fileInputRef1.current.value = null; // Reset the file input field
     }
+    if (fileInputRef2.current) {
+      fileInputRef2.current.value = null; // Reset the file input field
+    }
+
 
     // Clear the file name and any errors
     setFileName1("");
     setFileSizeError("");
+    setFileName2("");
+    setFileSizeError2("");
   };
 
   function getStates(jsonData) {
