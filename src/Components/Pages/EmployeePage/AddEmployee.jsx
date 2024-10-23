@@ -3,6 +3,9 @@ import { MdOutlineFileUpload } from "react-icons/md";
 import { MdBusinessCenter } from "react-icons/md";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { formValidationSchema } from "./EmpValidations";
+import DistrictStates from "./DistrictStates";
+import statesDistricts from "../SignUp&SignIn/statesDistricts.json";
+import axios from "axios";
 
 function AddEmployee() {
   // Select complimentry logic
@@ -26,23 +29,6 @@ function AddEmployee() {
   const removeOption = (option) => {
     setSelectedOptions(selectedOptions.filter((item) => item !== option));
   };
-
-  //upload logic
-  const fileInputRef = useRef(null);
-
-  const handleUploadClick = () => {
-    fileInputRef.current.click();
-  };
-
-  // Reset logic
-    // const formRef = useRef(null);
-
-    // const handleReset = () => {
-    //   // Reset the form using the ref
-    //   if (formRef.current) {
-    //     formRef.current.reset();
-    //   }
-    // };
 
   const initialValues = {
     employeeFirstName: "",
@@ -77,42 +63,136 @@ function AddEmployee() {
     currentState: "",
     currentCountry: "",
     currentZipCode: "",
-    sameAsPermanentAddress:false,
-    
+    sameAsPermanentAddress: false,
 
-
-    dateOfJoining:"",
-    nationality:"",
-    religion:"",
-    caste:"", 
-    bloodGroup:"",
-    bioData:"",
-    educationalDetails:"",
-    experience:"",
-    mainSubject:"",
-    complementarySubject:"",
-    remarks:""
+    dateOfJoining: "",
+    nationality: "",
+    religion: "",
+    caste: "",
+    bloodGroup: "",
+    bioData: "",
+    educationalDetails: "",
+    experience: "",
+    mainSubject: "",
+    complementarySubject: "",
+    remarks: "",
   };
 
- // Form submission logic
- const handleSubmit = (values, formikBag) => {
-  console.log("Form Submitted");
-  console.log("Form Data",values);
-   // Safely log the form data (values)
-  //  try {
-  //   console.log("Form Data (JSON):", JSON.stringify(values, null, 2)); // Ensure only 'values' are stringified
-  // } catch (error) {
-  //   console.error("Error stringifying values:", error);
-  // }
+  const fileInputRef1 = useRef(null);
+  const [fileName1, setFileName1] = useState(""); // To store the file name
+  const [fileSizeError, setFileSizeError] = useState(""); // To store the error message for file size
 
+  // Handle file upload with size limit check (250 KB)
+  const handleUploadClick1 = (event, setFieldValue) => {
+    const file1 = event.currentTarget.files[0]; // Get the selected file
+    if (file1) {
+      const fileSizeInKB = file1.size / 1024; // Convert file size to KB
+      if (fileSizeInKB <= 250) {
+        setFieldValue("photoUpload", file1); // Set file value for Formik
+        setFileName1(file1.name); // Set file name to display
+        setFileSizeError(""); // Clear any previous error
+      } else {
+        setFileSizeError("File size must be 250KB or less."); // Set error message
+        setFileName1(""); // Clear the file name if it's too large
+      }
+    }
+  };
 
-  // Perform any form submission logic here (e.g., API call)
+  const fileInputRef2 = useRef(null);
+  const [fileName2, setFileName2] = useState(""); // To store the file name
+  const [fileSizeError2, setFileSizeError2] = useState(""); // To store the error message for file size
 
-  // Reset the form after submission using the formikBag.resetForm() method
-  // formikBag.resetForm();
-};
+  // Handle file upload with size limit check (250 KB)
+  const handleUploadClick2 = (event, setFieldValue) => {
+    const file = event.currentTarget.files[0]; // Get the selected file
+    if (file) {
+      const fileSizeInKB = file.size / 1024; // Convert file size to KB
+      if (fileSizeInKB <= 250) {
+        setFieldValue("bioData", file); // Set file value for Formik
+        setFileName2(file.name); // Set file name to display
+        setFileSizeError2(""); // Clear any previous error
+      } else {
+        setFileSizeError2("File size must be 250KB or less."); // Set error message
+        setFileName2(""); // Clear the file name if it's too large
+      }
+    }
+  };
 
+  const handleSubmit = (values, { resetForm }) => {
+    // Log the form values
+    console.log("Form Submitted successfully");
+    console.log("Form Data", values);
 
+    // Reset the form after successful submission
+    resetForm();
+    // Manually reset the file input
+    if (fileInputRef1.current) {
+      fileInputRef1.current.value = null; // Reset the file input field
+    }
+
+    // Clear the file name and any errors
+    setFileName1("");
+    setFileSizeError("");
+  };
+
+  function getStates(jsonData) {
+    return jsonData.states.map((stateObj) => stateObj.state);
+  }
+
+  function getDistrictsByState(jsonData, stateName) {
+    const stateObj = jsonData.states.find(
+      (stateObj) => stateObj.state === stateName
+    );
+    return stateObj ? stateObj.districts : []; // Return districts or empty array if state not found
+  }
+
+  const [states, setStates] = useState(getStates(statesDistricts));
+  const [districts, setDistricts] = useState([]);
+
+  const [cstates, setcStates] = useState(getStates(statesDistricts));
+  const [cdistricts, setcDistricts] = useState([]);
+
+  const [edistrict, seteDistrict] = useState(null);
+
+  function prepareFormData(data) {
+    const formData = new FormData();
+
+    // Iterate over the data object
+    for (let key in data) {
+      if (data[key] instanceof File) {
+        // If the value is a File, append it as a file
+        formData.append(key, data[key]);
+      } else if (typeof data[key] === "object" && data[key] !== null) {
+        // Skip object fields if not a file (e.g., photoUpload and bioData)
+        // Convert objects to string if necessary
+        formData.append(key, JSON.stringify(data[key]));
+      } else {
+        // Append other key-value pairs as string data
+        formData.append(key, data[key]);
+      }
+    }
+
+    return formData;
+  }
+  // const token=localStorage.getItem('access_token');
+
+  // // Create FormData from employeeData
+  // //const FORMDATA= prepareFormData(employeeData);
+
+  // // Example: How to send it to the backend (with Axios or Fetch)
+  // // axios.post('/your-api-endpoint', formData);
+  // axios.post('/your-api-endpoint', FORMDATA, {
+  //   headers: {
+  //     'Content-Type': 'multipart/form-data',
+  //     'Authorization': `Bearer ${token}`  // Replace with your actual token
+  //   }
+  // })
+  // .then(response => {
+  //   console.log('Success:', response);
+  // })
+  // .catch(error => {
+  //   console.error('Error:', error);
+  // });
 
   return (
     <div className="bg-pink-100 min-h-screen p-8">
@@ -132,18 +212,17 @@ function AddEmployee() {
       </div>
 
       {/* Form Data */}
-        <Formik
-          initialValues={initialValues}
-          validationSchema={formValidationSchema}
-          onSubmit={handleSubmit}
-          validateOnChange={true}
-          
-        >
-          {({ setFieldValue,isSubmitting, values,resetForm }) => (
-            <Form className=" ">
-              <div className="my-8 text-center">
-                <h2 className="text-3xl font-bold text-black">Employee Form</h2>
-              </div>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={formValidationSchema}
+        onSubmit={handleSubmit}
+        validateOnChange={true}
+      >
+        {({ setFieldValue, values, resetForm }) => (
+          <Form className=" ">
+            <div className="my-8 text-center">
+              <h2 className="text-3xl font-bold text-black">Employee Form</h2>
+            </div>
 
             {/* Employee Information */}
 
@@ -182,7 +261,9 @@ function AddEmployee() {
                 </div>
 
                 <div className="mb-4">
-                  <label className="font-sans text-base font-bold leading-5 text-left">Last Name</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">
+                    Last Name
+                  </label>
                   <Field
                     name="employeeLastName"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
@@ -196,7 +277,9 @@ function AddEmployee() {
 
                 {/* Gender */}
                 <div className="mb-4">
-                  <label className="font-sans text-base font-bold leading-5 text-left">Gender</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">
+                    Gender
+                  </label>
                   <Field
                     as="select"
                     name="gender"
@@ -232,42 +315,42 @@ function AddEmployee() {
                 </div>
 
                 {/* Employee Photo */}
-                <div className="mb-4 relative">
+                <div className="relative mb-4">
                   <label className="font-sans text-base font-bold leading-5 text-left">
                     Employee Photo
                   </label>
-                  <Field name="file">
-                    {({ form }) => (
-                      <>
-                        <input
-                          type="file"
-                          ref={fileInputRef}
-                          style={{ display: "none" }}
-                          className="rounded-3xl"
-                          onChange={(event) => {
-                            form.setFieldValue(
-                              "file",
-                              event.currentTarget.files[0]
-                            );
-                          }}
-                        />
-                        <button
-                          type="button"
-                          onClick={handleUploadClick}
-                          className="w-full bg-white border border-gray-300 rounded-3xl px-4 p-2 flex flex-row items-start justify-between"
-                        >
-                          Upload Photo <MdOutlineFileUpload />
-                        </button>
-
-                        {/* ErrorMessage for file validation */}
-                        <ErrorMessage
-                          name="file"
-                          component="p"
-                          className="text-red-500 text-sm mt-1"
-                        />
-                      </>
-                    )}
-                  </Field>
+                  <input
+                    type="file"
+                    ref={fileInputRef1}
+                    style={{ display: "none" }}
+                    accept="image/*" // Accept only image files
+                    onChange={(event) =>
+                      handleUploadClick1(event, setFieldValue)
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef1.current.click()}
+                    className="w-full bg-white border border-gray-300 rounded-3xl px-4 p-2 flex flex-row items-start justify-between"
+                  >
+                    <span
+                      className="overflow-hidden text-ellipsis whitespace-nowrap"
+                      style={{ maxWidth: "80%" }} // Adjust to control the space for the file name
+                    >
+                      {fileName1 ? fileName1 : "Upload Photo"}
+                    </span>
+                    <MdOutlineFileUpload />
+                  </button>
+                  {fileSizeError && (
+                    <span className="text-red-500 text-sm">
+                      {fileSizeError}
+                    </span>
+                  )}
+                  <ErrorMessage
+                    name="photoUpload"
+                    component="span"
+                    className="text-red-500 text-sm"
+                  />
                 </div>
               </div>
 
@@ -319,7 +402,9 @@ function AddEmployee() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="font-sans text-base font-bold leading-5 text-left">Email</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">
+                    Email
+                  </label>
                   <Field
                     name="email"
                     type="email"
@@ -462,7 +547,9 @@ function AddEmployee() {
               <hr className="border-gray-600" />
               <div className="grid grid-cols-7 gap-4 mt-6">
                 <div className="mb-4 col-span-2">
-                  <label className="font-sans text-base font-bold leading-5 text-left">Address 1</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">
+                    Address 1
+                  </label>
                   <Field
                     name="address1"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
@@ -488,53 +575,10 @@ function AddEmployee() {
                     className="text-red-500 text-sm"
                   />
                 </div>
-
                 <div className="mb-4">
-                  <label className="font-sans text-base font-bold leading-5 text-left">District</label>
-                  <Field
-                    as="select"
-                    name="district"
-                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-                  >
-                    <option value="" disabled selected>
-                      District
-                    </option>
-                    <option value="chennai">Chennai</option>
-                    <option value="Jhapa">Jhapa</option>
-                    <option value="lakhanau">Lakhanau</option>
-                    <option value="morang">Morang</option>
-                  </Field>
-                  <ErrorMessage
-                    name="district"
-                    component="p"
-                    className="text-red-500 text-sm"
-                  />
-                </div>
-
-                <div className="mb-4 ">
-                  <label className="font-sans text-base font-bold leading-5 text-left">State</label>
-                  <Field
-                    as="select"
-                    name="state"
-                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-                  >
-                    <option value="" disabled selected>
-                      State
-                    </option>
-                   <option value="bihar">Bihar</option>
-                    <option value="bagmati">Bagmati</option>
-                    <option value="koshi">Koshi</option>
-                    <option value="terai">Terai</option>
-                  </Field>
-                  <ErrorMessage
-                    name="state"
-                    component="p"
-                    className="text-red-500 text-sm"
-                  />
-                </div>
-
-                <div className="mb-4">
-                  <label className="font-sans text-base font-bold leading-5 text-left">Country</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">
+                    Country
+                  </label>
                   <Field
                     as="select"
                     name="country"
@@ -543,10 +587,7 @@ function AddEmployee() {
                     <option value="" disabled selected>
                       Country
                     </option>
-                    <option value="nepal">Nepal</option>
                     <option value="india">India</option>
-                    <option value="china">China</option>
-                    <option value="bhutan">Bhutan</option>
                   </Field>
                   <ErrorMessage
                     name="country"
@@ -554,8 +595,72 @@ function AddEmployee() {
                     className="text-red-500 text-sm"
                   />
                 </div>
+                <div className="mb-4 ">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
+                    State
+                  </label>
+                  <Field
+                    as="select"
+                    name="state"
+                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                    onChange={(event) => {
+                      const selectedState = event.target.value;
+                      const filteredDistricts = getDistrictsByState(
+                        statesDistricts,
+                        selectedState
+                      );
+                      setFieldValue("state", selectedState); // Update state in Formik
+                      setFieldValue("district", ""); // Clear district when state changes
+                      setDistricts(filteredDistricts); // Update districts for the selected state
+                    }}
+                  >
+                    <option value="" disabled selected>
+                      State
+                    </option>
+
+                    {states.map((state, index) => (
+                      <option key={index} value={state}>
+                        {state}
+                      </option>
+                    ))}
+                  </Field>
+                  <ErrorMessage
+                    name="state"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+
                 <div className="mb-4">
-                  <label className="font-sans text-base font-bold leading-5 text-left">Pin Code</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">
+                    District
+                  </label>
+                  <Field
+                    as="select"
+                    name="district"
+                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                  >
+                    <option value="" disabled selected>
+                      District
+                    </option>
+
+                    {districts.map((district, index) => (
+                      <option key={index} value={district}>
+                        {district}
+                      </option>
+                    ))}
+                  </Field>
+                  <ErrorMessage
+                    name="district"
+                    component="p"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
+                    Pin Code
+                  </label>
                   <Field
                     name="zipCode"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
@@ -586,28 +691,30 @@ function AddEmployee() {
                     onChange={(e) => {
                       const isChecked = e.target.checked;
                       setFieldValue("sameAsPermanentAddress", isChecked);
+
                       if (isChecked) {
+                        // Use batch update pattern with Formik's setFieldValue to ensure values are set correctly
                         setFieldValue("currentAddress1", values.address1);
                         setFieldValue(
                           "currentTownVillageCity",
                           values.townVillageCity
                         );
-                        setFieldValue("currentDistrict", values.district);
+                        setFieldValue("currentDistrict", values.district); // Correctly set the district
                         setFieldValue("currentState", values.state);
                         setFieldValue("currentCountry", values.country);
                         setFieldValue("currentZipCode", values.zipCode);
-                      }
-                      else {
+                      } else {
                         // Clear current address fields when unchecked
                         setFieldValue("currentAddress1", "");
                         setFieldValue("currentTownVillageCity", "");
-                        setFieldValue("currentDistrict", "");
+                        setFieldValue("currentDistrict", ""); // Clear district when unchecked
                         setFieldValue("currentState", "");
                         setFieldValue("currentCountry", "");
                         setFieldValue("currentZipCode", "");
                       }
                     }}
                   />
+
                   <label className="text-sm">Same as Permanent Address</label>
                 </div>
               </div>
@@ -615,7 +722,9 @@ function AddEmployee() {
 
               <div className="grid grid-cols-7 gap-4 pt-4">
                 <div className="mb-4 col-span-2">
-                  <label className="font-sans text-base font-bold leading-5 text-left">Address 1</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">
+                    Address 1
+                  </label>
                   <Field
                     name="currentAddress1"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
@@ -632,39 +741,9 @@ function AddEmployee() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="font-sans text-base font-bold leading-5 text-left">District</label>
-                  <Field
-                    as="select"
-                    name="currentDistrict"
-                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-                  >
-                    <option value="" disabled selected>
-                      District
-                    </option>
-                    <option value="teacher">Chennai</option>
-                    <option value="peon">Jhapa</option>
-                    <option value="">Lakhanau</option>
-                    <option value="labAssistance">Morang</option>
-                  </Field>
-                </div>
-                <div className="mb-4">
-                  <label className="font-sans text-base font-bold leading-5 text-left">State</label>
-                  <Field
-                    as="select"
-                    name="currentState"
-                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-                  >
-                    <option value="" disabled selected>
-                      State
-                    </option>
-                    <option value="bihar">Bihar</option>
-                    <option value="bagmati">Bagmati</option>
-                    <option value="koshi">Koshi</option>
-                    <option value="terai">Terai</option>
-                  </Field>
-                </div>
-                <div className="mb-4">
-                  <label className="font-sans text-base font-bold leading-5 text-left">Country</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">
+                    Country
+                  </label>
                   <Field
                     as="select"
                     name="currentCountry"
@@ -673,14 +752,65 @@ function AddEmployee() {
                     <option value="" disabled selected>
                       Country
                     </option>
-                    <option value="Nepal">Nepal</option>
-                    <option value="India">India</option>
-                    <option value="China">China</option>
-                    <option value="Bhutan">Bhutan</option>
+                    <option value="india">India</option>
                   </Field>
                 </div>
+
                 <div className="mb-4">
-                  <label className="font-sans text-base font-bold leading-5 text-left">Pin Code</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">
+                    State
+                  </label>
+                  <Field
+                    as="select"
+                    name="currentState"
+                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                    onChange={(event) => {
+                      const selectedState = event.target.value;
+                      const filteredDistricts = getDistrictsByState(
+                        statesDistricts,
+                        selectedState
+                      );
+                      setFieldValue("currentState", selectedState); // Update state in Formik
+                      setFieldValue("currentDistrict", ""); // Clear district when state changes
+                      setcDistricts(filteredDistricts); // Update districts for the selected state
+                    }}
+                  >
+                    <option value="" disabled selected>
+                      State
+                    </option>
+                    {cstates.map((state, index) => (
+                      <option key={index} value={state}>
+                        {state}
+                      </option>
+                    ))}
+                  </Field>
+                </div>
+
+                <div className="mb-4">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
+                    District
+                  </label>
+                  <Field
+                    as="select"
+                    // name="currentDistrict"
+                    name="currentDistrict"
+                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                  >
+                    <option value="" disabled selected>
+                      District
+                    </option>
+                    {cdistricts.map((district, index) => (
+                      <option key={index} value={district}>
+                        {district}
+                      </option>
+                    ))}
+                  </Field>
+                </div>
+
+                <div className="mb-4">
+                  <label className="font-sans text-base font-bold leading-5 text-left">
+                    Pin Code
+                  </label>
                   <Field
                     name="currentZipCode"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
@@ -703,7 +833,7 @@ function AddEmployee() {
                   <label className="font-sans text-base font-bold leading-5 text-left">
                     Date of Joining
                   </label>
-                 <Field
+                  <Field
                     type="date"
                     name="dateOfJoining"
                     className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
@@ -729,7 +859,9 @@ function AddEmployee() {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="font-sans text-base font-bold leading-5 text-left">Religion</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">
+                    Religion
+                  </label>
                   <Field
                     as="select"
                     name="religion"
@@ -744,7 +876,9 @@ function AddEmployee() {
                   </Field>
                 </div>
                 <div className="mb-4">
-                  <label className="font-sans text-base font-bold leading-5 text-left">Caste</label>
+                  <label className="font-sans text-base font-bold leading-5 text-left">
+                    Caste
+                  </label>
                   <Field
                     as="select"
                     name="caste"
@@ -781,23 +915,42 @@ function AddEmployee() {
                     className="text-red-500 text-sm"
                   />
                 </div>
-                <div className="mb-4 relative">
+                <div className="relative mb-4">
                   <label className="font-sans text-base font-bold leading-5 text-left">
-                    Upload Bio-Data
+                    Upload Biodata
                   </label>
                   <input
                     type="file"
-                    ref={fileInputRef}
+                    ref={fileInputRef2}
                     style={{ display: "none" }}
-                    className="rounded-3xl"
+                    accept=".pdf, .doc, .docx" // Accept only document files (modify as needed)
+                    onChange={(event) =>
+                      handleUploadClick2(event, setFieldValue)
+                    }
                   />
                   <button
                     type="button"
-                    onClick={handleUploadClick}
+                    onClick={() => fileInputRef2.current.click()}
                     className="w-full bg-white border border-gray-300 rounded-3xl px-4 p-2 flex flex-row items-start justify-between"
                   >
-                    Upload Photo <MdOutlineFileUpload />
+                    <span
+                      className="overflow-hidden text-ellipsis whitespace-nowrap"
+                      style={{ maxWidth: "80%" }} // Adjust to control the space for the file name
+                    >
+                      {fileName2 ? fileName2 : " Biodata"}
+                    </span>
+                    <MdOutlineFileUpload />
                   </button>
+                  {fileSizeError2 && (
+                    <span className="text-red-500 text-sm">
+                      {fileSizeError2}
+                    </span>
+                  )}
+                  <ErrorMessage
+                    name="bioData"
+                    component="span"
+                    className="text-red-500 text-sm"
+                  />
                 </div>
               </div>
               <div className="grid grid-cols-6 gap-4">
@@ -908,7 +1061,12 @@ function AddEmployee() {
                 </div>
               </div>
               <div className=" mb-4">
-                <label htmlFor="" className="font-sans text-base font-bold leading-5 text-left">Remarks (note)</label>
+                <label
+                  htmlFor=""
+                  className="font-sans text-base font-bold leading-5 text-left"
+                >
+                  Remarks (note)
+                </label>
                 <Field
                   name="remarks"
                   placeholder="Details"
@@ -931,9 +1089,7 @@ function AddEmployee() {
               <div className="">
                 <button
                   type="submit"
-                  
                   className="bg-pink-500 text-white font-semibold px-6 py-2 rounded-3xl shadow-md hover:bg-pink-600"
-                  
                 >
                   Submit
                 </button>

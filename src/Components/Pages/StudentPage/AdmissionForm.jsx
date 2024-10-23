@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
-import StateDistrictSelect from "../SignUp&SignIn/StatesDistricts";
+import statesDistricts from "../SignUp&SignIn/statesDistricts.json";
 
 function AdmissionForm() {
   const initialFormValues = {
@@ -36,34 +36,32 @@ function AdmissionForm() {
     guardianPhoneNumber: "",
     sameAsFatherMother: false,
 
-    pAddress1:"",
-    ptownVillageCity:"",
-    pdistrict:"",
-    pstate:"",
-    pcountry:"",
-    pzipCode:"",
+    pAddress1: "",
+    ptownVillageCity: "",
+    pdistrict: "",
+    pstate: "",
+    pcountry: "",
+    pzipCode: "",
 
-    sameAsPermanentAddress:"",
-    cAddress1:"",
-    ctownVillageCity:"",
-    cdistrict:"",
-    cstate:"",
-    ccountry:"",
-    czipCode:"",
+    sameAsPermanentAddress: "",
+    cAddress1: "",
+    ctownVillageCity: "",
+    cdistrict: "",
+    cstate: "",
+    ccountry: "",
+    czipCode: "",
 
-    nationality:"",
-    religion:"",
-    caste:"",
-    bloodGroup:"",
-    personalIdentification:"",
-    disease:"",
-    lastAttendance:"",
-    transferCertificate:"",
-    remarks:"",
-    
-    
+    nationality: "",
+    religion: "",
+    caste: "",
+    bloodGroup: "",
+    personalIdentification: "",
+    disease: "",
+    lastAttendance: "",
+    transferCertificate: "",
+    remarks: "",
   };
-const [formData,setFormData]=useState(initialFormValues)
+  const [formData, setFormData] = useState(initialFormValues);
   // State for managing errors
   const [errors, setErrors] = useState({});
 
@@ -73,14 +71,14 @@ const [formData,setFormData]=useState(initialFormValues)
   // Handle change for form fields
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-  
+
     setFormData((prevFormData) => {
       // Update the current field value
       let updatedFormData = {
         ...prevFormData,
         [name]: type === "checkbox" ? checked : value,
       };
-  
+
       // Logic for copying permanent address to current address if checkbox is checked
       if (name === "sameAsPermanentAddress" && checked) {
         updatedFormData = {
@@ -88,12 +86,12 @@ const [formData,setFormData]=useState(initialFormValues)
           cAddress1: prevFormData.pAddress1,
           ctownVillageCity: prevFormData.ptownVillageCity,
           cdistrict: prevFormData.pdistrict,
-          cstate:prevFormData.pstate,
-          ccountry:prevFormData.pcountry,
-          czipCode:prevFormData.pzipCode,
+          cstate: prevFormData.pstate,
+          ccountry: prevFormData.pcountry,
+          czipCode: prevFormData.pzipCode,
         };
       }
-  
+
       // If "sameAsPermanentAddress" is unchecked, clear the current address fields
       if (name === "sameAsPermanentAddress" && !checked) {
         updatedFormData = {
@@ -101,22 +99,22 @@ const [formData,setFormData]=useState(initialFormValues)
           cAddress1: "",
           ctownVillageCity: "",
           cdistrict: "",
-          cstate:"",
-          ccountry:"",
-          czipCode:"",
+          cstate: "",
+          ccountry: "",
+          czipCode: "",
         };
       }
-  
+
       return updatedFormData;
     });
-  
+
     // Clear errors for the changed field
     setErrors((prevErrors) => ({
       ...prevErrors,
       [name]: "",
     }));
   };
-  
+
   // Validate the form fields
   const validate = () => {
     const errors = {};
@@ -215,30 +213,29 @@ const [formData,setFormData]=useState(initialFormValues)
       }
     }
     //validations for permanent address
-    if(!formData.pAddress1){
-      errors.pAddress1="Permanent Address is required";
+    if (!formData.pAddress1) {
+      errors.pAddress1 = "Permanent Address is required";
     }
-    if(!formData.ptownVillageCity){
-      errors.ptownVillageCity="Mention town/village/city";
+    if (!formData.ptownVillageCity) {
+      errors.ptownVillageCity = "Mention town/village/city";
     }
-    if(!formData.pdistrict){
-      errors.pdistrict="Select district";
+    if (!formData.pdistrict) {
+      errors.pdistrict = "Select district";
     }
-    if(!formData.pstate){
-      errors.pstate="Select State";
-
+    if (!formData.pstate) {
+      errors.pstate = "Select State";
     }
-    if(!formData.pcountry){
-      errors.pcountry="Select Country";
+    if (!formData.pcountry) {
+      errors.pcountry = "Select Country";
     }
-    if(!formData.pzipCode){
-      errors.pzipCode="Mention zip code";
+    if (!formData.pzipCode) {
+      errors.pzipCode = "Mention zip code";
     }
-    if(!formData.nationality){
-      errors.nationality="Mention Nationality";
+    if (!formData.nationality) {
+      errors.nationality = "Mention Nationality";
     }
-    if(!formData.bloodGroup){
-      errors.bloodGroup="Select Blood Group";
+    if (!formData.bloodGroup) {
+      errors.bloodGroup = "Select Blood Group";
     }
 
     // Return validation result
@@ -267,9 +264,23 @@ const [formData,setFormData]=useState(initialFormValues)
   const handleUploadClick = () => {
     fileInputRef.current.click();
   };
-  const handleReset=()=>{
+  const handleReset = () => {
     setFormData(initialFormValues);
+  };
+
+  function getStates(jsonData) {
+    return jsonData.states.map((stateObj) => stateObj.state);
   }
+
+  function getDistrictsByState(jsonData, stateName) {
+    const stateObj = jsonData.states.find(
+      (stateObj) => stateObj.state === stateName
+    );
+    return stateObj ? stateObj.districts : []; // Return districts or empty array if state not found
+  }
+
+  const [states, setStates] = useState(getStates(statesDistricts));
+  const [districts, setDistricts] = useState([]);
 
   return (
     <div className="bg-pink-100 min-h-screen p-8">
@@ -355,7 +366,9 @@ const [formData,setFormData]=useState(initialFormValues)
 
             {/* Gender */}
             <div className="mb-4">
-              <label className="font-sans text-base font-bold leading-5 text-left">Gender</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Gender
+              </label>
               <select
                 name="gender"
                 value={formData.gender}
@@ -374,7 +387,9 @@ const [formData,setFormData]=useState(initialFormValues)
 
             {/* Date of Birth */}
             <div className="mb-4">
-              <label className="font-sans text-base font-bold leading-5 text-left">Date of Birth</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Date of Birth
+              </label>
               <input
                 type="date"
                 name="dateOfBirth"
@@ -389,7 +404,9 @@ const [formData,setFormData]=useState(initialFormValues)
 
             {/* Student Photo */}
             <div className="mb-4 relative">
-              <label className="font-sans text-base font-bold leading-5 text-left">Student Photo</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Student Photo
+              </label>
               <input
                 type="file"
                 ref={fileInputRef}
@@ -409,7 +426,9 @@ const [formData,setFormData]=useState(initialFormValues)
           <div className="grid grid-cols-6  gap-4">
             {/* Aadhar Number */}
             <div className="mb-4 col-span-2">
-              <label className="font-sans text-base font-bold leading-5 text-left">Aadhar Number</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Aadhar Number
+              </label>
               <input
                 type="text"
                 name="aadharNumber"
@@ -424,7 +443,9 @@ const [formData,setFormData]=useState(initialFormValues)
 
             {/* Mother Tongue */}
             <div className="mb-4">
-              <label className="font-sans text-base font-bold leading-5 text-left">Mother Tongue</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Mother Tongue
+              </label>
               <input
                 type="text"
                 name="motherTongue"
@@ -436,7 +457,9 @@ const [formData,setFormData]=useState(initialFormValues)
 
             {/* Phone Number */}
             <div className="mb-4">
-              <label className="font-sans text-base font-bold leading-5 text-left">Phone Number</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Phone Number
+              </label>
               <input
                 type="tel"
                 name="phoneNumber"
@@ -546,7 +569,9 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>{" "}
             {/* Father's Aadhar Number */}
             <div className="mb-4 col-span-2">
-              <label className="font-sans text-base font-bold leading-5 text-left">Aadhar Number</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Aadhar Number
+              </label>
               <input
                 type="text"
                 name="fatherAadharNumber"
@@ -555,12 +580,16 @@ const [formData,setFormData]=useState(initialFormValues)
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
               {errors.fatherAadharNumber && (
-                <p className="text-red-500 text-sm">{errors.fatherAadharNumber}</p>
+                <p className="text-red-500 text-sm">
+                  {errors.fatherAadharNumber}
+                </p>
               )}
             </div>
             {/* Father's Occupation */}
             <div className="mb-4">
-              <label className="font-sans text-base font-bold leading-5 text-left">Occupation</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Occupation
+              </label>
               <input
                 type="text"
                 name="fatherOccupation"
@@ -568,7 +597,6 @@ const [formData,setFormData]=useState(initialFormValues)
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
-              
             </div>
           </div>
 
@@ -620,7 +648,9 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
             {/* Mother's Aadhar Number */}
             <div className="mb-4 col-span-2">
-              <label className="font-sans text-base font-bold leading-5 text-left">Aadhar Number</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Aadhar Number
+              </label>
               <input
                 type="text"
                 name="motherAadharNumber"
@@ -629,12 +659,16 @@ const [formData,setFormData]=useState(initialFormValues)
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
               {errors.motherAadharNumber && (
-                <p className="text-red-500 text-sm">{errors.motherAadharNumber}</p>
+                <p className="text-red-500 text-sm">
+                  {errors.motherAadharNumber}
+                </p>
               )}
             </div>
             {/* Mother's Occupation */}
             <div className="mb-4">
-              <label className="font-sans text-base font-bold leading-5 text-left">Occupation</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Occupation
+              </label>
               <input
                 type="text"
                 name="motherOccupation"
@@ -655,8 +689,6 @@ const [formData,setFormData]=useState(initialFormValues)
               </span>
               <span>Guardian Informations</span>
             </h3>
-            
-            
           </div>
           <hr className="border-gray-600" />
 
@@ -674,10 +706,11 @@ const [formData,setFormData]=useState(initialFormValues)
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
               {errors.guardianFirstName && (
-                <p className="text-red-500 text-sm">{errors.guardianFirstName}</p>
+                <p className="text-red-500 text-sm">
+                  {errors.guardianFirstName}
+                </p>
               )}
             </div>
-            
 
             {/* Guardian's Middle Name */}
             <div className="mb-4">
@@ -706,13 +739,17 @@ const [formData,setFormData]=useState(initialFormValues)
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
               {errors.guardianLastName && (
-                <p className="text-red-500 text-sm">{errors.guardianLastName}</p>
+                <p className="text-red-500 text-sm">
+                  {errors.guardianLastName}
+                </p>
               )}
             </div>
 
             {/* Guardian's Aadhar Number */}
             <div className="mb-4 col-span-2">
-              <label className="font-sans text-base font-bold leading-5 text-left">Aadhar Number</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Aadhar Number
+              </label>
               <input
                 type="text"
                 name="guardianAadharNumber"
@@ -721,13 +758,17 @@ const [formData,setFormData]=useState(initialFormValues)
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
               {errors.guardianAadharNumber && (
-                <p className="text-red-500 text-sm">{errors.guardianAadharNumber}</p>
+                <p className="text-red-500 text-sm">
+                  {errors.guardianAadharNumber}
+                </p>
               )}
             </div>
 
             {/* Guardian's Occupation */}
             <div className="mb-4">
-              <label className="font-sans text-base font-bold leading-5 text-left">Occupation</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Occupation
+              </label>
               <input
                 type="text"
                 name="guardianOccupation"
@@ -752,13 +793,17 @@ const [formData,setFormData]=useState(initialFormValues)
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
               {errors.relationWithGuardian && (
-                <p className="text-red-500 text-sm">{errors.relationWithGuardian}</p>
+                <p className="text-red-500 text-sm">
+                  {errors.relationWithGuardian}
+                </p>
               )}
             </div>
 
             {/* Phone Number */}
             <div className="mb-4">
-              <label className="font-sans text-base font-bold leading-5 text-left">Phone Number</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Phone Number
+              </label>
               <input
                 type="tel"
                 name="guardianPhoneNumber"
@@ -767,11 +812,14 @@ const [formData,setFormData]=useState(initialFormValues)
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
               {errors.guardianPhoneNumber && (
-                <p className="text-red-500 text-sm">{errors.guardianPhoneNumber}</p>
+                <p className="text-red-500 text-sm">
+                  {errors.guardianPhoneNumber}
+                </p>
               )}
             </div>
           </div>
         </section>
+
         {/* Permanent Address */}
         <section className="mb-8">
           <h3 className="text-lg font-semibold mb-2 flex items-center">
@@ -783,7 +831,9 @@ const [formData,setFormData]=useState(initialFormValues)
           <hr className="border-gray-600" />
           <div className="grid grid-cols-7 gap-4 mt-6">
             <div className="mb-4 col-span-2">
-              <label className="font-sans text-base font-bold leading-5 text-left">Address 1</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Address 1
+              </label>
               <input
                 type="text"
                 name="pAddress1"
@@ -791,7 +841,7 @@ const [formData,setFormData]=useState(initialFormValues)
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
-               {errors.pAddress1 && (
+              {errors.pAddress1 && (
                 <p className="text-red-500 text-sm">{errors.pAddress1}</p>
               )}
             </div>
@@ -808,53 +858,16 @@ const [formData,setFormData]=useState(initialFormValues)
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
               {errors.ptownVillageCity && (
-                <p className="text-red-500 text-sm">{errors.ptownVillageCity}</p>
+                <p className="text-red-500 text-sm">
+                  {errors.ptownVillageCity}
+                </p>
               )}
             </div>
 
             <div className="mb-4">
-              <label className="font-sans text-base font-bold leading-5 text-left">District</label>
-              <select
-                
-                name="pdistrict"
-                value={formData.pdistrict}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-              >
-                <option value="" disabled selected>
-                  District
-                </option>
-                <option value="Class 1">Nepal</option>
-                <option value="Class 2">India</option>
-                <option value="Class 3">China</option>
-              </select>
-              {errors.pdistrict && (
-                <p className="text-red-500 text-sm">{errors.pdistrict}</p>
-              )}
-            </div>
-
-            <div className="mb-4 ">
-              <label className="font-sans text-base font-bold leading-5 text-left">State</label>
-              <select
-                name="pstate"
-                value={formData.pstate}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-              >
-                <option value="" disabled selected>
-                  State
-                </option>
-                <option value="Class 1">Nepal</option>
-                <option value="Class 2">India</option>
-                <option value="Class 3">China</option>
-              </select>
-              {errors.pstate && (
-                <p className="text-red-500 text-sm">{errors.pstate}</p>
-              )}
-            </div>
-
-            <div className="mb-4">
-              <label className="font-sans text-base font-bold leading-5 text-left">Country</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Country
+              </label>
               <select
                 name="pcountry"
                 value={formData.pcountry}
@@ -864,16 +877,79 @@ const [formData,setFormData]=useState(initialFormValues)
                 <option value="" disabled selected>
                   Country
                 </option>
-                <option value="Class 1">Nepal</option>
-                <option value="Class 2">India</option>
-                <option value="Class 3">China</option>
+                <option value="india">India</option>
               </select>
               {errors.pcountry && (
                 <p className="text-red-500 text-sm">{errors.pcountry}</p>
               )}
             </div>
+
+            <div className="mb-4 ">
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                State
+              </label>
+              <select
+                name="pstate"
+                value={formData.pstate}
+                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                onChange={(event) => {
+                  const selectedState = event.target.value;
+                  const filteredDistricts = getDistrictsByState(
+                    statesDistricts,
+                    selectedState
+                  );
+
+                  setFormData({
+                    ...formData,
+                    pstate: selectedState, // Update state in local state
+                    pdistrict: "", // Clear district when state changes
+                  });
+
+                  setDistricts(filteredDistricts); // Update districts for the selected state
+                }}
+              >
+                <option value="" disabled selected>
+                  State
+                </option>
+                {states.map((state, index) => (
+                  <option key={index} value={state}>
+                    {state}
+                  </option>
+                ))}
+              </select>
+              {errors.pstate && (
+                <p className="text-red-500 text-sm">{errors.pstate}</p>
+              )}
+            </div>
+
             <div className="mb-4">
-              <label className="font-sans text-base font-bold leading-5 text-left">Pin Code</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                District
+              </label>
+              <select
+                name="pdistrict"
+                value={formData.pdistrict}
+                onChange={handleChange}
+                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+              >
+                <option value="" disabled selected>
+                  District
+                </option>
+                {districts.map((district, index) => (
+                  <option key={index} value={district}>
+                    {district}
+                  </option>
+                ))}
+              </select>
+              {errors.pdistrict && (
+                <p className="text-red-500 text-sm">{errors.pdistrict}</p>
+              )}
+            </div>
+
+            <div className="mb-4">
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Pin Code
+              </label>
               <input
                 type="text"
                 name="pzipCode"
@@ -911,9 +987,11 @@ const [formData,setFormData]=useState(initialFormValues)
           <hr className="border-gray-600" />
           <div className="grid grid-cols-7 gap-4 mt-4">
             <div className="mb-4 col-span-2">
-              <label className="font-sans text-base font-bold leading-5 text-left">Address 1</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Address 1
+              </label>
               <input
-              name="cAddress1"
+                name="cAddress1"
                 type="text"
                 value={formData.cAddress1}
                 onChange={handleChange}
@@ -926,50 +1004,17 @@ const [formData,setFormData]=useState(initialFormValues)
                 Town/Village/City
               </label>
               <input
-              name="ctownVillageCity"
+                name="ctownVillageCity"
                 type="text"
                 value={formData.ctownVillageCity}
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
             </div>
-
             <div className="mb-4">
-              <label className="font-sans text-base font-bold leading-5 text-left">District</label>
-              <select
-                name="cdistrict"
-                value={formData.cdistrict}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-              >
-                <option value="" disabled selected>
-                  District
-                </option>
-                <option value="Class 1">Nepal</option>
-                <option value="Class 2">India</option>
-                <option value="Class 3">China</option>
-              </select>
-            </div>
-
-            <div className="mb-4 ">
-              <label className="font-sans text-base font-bold leading-5 text-left">State</label>
-              <select
-                name="cstate"
-                value={formData.cstate}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-              >
-                <option value="" disabled selected>
-                  State
-                </option>
-                <option value="Class 1">Nepal</option>
-                <option value="Class 2">India</option>
-                <option value="Class 3">China</option>
-              </select>
-            </div>
-
-            <div className="mb-4">
-              <label className="font-sans text-base font-bold leading-5 text-left">Country</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Country
+              </label>
               <select
                 name="ccountry"
                 value={formData.ccountry}
@@ -979,16 +1024,74 @@ const [formData,setFormData]=useState(initialFormValues)
                 <option value="" disabled selected>
                   Country
                 </option>
-                <option value="Class 1">Nepal</option>
-                <option value="Class 2">India</option>
-                <option value="Class 3">China</option>
+                <option value="india">India</option>
               </select>
             </div>
+
+            <div className="mb-4 ">
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                State
+              </label>
+              <select
+                name="cstate"
+                value={formData.cstate}
+                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                onChange={(event) => {
+                  const selectedState = event.target.value;
+                  const filteredDistricts = getDistrictsByState(
+                    statesDistricts,
+                    selectedState
+                  );
+
+                  setFormData({
+                    ...formData,
+                    cstate: selectedState, // Update state in local state
+                    cdistrict: "", // Clear district when state changes
+                  });
+
+                  setDistricts(filteredDistricts); // Update districts for the selected state
+                }}
+              >
+                <option value="" disabled selected>
+                  State
+                </option>
+                {states.map((state, index) => (
+                  <option key={index} value={state}>
+                    {state}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="mb-4">
-              <label className="font-sans text-base font-bold leading-5 text-left">Pin Code</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                District
+              </label>
+              <select
+                name="cdistrict"
+                value={formData.cdistrict}
+                onChange={handleChange}
+                className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+              >
+                <option value="" disabled selected>
+                  District
+                </option>
+                {districts.map((district, index) => (
+                  <option key={index} value={district}>
+                    {district}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mb-4">
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Pin Code
+              </label>
               <input
                 type="text"
                 name="czipCode"
+                onChange={handleChange}
                 value={formData.czipCode}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-3xl"
               />
@@ -1007,7 +1110,9 @@ const [formData,setFormData]=useState(initialFormValues)
           <hr className="border-gray-600" />
           <div className="grid grid-cols-6  gap-4 mb-4 mt-6">
             <div className="mb-4">
-              <label className="font-sans text-base font-bold leading-5 text-left">Nationality</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Nationality
+              </label>
               <input
                 type="text"
                 name="nationality"
@@ -1020,7 +1125,9 @@ const [formData,setFormData]=useState(initialFormValues)
               )}
             </div>
             <div className="mb-4">
-              <label className="font-sans text-base font-bold leading-5 text-left">Religion</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Religion
+              </label>
               <select
                 name="religion"
                 value={formData.religion}
@@ -1036,7 +1143,9 @@ const [formData,setFormData]=useState(initialFormValues)
               </select>
             </div>
             <div className="mb-4">
-              <label className="font-sans text-base font-bold leading-5 text-left">Caste</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Caste
+              </label>
               <select
                 name="caste"
                 value={formData.caste}
@@ -1052,13 +1161,15 @@ const [formData,setFormData]=useState(initialFormValues)
               </select>
             </div>{" "}
             <div className="mb-4 ">
-              <label className="font-sans text-base font-bold leading-5 text-left">Blood Group</label>
+              <label className="font-sans text-base font-bold leading-5 text-left">
+                Blood Group
+              </label>
               <select
                 name="bloodGroup"
                 value={formData.bloodGroup}
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-              > 
+              >
                 <option value="" disabled selected>
                   Blood Group
                 </option>
@@ -1085,7 +1196,10 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
           </div>
           <div className=" mb-4">
-            <label htmlFor="" className="font-sans text-base font-bold leading-5 text-left">
+            <label
+              htmlFor=""
+              className="font-sans text-base font-bold leading-5 text-left"
+            >
               Is the boy/girl suffering from any disease ? If so, give details
             </label>
             <input
@@ -1099,7 +1213,12 @@ const [formData,setFormData]=useState(initialFormValues)
           </div>
           <div className="grid grid-cols-2 gap-4 mt-8 mb-4">
             <div>
-              <label htmlFor="" className="font-sans text-base font-bold leading-5 text-left">Institution last attendence (if any)</label>
+              <label
+                htmlFor=""
+                className="font-sans text-base font-bold leading-5 text-left"
+              >
+                Institution last attendence (if any)
+              </label>
               <input
                 placeholder="Details"
                 type="text"
@@ -1110,7 +1229,12 @@ const [formData,setFormData]=useState(initialFormValues)
               />
             </div>
             <div>
-              <label htmlFor="" className="font-sans text-base font-bold leading-5 text-left">Transfer Certificate No. & Date (if any)</label>
+              <label
+                htmlFor=""
+                className="font-sans text-base font-bold leading-5 text-left"
+              >
+                Transfer Certificate No. & Date (if any)
+              </label>
               <input
                 placeholder="Details"
                 type="text"
@@ -1122,7 +1246,12 @@ const [formData,setFormData]=useState(initialFormValues)
             </div>
           </div>
           <div className=" mb-4">
-            <label htmlFor="" className="font-sans text-base font-bold leading-5 text-left">Remarks (note)</label>
+            <label
+              htmlFor=""
+              className="font-sans text-base font-bold leading-5 text-left"
+            >
+              Remarks (note)
+            </label>
             <input
               placeholder="Details"
               type="text"
