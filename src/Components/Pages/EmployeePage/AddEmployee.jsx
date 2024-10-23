@@ -11,7 +11,7 @@ function AddEmployee() {
   // Select complimentry logic
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [district, SetDistrict] = useState("district");
+  // const [district, SetDistrict] = useState("district");
 
   const options = ["Python", "C++", "DSA"];
 
@@ -152,7 +152,7 @@ function AddEmployee() {
   const [cstates, setcStates] = useState(getStates(statesDistricts));
   const [cdistricts, setcDistricts] = useState([]);
 
-  const [edistrict, seteDistrict] = useState(null);
+  // const [edistrict, seteDistrict] = useState(null);
 
   function prepareFormData(data) {
     const formData = new FormData();
@@ -218,7 +218,7 @@ function AddEmployee() {
         onSubmit={handleSubmit}
         validateOnChange={true}
       >
-        {({ setFieldValue, values, resetForm }) => (
+        {({ setFieldValue, values, setValues , resetForm }) => (
           <Form className=" ">
             <div className="my-8 text-center">
               <h2 className="text-3xl font-bold text-black">Employee Form</h2>
@@ -690,29 +690,69 @@ function AddEmployee() {
                     className="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded-3xl"
                     onChange={(e) => {
                       const isChecked = e.target.checked;
-                      setFieldValue("sameAsPermanentAddress", isChecked);
+                      // setFieldValue("sameAsPermanentAddress", isChecked);
+                  
+                    //   if (isChecked) {
+                    //     // Use batch update pattern with Formik's setFieldValue to ensure values are set correctly
+                    //     // setFieldValue("currentAddress1", values.address1);
+                    //     // setFieldValue("currentTownVillageCity", values.townVillageCity);
+                    //     console.log(values.district);
+                    //     setFieldValue("currentDistrict", values.district); // Correctly set the district
+                    //     console.log(values.currentDistrict);
+                        
+                    //     // setFieldValue("currentState", values.state);
+                    //     setFieldValue("currentCountry", values.country);
+                    //     setFieldValue("currentZipCode", values.zipCode);
+                    //   } else {
+                    //     // Clear current address fields when unchecked
+                    //     setFieldValue("currentAddress1", "");
+                    //     setFieldValue("currentTownVillageCity", "");
+                    //     setFieldValue("currentDistrict", ""); // Clear district when unchecked
+                    //     setFieldValue("currentState", "");
+                    //     setFieldValue("currentCountry", "");
+                    //     setFieldValue("currentZipCode", "");
+                    //   }
+                    // 
+                    
+                    if (isChecked) {
+                      // Batch update current address fields using setValues
+                       const selectedState = values.state;
+                      const filteredDistricts = getDistrictsByState(
+                        statesDistricts,
+                        selectedState
+                      );
+                     
+                      setcDistricts(filteredDistricts); // Update districts for the selected state
+                      setValues({
+                        ...values,
+                        sameAsPermanentAddress: true,
+                        currentAddress1: values.address1,
+                        currentTownVillageCity: values.townVillageCity,
+                        currentCountry: values.country,
+                        currentState: values.state,
+                        currentDistrict: values.district,
+                        currentZipCode: values.zipCode,
+                      });
+                    } else {
+                      // Clear current address fields
+                      setValues({
+                        ...values,
+                        sameAsPermanentAddress: false,
+                        currentAddress1: '',
+                        currentTownVillageCity: '',
+                        currentState: '',
+                        currentDistrict: '',
+                        currentCountry: '',
+                        currentZipCode: '',
+                      });
+                    }
 
-                      if (isChecked) {
-                        // Use batch update pattern with Formik's setFieldValue to ensure values are set correctly
-                        setFieldValue("currentAddress1", values.address1);
-                        setFieldValue(
-                          "currentTownVillageCity",
-                          values.townVillageCity
-                        );
-                        setFieldValue("currentDistrict", values.district); // Correctly set the district
-                        setFieldValue("currentState", values.state);
-                        setFieldValue("currentCountry", values.country);
-                        setFieldValue("currentZipCode", values.zipCode);
-                      } else {
-                        // Clear current address fields when unchecked
-                        setFieldValue("currentAddress1", "");
-                        setFieldValue("currentTownVillageCity", "");
-                        setFieldValue("currentDistrict", ""); // Clear district when unchecked
-                        setFieldValue("currentState", "");
-                        setFieldValue("currentCountry", "");
-                        setFieldValue("currentZipCode", "");
-                      }
-                    }}
+                   
+                  
+                  
+                  
+                  }}
+                    
                   />
 
                   <label className="text-sm">Same as Permanent Address</label>
@@ -773,6 +813,8 @@ function AddEmployee() {
                       setFieldValue("currentState", selectedState); // Update state in Formik
                       setFieldValue("currentDistrict", ""); // Clear district when state changes
                       setcDistricts(filteredDistricts); // Update districts for the selected state
+                      console.log("changed state"); 
+                      
                     }}
                   >
                     <option value="" disabled selected>
@@ -792,14 +834,14 @@ function AddEmployee() {
                   </label>
                   <Field
                     as="select"
-                    // name="currentDistrict"
                     name="currentDistrict"
                     className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                    
                   >
                     <option value="" disabled selected>
                       District
                     </option>
-                    {cdistricts.map((district, index) => (
+                   {cdistricts.map((district, index) => (
                       <option key={index} value={district}>
                         {district}
                       </option>
