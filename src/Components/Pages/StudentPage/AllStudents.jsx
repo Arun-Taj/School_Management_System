@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdOutlineEdit, MdSave } from "react-icons/md";
 import { FaRegEye, FaUser } from "react-icons/fa";
@@ -6,8 +6,12 @@ import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
 import { FiRefreshCcw } from "react-icons/fi";
 import { IoFilterSharp } from "react-icons/io5";
-
 import { MdCancel } from "react-icons/md";
+
+import axios from "axios";
+import { AuthContext } from "../../../context/AuthContext"
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const AllStudents = () => {
   const initialRows = [
@@ -198,6 +202,30 @@ const AllStudents = () => {
     newRows[index][field] = value; // Update the specific field
     setFilteredRows(newRows);
   };
+const {auth} = useContext(AuthContext);
+ const token=auth.token;
+ console.log(token);
+ //const token=localStorage.getItem('access_token');
+ React.useEffect(() => {
+  
+
+ //Example: How to send it to the backend (with Axios or Fetch)
+ 
+ axios.get(`${baseUrl}/student/`,{
+   headers: {
+     'accept': 'application/json',
+     'Authorization': `Bearer ${token}`  // Replace with your actual token
+   }
+ })
+ .then(response => {
+   console.log('Success:', response);
+ })
+ .catch(error => {
+   console.error('Error:', error);
+ });
+ }
+ , []); // Empty array to run only once
+
 
   return (
     <div className="p-8 bg-pink-100">

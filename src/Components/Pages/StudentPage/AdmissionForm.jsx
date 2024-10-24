@@ -1,7 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef,useContext } from "react";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import statesDistricts from "../SignUp&SignIn/statesDistricts.json";
+import axios from "axios";
+import { AuthContext } from "../../../context/AuthContext"
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function AdmissionForm() {
   const initialFormValues = {
@@ -281,6 +285,53 @@ function AdmissionForm() {
 
   const [states, setStates] = useState(getStates(statesDistricts));
   const [districts, setDistricts] = useState([]);
+
+  function prepareFormData(data) {
+    const fD = new FormData();
+
+    // Iterate over the data object
+    for (let key in data) {
+      if (data[key] instanceof File) {
+        // If the value is a File, append it as a file
+        fD.append(key, data[key]);
+      } else if (typeof data[key] === "object" && data[key] !== null) {
+        // Skip object fields if not a file (e.g., photoUpload and bioData)
+        // Convert objects to string if necessary
+        fD.append(key, JSON.stringify(data[key]));
+      } else {
+        // Append other key-value pairs as string data
+        fD.append(key, data[key]);
+      }
+    }
+
+    return fD;
+  }
+  //const token=localStorage.getItem('access_token');
+  const {auth} = useContext(AuthContext);
+  const token=auth.token;
+  console.log(token);
+
+  //Create FormData from employeeData
+  const FORMDATA= prepareFormData(formData);
+
+  //Example: How to send it to the backend (with Axios or Fetch)
+  
+  axios.post(`${baseUrl}/student/`, FORMDATA, {
+    headers: {
+      'accept': 'application/json',
+      'Authorization': `Bearer ${token}`  // Replace with your actual token
+    }
+  })
+  .then(response => {
+    console.log('Success:', response);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+
+ 
+
+
 
   return (
     <div className="bg-pink-100 min-h-screen p-8">

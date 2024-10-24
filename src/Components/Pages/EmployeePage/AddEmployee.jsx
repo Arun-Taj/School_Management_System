@@ -696,29 +696,7 @@ function AddEmployee() {
                     className="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded-3xl"
                     onChange={(e) => {
                       const isChecked = e.target.checked;
-                      // setFieldValue("sameAsPermanentAddress", isChecked);
-                  
-                    //   if (isChecked) {
-                    //     // Use batch update pattern with Formik's setFieldValue to ensure values are set correctly
-                    //     // setFieldValue("currentAddress1", values.address1);
-                    //     // setFieldValue("currentTownVillageCity", values.townVillageCity);
-                    //     console.log(values.district);
-                    //     setFieldValue("currentDistrict", values.district); // Correctly set the district
-                    //     console.log(values.currentDistrict);
-                        
-                    //     // setFieldValue("currentState", values.state);
-                    //     setFieldValue("currentCountry", values.country);
-                    //     setFieldValue("currentZipCode", values.zipCode);
-                    //   } else {
-                    //     // Clear current address fields when unchecked
-                    //     setFieldValue("currentAddress1", "");
-                    //     setFieldValue("currentTownVillageCity", "");
-                    //     setFieldValue("currentDistrict", ""); // Clear district when unchecked
-                    //     setFieldValue("currentState", "");
-                    //     setFieldValue("currentCountry", "");
-                    //     setFieldValue("currentZipCode", "");
-                    //   }
-                    // 
+                      
                     
                     if (isChecked) {
                       // Batch update current address fields using setValues
@@ -753,10 +731,6 @@ function AddEmployee() {
                       });
                     }
 
-                   
-                  
-                  
-                  
                   }}
                     
                   />
