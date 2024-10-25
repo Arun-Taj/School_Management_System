@@ -315,6 +315,7 @@ function AdmissionForm() {
   const FORMDATA= prepareFormData(formData);
 
   //Example: How to send it to the backend (with Axios or Fetch)
+  console.log('outside axios');
   
   axios.post(`${baseUrl}/student/`, FORMDATA, {
     headers: {
