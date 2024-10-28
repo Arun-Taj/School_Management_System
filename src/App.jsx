@@ -10,6 +10,8 @@ import AdminDetails from './Components/Pages/SignUp&SignIn/AdminDetails';
 import Profile from './Components/DashBoard/Profile/Profile';
 import AccountSetting from './Components/DashBoard/Profile/AccountSetting';
 
+import TermsAndConditions from './Components/Pages/SignUp&SignIn/Terms&Conditions';
+
 
 const App = () => {
   return (
@@ -20,6 +22,7 @@ const App = () => {
           <Route path='/' element={<SignInForm/>} />
           {/* <Route path="/dashboard" element={<MainDashBoard/>} /> */}
           <Route path="/*" element={<MainDashBoard/>} />
+          <Route path="/termsConditions" element={<TermsAndConditions/>} />
           {/* <Route path="/*" element={<MainDashBoard/>} /> */}
           {/* <Route path='/admin' element={<AdminDetails/>} /> */}
         </Routes>

@@ -4,6 +4,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import TermsAndConditions from "./Terms&Conditions";
 //import axios from "axios";
 
 const SignupForm = ({ formData, setFormData, formRef, handleSubmit }) => {
@@ -94,7 +95,8 @@ const SignupForm = ({ formData, setFormData, formRef, handleSubmit }) => {
                 <Field type="checkbox" id="terms" name="terms" className="mr-2 cursor-pointer" />
                 <label htmlFor="terms" className="text-sm">
                   Accept our
-                  <a href="#" className="text-black font-bold px-1">Terms & Condition</a>
+                  {/* <a href="#" className="text-black font-bold px-1">Terms & Condition</a> */}
+                  <button className="text-black font-bold px-1" onClick={()=>navigate("/termsConditions")}>Terms and Conditions</button>
                 </label>
               </div>
               <ErrorMessage name="terms" component="div" className="text-red-500 text-sm" />
