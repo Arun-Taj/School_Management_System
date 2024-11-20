@@ -1,17 +1,18 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { MdBusinessCenter } from "react-icons/md";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { formValidationSchema } from "./EmpValidations";
-import DistrictStates from "./DistrictStates";
+// import DistrictStates from "./DistrictStates";
 import statesDistricts from "../SignUp&SignIn/statesDistricts.json";
-import axios from "axios";
+import {AuthContext} from "../../../context/AuthContext"
 
 function AddEmployee() {
   // Select complimentry logic
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   // const [district, SetDistrict] = useState("district");
+  const {api} = useContext(AuthContext)
 
   const options = ["Python", "C++", "DSA"];
 
@@ -118,7 +119,7 @@ function AddEmployee() {
     }
   };
 
-  const handleSubmit = (values, { resetForm }) => {
+  const handleSubmit = async (values, { resetForm }) => {
     // Log the form values
     console.log("Form Submitted successfully");
     console.log("Form Data", values);
@@ -139,6 +140,27 @@ function AddEmployee() {
     setFileSizeError("");
     setFileName2("");
     setFileSizeError2("");
+
+    let FORMDATA = new FormData();
+    for (const key in values) {
+      FORMDATA.append(key, values[key]);        
+      
+    }
+    // console.log(values, FORMDATA);
+    
+
+    try {
+      // Make the API call to update the student
+      const response = await api.post(`/employee/`, FORMDATA);
+      // console.log(response.data);
+      
+      
+    } catch (error) {
+      console.error("Failed ", error.response);
+      // Handle error (e.g., show a notification)
+    }
+
+    
   };
 
   function getStates(jsonData) {
@@ -158,47 +180,8 @@ function AddEmployee() {
   const [cstates, setcStates] = useState(getStates(statesDistricts));
   const [cdistricts, setcDistricts] = useState([]);
 
-  // const [edistrict, seteDistrict] = useState(null);
 
-  function prepareFormData(data) {
-    const formData = new FormData();
 
-    // Iterate over the data object
-    for (let key in data) {
-      if (data[key] instanceof File) {
-        // If the value is a File, append it as a file
-        formData.append(key, data[key]);
-      } else if (typeof data[key] === "object" && data[key] !== null) {
-        // Skip object fields if not a file (e.g., photoUpload and bioData)
-        // Convert objects to string if necessary
-        formData.append(key, JSON.stringify(data[key]));
-      } else {
-        // Append other key-value pairs as string data
-        formData.append(key, data[key]);
-      }
-    }
-
-    return formData;
-  }
-  // const token=localStorage.getItem('access_token');
-
-  // // Create FormData from employeeData
-  // //const FORMDATA= prepareFormData(employeeData);
-
-  // // Example: How to send it to the backend (with Axios or Fetch)
-  // // axios.post('/your-api-endpoint', formData);
-  // axios.post('/your-api-endpoint', FORMDATA, {
-  //   headers: {
-  //     'Content-Type': 'multipart/form-data',
-  //     'Authorization': `Bearer ${token}`  // Replace with your actual token
-  //   }
-  // })
-  // .then(response => {
-  //   console.log('Success:', response);
-  // })
-  // .catch(error => {
-  //   console.error('Error:', error);
-  // });
 
   return (
     <div className="bg-pink-100 min-h-screen p-8">
@@ -1112,6 +1095,7 @@ function AddEmployee() {
                 <button
                   type="submit"
                   className="bg-pink-500 text-white font-semibold px-6 py-2 rounded-3xl shadow-md hover:bg-pink-600"
+                  // onClick={handleSubmit}
                 >
                   Submit
                 </button>
@@ -1125,3 +1109,6 @@ function AddEmployee() {
 }
 
 export default AddEmployee;
+
+
+

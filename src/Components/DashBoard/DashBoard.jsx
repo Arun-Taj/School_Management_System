@@ -86,9 +86,9 @@ const Dashboard = () => {
 
           {/* Fee Collection Progress Bars */}
           <div className="bg-white p-4 rounded-xl shadow-md">
-            {["This Month", "Last Month", "This Year"].map((label) => (
-              <>
-                <div key={label} className="text-sm mb-2 flex justify-between">
+            {["This Month", "Last Month", "This Year"].map((label, index) => (
+              <div key={index}>
+                <div  className="text-sm mb-2 flex justify-between">
                   <p>{label} Fee Collection</p>
                   <p>65%</p>
                 </div>
@@ -105,7 +105,7 @@ const Dashboard = () => {
                     <div className="bg-purple-500 h-2 rounded-full w-4/6"></div>
                   )}
                 </div>
-              </>
+              </div>
             ))}
           </div>
         </div>

@@ -24,8 +24,8 @@ const Table = ({ rows, handleEdit, handleDelete }) => {
                   index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"
                 }`}
               >
-                <td className="p-2 text-center">{row.class}</td>
-                <td className="p-2 text-center">{row.classTeacher}</td>
+                <td className="p-2 text-center">{row.className}</td>
+                <td className="p-2 text-center">{row.class_teacher_fullname}</td>
                 <td className="p-2 text-center">{row.monthlyFees}</td>
                 <td className="p-2 text-center flex justify-around">
                   <button className="p-1 text-black flex items-center" onClick={() => handleEdit(index)}>

@@ -1,204 +1,241 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FcSettings } from "react-icons/fc";
 import { IoSearch } from "react-icons/io5";
 import { FiRefreshCcw } from "react-icons/fi";
 import ClassSubjects from "./ClassSubjects";
 
 const Classes = () => {
-  const initialClasses = [
-    {
-      className: "Class Nursery",
-      subjects: [
-        { subject: "English", teacher: "John Smith" },
-        { subject: "Mathematics", teacher: "Emily Johnson" },
-        { subject: "Science", teacher: "Michael Brown" },
-      ],
-    },
-    {
-      className: "Class LKG",
-      subjects: [
-        { subject: "English", teacher: "Sarah Davis" },
-        { subject: "Mathematics", teacher: "David Wilson" },
-        { subject: "Science", teacher: "Laura Garcia" },
-      ],
-    },
-    {
-      className: "Class UKG",
-      subjects: [
-        { subject: "English", teacher: "James Martinez" },
-        { subject: "Mathematics", teacher: "Linda Rodriguez" },
-        { subject: "Science", teacher: "Robert Lee" },
-      ],
-    },
+  const classList = [
+    { id: 1, name: "Class Nursery" },
+    { id: 2, name: "Class LKG" },
+    { id: 3, name: "Class UKG" },
+    { id: 4, name: "Class 01" },
+    { id: 5, name: "Class 02" },
+    { id: 6, name: "Class 03" },
+    { id: 7, name: "Class 04" },
+    { id: 8, name: "Class 05" },
+    { id: 9, name: "Class 06" },
+    { id: 10, name: "Class 07" },
+    { id: 11, name: "Class 08" },
+    { id: 12, name: "Class 09" },
+    { id: 13, name: "Class 10" },
   ];
-  const [selectedClass, setSelectedClass] = useState("");
-  const [subjectList, setSubjectList] = useState([
-    { subject: "", teacher: "" },
+
+  const subjectList = [
+    { id: 1, name: "English" },
+    { id: 2, name: "Mathematics" },
+    { id: 3, name: "Science" },
+    { id: 4, name: "Social Studies" },
+    { id: 5, name: "Hindi" },
+    { id: 6, name: "Computer Science" },
+    { id: 7, name: "Physics" },
+    { id: 8, name: "Chemistry" },
+    { id: 9, name: "Biology" },
+    { id: 10, name: "Geography" },
+    { id: 11, name: "History" },
+    { id: 12, name: "Economics" },
+    { id: 13, name: "Physical Education" },
+  ];
+
+  const teacherList = [
+    { id: 1, name: "John Smith" },
+    { id: 2, name: "Emily Johnson" },
+    { id: 3, name: "Michael Brown" },
+    { id: 4, name: "Sarah Davis" },
+    { id: 5, name: "David Wilson" },
+    { id: 6, name: "Anna Taylor" },
+    { id: 7, name: "James Anderson" },
+    { id: 8, name: "Sophia Martinez" },
+    { id: 9, name: "William Hernandez" },
+    { id: 10, name: "Olivia Moore" },
+    { id: 11, name: "Lucas Martin" },
+    { id: 12, name: "Amelia Garcia" },
+    { id: 13, name: "Benjamin Lee" },
+  ];
+
+  const [selectedClassId, setSelectedClassId] = useState("");
+  const [assignedSubjects, setAssignedSubjects] = useState([
+    { subjectId: "", teacherId: "" },
   ]);
-  const [classes, setClasses] = useState(initialClasses); // To hold the assigned subjects for each class
+  const [classes, setClasses] = useState(
+    localStorage.getItem("classes")
+      ? JSON.parse(localStorage.getItem("classes"))
+      : []
+  );
+  useEffect(()=>{
+    const loadClasses=() => {
+      const savedClasses = localStorage.getItem("classes");
+      return savedClasses ? JSON.parse(savedClasses) : [];
+    }
+    setClasses(loadClasses())
+  },[])
+  //const [updated,setUpdated]=useState(false)
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem("classes", JSON.stringify(classes));
+  }, [classes]);
 
   const handleAddMore = () => {
-    setSubjectList([...subjectList, { subject: "", teacher: "" }]);
+    setAssignedSubjects([
+      ...assignedSubjects,
+      { subjectId: "", teacherId: "" },
+    ]);
   };
 
   const handleAssign = () => {
-    if (selectedClass && subjectList.length > 0) {
-      const updatedClasses = classes.map((cls) =>
-        cls.className === selectedClass
-          ? { ...cls, subjects: [...cls.subjects, ...subjectList] }
-          : cls
-      );
-
+    if (selectedClassId && assignedSubjects.length > 0) {
       const classExists = classes.some(
-        (cls) => cls.className === selectedClass
+        (cls) => cls.id === parseInt(selectedClassId)
       );
 
-      if (!classExists) {
+      if (classExists) {
+        const updatedClasses = classes.map((cls) =>
+          cls.id === parseInt(selectedClassId)
+            ? { ...cls, subjects: [...cls.subjects, ...assignedSubjects] }
+            : cls
+        );
+        setClasses(updatedClasses);
+      } else {
+        const selectedClassName = classList.find(
+          (cls) => cls.id === parseInt(selectedClassId)
+        )?.name;
         setClasses([
           ...classes,
-          { className: selectedClass, subjects: subjectList },
+          {
+            id: parseInt(selectedClassId),
+            name: selectedClassName,
+            subjects: assignedSubjects,
+          },
         ]);
-      } else {
-        setClasses(updatedClasses);
       }
 
-      // Reset state after assigning
-      setSelectedClass("");
-      setSubjectList([{ subject: "", teacher: "" }]);
+      setSelectedClassId("");
+      setAssignedSubjects([{ subjectId: "", teacherId: "" }]);
     }
   };
 
   const handleRemove = (index) => {
-    setSubjectList(subjectList.filter((_, i) => i !== index)); // Remove the selected subject and teacher input
+    setAssignedSubjects(assignedSubjects.filter((_, i) => i !== index));
   };
 
-  const [searchTerm, setSearchTerm] = useState("");
   const handleSearch = () => {
-    setClasses(
-      initialClasses.filter((cls) =>
-        cls.className.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredClasses = classes.filter((cls) =>
+      cls.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setClasses(filteredClasses);
+  };
+
+  const handleRefresh = () => {
+    setSearchTerm("");
+    setClasses(JSON.parse(localStorage.getItem("classes")) || []);
+  };
+
+  // const handleUpdate = (classId, updatedSubjects) => {
+  //   const updatedClasses = classes.map((cls) =>
+  //     cls.id === classId ? { ...cls, subjects: updatedSubjects } : cls
+  //   );
+  //   setClasses(updatedClasses);
+  // };
+  const handleUpdateSubjects = (classId, updatedSubjects) => {
+    setClasses((prevClasses) =>
+      prevClasses.map((cls) =>
+        cls.id === classId ? { ...cls, subjects: updatedSubjects } : cls
       )
     );
   };
 
-  const handleRefresh = () => {
-    setSearchTerm(""); // Clear the search term
-    setSubjectList([{ subject: "", teacher: "" }]); // Reset the subjectList to its initial state
-    
-  };
-
   return (
     <div className="p-8 bg-pink-100 min-h-screen">
+      {/* Header */}
       <div className="flex gap-4 bg-white rounded-3xl p-2">
         <div className="flex items-center space-x-2">
-          <FcSettings className="text-gray-700 " />
+          <FcSettings className="text-gray-700" />
           <span className="text-gray-700 font-medium">Configuration</span>
         </div>
-
         <div className="border-l border-gray-700 h-6"></div>
-
         <div>
           <span className="text-gray-700 font-medium">Subjects</span>
         </div>
-
         <div className="border-l border-gray-700 h-6"></div>
-
         <div>
           <span className="text-gray-700 font-medium">Assign Subjects</span>
         </div>
       </div>
 
-      <div className="flex flex-row justify-between gap-4">
-        <div className="w-2/3 mt-10 flex flex-col bg-white shadow-md rounded-2xl items-center h-2/3">
-          <h3 className="mb-8 text-2xl font-semibold flex mt-10">
+      <div className="flex flex-row justify-between gap-4 mt-10">
+        {/* Assign Subjects */}
+        <div className="w-2/3 flex flex-col bg-white shadow-md rounded-2xl items-center h-2/3">
+          <h3 className="text-2xl font-semibold mt-10">
             Assign Subjects to Class
           </h3>
           <div className="px-6">
             <select
-              name="class"
-              value={selectedClass}
-              onChange={(e) => setSelectedClass(e.target.value)}
+              value={selectedClassId}
+              onChange={(e) => setSelectedClassId(e.target.value)}
               className="p-3 px-4 mb-4 rounded-3xl bg-white border border-blue-500 w-96"
             >
               <option value="" disabled>
                 Select Class
               </option>
-              <option value="Class Nursery">Class Nursery</option>
-              <option value="Class LKG">Class LKG</option>
-              <option value="Class UKG">Class UKG</option>
-              <option value="Class 01">Class 01</option>
-              <option value="Class 02">Class 02</option>
-              <option value="Class 03">Class 03</option>
-              <option value="Class 04">Class 04</option>
-              <option value="Class 05">Class 05</option>
-              <option value="Class 06">Class 06</option>
-              <option value="Class 07">Class 07</option>
-              <option value="Class 08">Class 08</option>
-              <option value="Class 09">Class 09</option>
-              <option value="Class 10">Class 10</option>
+              {classList.map((cls) => (
+                <option key={cls.id} value={cls.id}>
+                  {cls.name}
+                </option>
+              ))}
             </select>
-            {subjectList.map((item, index) => (
-              <div className="flex justify-between gap-4 mb-4" key={index}>
+
+            {assignedSubjects.map((item, index) => (
+              <div key={index} className="flex justify-between gap-4 mb-4">
                 <select
-                  name="subject"
-                  value={item.subject}
+                  value={item.subjectId}
                   onChange={(e) => {
-                    const newSubjectList = [...subjectList];
-                    newSubjectList[index].subject = e.target.value;
-                    setSubjectList(newSubjectList);
+                    const updatedSubjects = [...assignedSubjects];
+                    updatedSubjects[index].subjectId = e.target.value;
+                    setAssignedSubjects(updatedSubjects);
                   }}
                   className="p-3 px-4 rounded-3xl bg-white border border-blue-500 w-full"
                 >
                   <option value="" disabled>
                     Select Subject
                   </option>
-                  <option value="English">English</option>
-                  <option value="Mathematics">Mathematics</option>
-                  <option value="Science">Science</option>
-                  <option value="Social Studies">Social Studies</option>
-                  <option value="Hindi">Hindi</option>
-                  <option value="Physical Education">Physical Education</option>
-                  <option value="Art">Art</option>
-                  <option value="Music">Music</option>
-                  <option value="Computer Science">Computer Science</option>
-                  <option value="Foreign Language">Foreign Language</option>
+                  {subjectList.map((subject) => (
+                    <option key={subject.id} value={subject.id}>
+                      {subject.name}
+                    </option>
+                  ))}
                 </select>
                 <select
-                  name="teacher"
-                  value={item.teacher}
+                  value={item.teacherId}
                   onChange={(e) => {
-                    const newSubjectList = [...subjectList];
-                    newSubjectList[index].teacher = e.target.value;
-                    setSubjectList(newSubjectList);
+                    const updatedSubjects = [...assignedSubjects];
+                    updatedSubjects[index].teacherId = e.target.value;
+                    setAssignedSubjects(updatedSubjects);
                   }}
                   className="p-3 px-4 rounded-3xl bg-white border border-blue-500 w-full"
                 >
                   <option value="" disabled>
                     Select Teacher
                   </option>
-                  <option value="John Smith">John Smith</option>
-                  <option value="Emily Johnson">Emily Johnson</option>
-                  <option value="Michael Brown">Michael Brown</option>
-                  <option value="Sarah Davis">Sarah Davis</option>
-                  <option value="David Wilson">David Wilson</option>
-                  <option value="Laura Garcia">Laura Garcia</option>
-                  <option value="James Martinez">James Martinez</option>
-                  <option value="Linda Rodriguez">Linda Rodriguez</option>
-                  <option value="Robert Lee">Robert Lee</option>
-                  <option value="Patricia Walker">Patricia Walker</option>
+                  {teacherList.map((teacher) => (
+                    <option key={teacher.id} value={teacher.id}>
+                      {teacher.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             ))}
           </div>
+
           <div className="flex justify-around gap-4">
             <button
               className="mt-10 bg-red-500 rounded-3xl text-white p-1 px-4 font-bold"
-              onClick={() => handleRemove(subjectList.length - 1)} // Remove the last subject entry
+              onClick={() => handleRemove(assignedSubjects.length - 1)}
             >
               Remove
             </button>
             <button
-              className="mt-10 bg-blue-800 rounded-3xl text-white p-1 px-4 font-bold mb-"
+              className="mt-10 bg-blue-800 rounded-3xl text-white p-1 px-4 font-bold"
               onClick={handleAddMore}
             >
               Add More
@@ -213,9 +250,10 @@ const Classes = () => {
           </button>
         </div>
 
-        <div className="flex flex-col w-full">
-          <div className="flex flex-row gap-4 py-10 justify-end">
-            <div className=" ">
+        {/* Class Subjects */}
+        <div className="w-3/4">
+          <div className="flex flex-row gap-4 py-4 justify-end">
+            <div>
               <div className="flex items-center bg-white rounded-full ">
                 <input
                   type="text"
@@ -238,7 +276,13 @@ const Classes = () => {
               <FiRefreshCcw className="text-gray-600 transition-transform duration-200 hover:rotate-180" />
             </div>
           </div>
-          <ClassSubjects classes={classes} />
+          {/* <ClassSubjects classes={classes} onUpdate={handleUpdateSubjects} /> */}
+          <ClassSubjects
+            classes={classes}
+
+            
+          />
+          
         </div>
       </div>
     </div>

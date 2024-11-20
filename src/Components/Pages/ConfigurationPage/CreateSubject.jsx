@@ -1,23 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { FcSettings } from "react-icons/fc";
 import { FaRegTrashAlt } from "react-icons/fa";
+import {AuthContext} from "../../../context/AuthContext"
 
 const CreateSubject = () => {
+
+  const {api} = useContext(AuthContext);
+
   const [subjects, setSubjects] = useState([
-    'English',
-    'Math',
-    'Science',
-    'Social Science',
-    'MIL',
-    'Computer Science',
+   
   ]);
+
+
+  React.useEffect(() => {
+    //load subjects from database
+    api.get('/subject/').then((response) => {
+      console.log(response.data);
+      setSubjects(response.data);
+    }).catch((error) => {
+      console.log(error);
+    })
+
+
+  }, [api]);
   
   const [newSubject, setNewSubject] = useState(""); // State to hold the new subject input
 
   const handleCreateSubject = () => {
     if (newSubject.trim() !== "") {
-      setSubjects((prevSubjects) => [...prevSubjects, newSubject]);
+      const subject = {
+        subjectName: newSubject,
+        subjectID:null
+      }
+      // console.log(subject);
+      
+      setSubjects((prevSubjects) => [...prevSubjects, subject]);
       setNewSubject(""); // Clear the input after adding
+
+
+      // save subject to database
+      const formData = new FormData();
+      formData.append("subjectName", subject.subjectName);
+      api.post("/subject/", formData).then((response) => {
+        // console.log(response.data);
+        console.log("Subject created successfully");
+      }).catch((error) => {
+        console.log(error);
+      })
+
+
+
     }
   };
 
@@ -26,6 +58,17 @@ const CreateSubject = () => {
   if(confirmDelete){
     const updatedSubjects = subjects.filter((_, i) => i !== index);
     setSubjects(updatedSubjects); // Update the subjects state
+
+    const subjectToDelete = subjects[index];
+    // console.log(subjectToDelete);
+    api.delete(`/subject/${subjectToDelete.id}/`).then((response) => {
+      // console.log(response.data);
+      console.log("Subject deleted successfully");
+    }).catch((error) => {
+      console.log(error);
+    })
+
+
   }
     
   };
@@ -85,7 +128,7 @@ const CreateSubject = () => {
             <tbody>
               {subjects.map((subject, index) => (
                 <tr key={index} className={`${index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"}`}>
-                  <td className="py-2 px-4">{subject}</td>
+                  <td className="py-2 px-4">{subject.subjectName}</td>
                   <td className="py-2 px-4 text-center">
                     <button
                       className="hover:text-red-700"

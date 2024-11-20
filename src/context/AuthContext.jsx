@@ -1,12 +1,182 @@
+// // src/context/AuthContext.js
+// import React, { createContext, useState, useEffect } from "react";
+// import axios from "axios";
+
+// // Create AuthContext
+// export const AuthContext = createContext();
+
+// const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
+// // Set up axios instance
+// const api = axios.create({
+//   baseURL: baseUrl,
+// });
+
+// export const AuthProvider = ({ children }) => {
+//   const [auth, setAuth] = useState({
+//     isAuthenticated: false,
+//     token: null,
+//     user: null,
+//   });
+
+//   // Load tokens and user info from localStorage
+//   useEffect(() => {
+//     const accessToken = localStorage.getItem("access_token");
+//     const refreshToken = localStorage.getItem("refresh_token");
+//     const user = JSON.parse(localStorage.getItem("user"));
+
+//     if (accessToken && refreshToken && user) {
+//       setAuth({
+//         isAuthenticated: true,
+//         token: accessToken,
+//         user,
+//       });
+//     }
+//   }, []);
+
+//   // Intercept and handle 401 errors to refresh the token
+//   api.interceptors.response.use(
+//     (response) => response,
+//     async (error) => {
+//       const originalRequest = error.config;
+//       if (error.response.status === 401 && !originalRequest._retry) {
+//         originalRequest._retry = true;
+
+//         const refreshToken = localStorage.getItem("refresh_token");
+//         const accessToken = localStorage.getItem("access_token");
+//         if (refreshToken) {
+//           try {
+//             const response = await axios.post(`${baseUrl}/refresh/`, {
+//               refresh: refreshToken,
+//             },
+//             {
+//               headers: {
+//                 "Content-Type": "application/json",
+//                 Authorization: `Bearer ${accessToken}`,
+//               },
+//             }
+//           );
+
+//             const newAccessToken = response.data.access;
+//             localStorage.setItem("access_token", newAccessToken);
+            
+//             setAuth((prev) => ({
+//               ...prev,
+//               token: newAccessToken,
+//             }));
+
+//             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+//             return api(originalRequest); // Retry with the new token
+//           } catch (refreshError) {
+//             logout(); // Log out if refresh fails
+//             return Promise.reject(refreshError);
+//           }
+//         }
+//       }
+//       return Promise.reject(error);
+//     }
+//   );
+
+//   // Login function
+//   const login = async (username, password) => {
+//     const response = await fetch(`${baseUrl}/login/`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({ username, password }),
+//     });
+
+//     const data = await response.json();
+
+//     if (response.ok) {
+//       localStorage.setItem("access_token", data.access);
+//       localStorage.setItem("refresh_token", data.refresh);
+//       localStorage.setItem("user", JSON.stringify(data.user || ""));
+
+//       setAuth({
+//         isAuthenticated: true,
+//         token: data.access,
+//         user: data.user || null,
+//       });
+//       return true;
+//     } else {
+//       throw new Error("Login failed");
+//     }
+//   };
+
+//   // Logout function
+//   const logout = async () => {
+//     try {
+//       // Get both the access token and refresh token
+//       const accessToken = localStorage.getItem("access_token");
+//       const refreshToken = localStorage.getItem("refresh_token");
+  
+//       // Send a POST request to the logout endpoint with the refresh token
+//       const response = await api.post("/logout/", {
+//         refresh: refreshToken // Pass the refresh token in the body
+//       }, {
+//         headers: {
+//           Authorization: `Bearer ${accessToken}`, // Include access token in the Authorization header
+//         },
+//       });
+  
+//       console.log("Successfully logged out.");
+//     } catch (error) {
+//       console.error("Error logging out:", error);
+//       if (error.response) {
+//         console.error("Response data:", error.response.data);
+//       }
+//     } finally {
+//       // Clear local storage and reset auth state
+//       localStorage.removeItem("access_token");
+//       localStorage.removeItem("refresh_token");
+//       localStorage.removeItem("user");
+  
+//       setAuth({
+//         isAuthenticated: false,
+//         token: null,
+//         user: null,
+//       });
+//     }
+//   };
+
+
+//   return (
+//     <AuthContext.Provider value={{ auth, login, logout, api }}>
+//       {children}
+//     </AuthContext.Provider>
+//   );
+// };
+
+
+
 // src/context/AuthContext.js
 import React, { createContext, useState, useEffect } from "react";
+import axios from "axios";
 
 // Create AuthContext
 export const AuthContext = createContext();
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-// Provide AuthContext to the app
+// Set up axios instance
+const api = axios.create({
+  baseURL: baseUrl,
+});
+
+// Add request interceptor to attach access token to headers if available
+api.interceptors.request.use(
+  (config) => {
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({
     isAuthenticated: false,
@@ -14,42 +184,79 @@ export const AuthProvider = ({ children }) => {
     user: null,
   });
 
-
+  // Load tokens and user info from localStorage
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (token) {
+    const accessToken = localStorage.getItem("access_token");
+    const refreshToken = localStorage.getItem("refresh_token");
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (accessToken && refreshToken && user) {
       setAuth({
         isAuthenticated: true,
-        token,
-        user: JSON.parse(localStorage.getItem("user")),
+        token: accessToken,
+        user,
       });
     }
   }, []);
 
+  // Intercept and handle 401 errors to refresh the token
+  api.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const originalRequest = error.config;
+      if (error.response && error.response.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+
+        const refreshToken = localStorage.getItem("refresh_token");
+        if (refreshToken) {
+          try {
+            const response = await axios.post(`${baseUrl}/refresh/`, {
+              refresh: refreshToken,
+            });
+
+            const newAccessToken = response.data.access;
+            const newRefreshToken = response.data.refresh;
+            localStorage.setItem("access_token", newAccessToken);
+            localStorage.setItem("refresh_token", newRefreshToken);
+
+            setAuth((prev) => ({
+              ...prev,
+              token: newAccessToken,
+            }));
+
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+            return api(originalRequest); // Retry with the new token
+          } catch (refreshError) {
+            logout(); // Log out if refresh fails
+            return Promise.reject(refreshError);
+          }
+        }
+      }
+      return Promise.reject(error);
+    }
+  );
+
+  // Login function
   const login = async (username, password) => {
-    // Call login API
     const response = await fetch(`${baseUrl}/login/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username: username, password:password }),
+      body: JSON.stringify({ username, password }),
     });
 
     const data = await response.json();
 
     if (response.ok) {
-      // Store the JWT token and user information in localStorage
-      
       localStorage.setItem("access_token", data.access);
       localStorage.setItem("refresh_token", data.refresh);
-      localStorage.setItem("user", JSON.stringify(data.user? data.user : ''));
+      localStorage.setItem("user", JSON.stringify(data.user || ""));
 
-      // Update auth state
       setAuth({
         isAuthenticated: true,
         token: data.access,
-        user: data.user ? data.user : null,
+        user: data.user || null,
       });
       return true;
     } else {
@@ -57,20 +264,40 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    localStorage.removeItem("user");
+  // Logout function
+  const logout = async () => {
+    try {
+      const accessToken = localStorage.getItem("access_token");
+      const refreshToken = localStorage.getItem("refresh_token");
 
-    setAuth({
-      isAuthenticated: false,
-      token: null,
-      user: null,
-    });
+      await api.post("/logout/", { refresh: refreshToken }, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      console.log("Successfully logged out.");
+    } catch (error) {
+      console.error("Error logging out:", error);
+      if (error.response) {
+        console.error("Response data:", error.response.data);
+      }
+    } finally {
+      // Clear local storage and reset auth state
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("user");
+
+      setAuth({
+        isAuthenticated: false,
+        token: null,
+        user: null,
+      });
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ auth, login, logout }}>
+    <AuthContext.Provider value={{ auth, login, logout, api }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { MdOutlineEdit } from "react-icons/md";
 import { FaRegEye, FaUser } from "react-icons/fa";
@@ -8,74 +8,96 @@ import { IoSearch } from "react-icons/io5";
 import { FiRefreshCcw } from "react-icons/fi";
 import { IoFilterSharp } from "react-icons/io5";
 import { MdSave,MdCancel } from "react-icons/md";
+import {AuthContext} from "../../../context/AuthContext"
+import { set } from "date-fns";
 
 const AllEmployee = () => {
+
+
+  const {api} = useContext(AuthContext);
   // Dummy data to replicate the table
-  const initialRows = [
-    {
-      enrollmentId: "01249999",
-      name: "Rahul Kumar Debnath",
-      fatherName: "Subham Kumar Debnath",
-      gender: "Male",
-      mainSubject: "Science",
-      phoneNo: "0123456789",
-  },
-  {
-      enrollmentId: "01250000",
-      name: "Aditi Sharma",
-      fatherName: "Rajesh Sharma",
-      gender: "Female",
-      mainSubject: "Mathematics",
-      phoneNo: "0123456780",
-  },
-  {
-      enrollmentId: "01250001",
-      name: "Vikram Singh",
-      fatherName: "Anil Singh",
-      gender: "Male",
-      mainSubject: "History",
-      phoneNo: "0123456781",
-  },
-  {
-      enrollmentId: "01250002",
-      name: "Sneha Patel",
-      fatherName: "Ramesh Patel",
-      gender: "Female",
-      mainSubject: "Biology",
-      phoneNo: "0123456782",
-  },
-  {
-      enrollmentId: "01250003",
-      name: "Rohit Verma",
-      fatherName: "Kumar Verma",
-      gender: "Male",
-      mainSubject: "Physics",
-      phoneNo: "0123456783",
-  },
-  {
-    enrollmentId: "01250004",
-    name: "Priya Gupta",
-    fatherName: "Suresh Gupta",
-    gender: "Female",
-    mainSubject: "Chemistry",
-    phoneNo: "0123456784",
-},
-{
-    enrollmentId: "01250005",
-    name: "Karan Mehta",
-    fatherName: "Deepak Mehta",
-    gender: "Male",
-    mainSubject: "English",
-    phoneNo: "0123456785",
-},
-  ]
-   const [rows, setRows] = useState(initialRows);
-  const [filteredRows, setFilteredRows] = useState(initialRows);
+//   const initialRows = [
+//     {
+//       enrollmentId: "01249999",
+//       name: "Rahul Kumar Debnath",
+//       fatherName: "Subham Kumar Debnath",
+//       gender: "Male",
+//       mainSubject: "Science",
+//       phoneNo: "0123456789",
+//   },
+//   {
+//       enrollmentId: "01250000",
+//       name: "Aditi Sharma",
+//       fatherName: "Rajesh Sharma",
+//       gender: "Female",
+//       mainSubject: "Mathematics",
+//       phoneNo: "0123456780",
+//   },
+//   {
+//       enrollmentId: "01250001",
+//       name: "Vikram Singh",
+//       fatherName: "Anil Singh",
+//       gender: "Male",
+//       mainSubject: "History",
+//       phoneNo: "0123456781",
+//   },
+//   {
+//       enrollmentId: "01250002",
+//       name: "Sneha Patel",
+//       fatherName: "Ramesh Patel",
+//       gender: "Female",
+//       mainSubject: "Biology",
+//       phoneNo: "0123456782",
+//   },
+//   {
+//       enrollmentId: "01250003",
+//       name: "Rohit Verma",
+//       fatherName: "Kumar Verma",
+//       gender: "Male",
+//       mainSubject: "Physics",
+//       phoneNo: "0123456783",
+//   },
+//   {
+//     enrollmentId: "01250004",
+//     name: "Priya Gupta",
+//     fatherName: "Suresh Gupta",
+//     gender: "Female",
+//     mainSubject: "Chemistry",
+//     phoneNo: "0123456784",
+// },
+// {
+//     enrollmentId: "01250005",
+//     name: "Karan Mehta",
+//     fatherName: "Deepak Mehta",
+//     gender: "Male",
+//     mainSubject: "English",
+//     phoneNo: "0123456785",
+// },
+//   ]
+   const [rows, setRows] = useState([]);
+  const [filteredRows, setFilteredRows] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [originalRows, setOriginalRows] = useState([]); // To store original data before editing
 
   const [isEditing, setIsEditing] = useState(false);
   const [currentRow, setCurrentRow] = useState(null);
+
+  React.useEffect( () => {
+    const getData = async () => {
+      try{
+        const response = await api.get("/employee/");
+        console.log(response.data);
+        setRows(response.data);
+        setFilteredRows(response.data);
+        
+      }catch(error){
+        console.log(error);
+      }
+    }
+    getData();
+  }, [api]);
+
+
 
   // Function to filter rows based on criteria
   const filterRows = (criteria) => {
@@ -147,15 +169,32 @@ const AllEmployee = () => {
   };
 
   // Function to delete a row
-  const handleDelete = (index) => {
+  const handleDelete =async (index) => {
     // Show confirmation dialog
     const confirmDelete = window.confirm("Are you sure you want to delete this item?");
     
     // Proceed with deletion if confirmed
     if (confirmDelete) {
-        const newRows = filteredRows.filter((_, i) => i !== index);
-        setRows(newRows);
-        setFilteredRows(newRows);
+        // const newRows = filteredRows.filter((_, i) => i !== index);
+        // setRows(newRows);
+        // setFilteredRows(newRows);
+        const employeeID = rows[index].id;
+        
+        try {
+        
+          // Make the API call to delete the student
+          await api.delete(`/employee/${employeeID}/`);
+    
+          // Filter out the deleted student from the state
+          const newRows = filteredRows.filter((_, i) => i !== index);
+          setRows(newRows);
+          setFilteredRows(newRows);
+          
+          // alert("Student deleted successfully.");
+        } catch (error) {
+          console.error("Error deleting employee:", error);
+          alert("Failed to delete employee.");
+        }
     }
 };
 
@@ -180,12 +219,107 @@ const AllEmployee = () => {
     setFilteredRows(newRows);
   };
 
+
+  function splitName(name) {
+    // Split the name using whitespace
+
+    if (!name) {
+        return { firstName: '', lastName: '', middleName: '' };
+    }
+    const words = name.trim().split(/\s+/);
+
+    // Initialize variables
+    let firstName, lastName, middleName;
+
+    if (words.length === 1) {
+        // If there is only one word, treat it as the first name
+        firstName = words[0];
+        lastName = '';
+        middleName = '';
+    } else if (words.length === 2) {
+        // If there are two words, assign them to first and last name
+        firstName = words[0];
+        lastName = words[1];
+        middleName = '';
+    } else {
+        // For three or more words
+        firstName = words[0]; // First word
+        lastName = words[words.length - 1]; // Last word
+        // Join the remaining words for middleName
+        middleName = words.slice(1, words.length - 1).join(' ');
+    }
+
+    return {
+      firstName,
+      lastName,
+      middleName
+  };
+  }
+
   // Function to save changes
-  const handleSave = (index) => {
-    const newRows = [...filteredRows];
-    newRows[index].isEditing = false; // Mark the row as not being edited
-    setFilteredRows(newRows);
-    setRows(newRows); 
+  const handleSave = async (index) => {
+    
+    const employee = filteredRows[index];
+    // console.log(employee);
+    const empNameObj = splitName(employee.name);
+    const fatherNameObj = splitName(employee.fatherName);
+
+    // console.log(empNameObj, fatherNameObj);
+    const updatedData = {
+      // Add your fields here that you want to update
+      employeeFirstName: empNameObj.firstName, 
+      employeeMiddleName: empNameObj.middleName,
+      employeeLastName: empNameObj.lastName, 
+      fatherFirstName: fatherNameObj.firstName,
+      fatherMiddleName: fatherNameObj.middleName,
+      fatherLastName: fatherNameObj.lastName,
+      gender: employee.gender,
+      phoneNumber: employee.phoneNumber,
+      mainSubject: employee.mainSubject,
+    };
+    // console.log("updatedData", updatedData);
+    
+    // Create a new FormData object
+    const FORMDATA = new FormData();
+    
+    // Append each field to the FormData object
+    for (const key in updatedData) {
+      //check that key is not empty
+      // console.log(key);
+      
+      if (key == 'employeeMiddleName' || key == 'fatherMiddleName') { // this means, if middlename is empty commit it as empty to database
+        if (updatedData.hasOwnProperty(key)) {
+          FORMDATA.append(key, updatedData[key]);
+        }
+        
+      }else{ // this means, if key is not middlename then first check for not empty then only commit to database
+        if ( updatedData[key]!== ''){ 
+          
+          if (updatedData.hasOwnProperty(key)) {
+            FORMDATA.append(key, updatedData[key]);
+          }
+        }
+      }
+    }
+
+    try {
+      // Make the API call to update the employee
+      const response = await api.patch(`/employee/${employee.id}/`, FORMDATA);
+      
+      // Update the row with the new data
+      const newRows = [...filteredRows];
+      newRows[index] = { ...newRows[index], ...response.data, isEditing: false }; // Update the row with response data
+      setFilteredRows(newRows);
+      setRows(newRows); 
+
+      // newRows[index].isEditing = false; // Mark the row as not being edited
+    } catch (error) {
+      console.error("Failed to update employee data:", error);
+      // Handle error (e.g., show a notification)
+    }
+    
+    
+
   };
 
   // Function to handle change in input fields
@@ -283,12 +417,12 @@ const AllEmployee = () => {
                       {row.isEditing ? (
                         <input
                           type="text"
-                          value={row.enrollmentId}
+                          value={row.employeeId}
                           readOnly
                           className="border rounded w-full py-1 px-2"
                         />
                       ) : (
-                        row.enrollmentId
+                        row.employeeId
                       )}
                     </td>
                     <td className="p-2 text-center">
@@ -302,7 +436,8 @@ const AllEmployee = () => {
                           className="border rounded w-full py-1 px-2"
                         />
                       ) : (
-                        row.name
+                        row.employeeFirstName + " " +row.employeeMiddleName +" " + row.employeeLastName
+
                       )}
                     </td>
                     <td className="p-2 text-center">
@@ -316,7 +451,7 @@ const AllEmployee = () => {
                           className="border rounded w-full py-1 px-2"
                         />
                       ) : (
-                        row.fatherName
+                        row.fatherFirstName + " " +row.fatherMiddleName +" " + row.fatherLastName
                       )}
                     </td>
                     <td className="p-2 text-center">
@@ -355,14 +490,14 @@ const AllEmployee = () => {
                       {row.isEditing ? (
                         <input
                           type="text"
-                          value={row.phoneNo}
+                          value={row.phoneNumber}
                           onChange={(e) =>
-                            handleChange(index, "phoneNo", e.target.value)
+                            handleChange(index, "phoneNumber", e.target.value)
                           }
                           className="border rounded w-full py-1 px-2"
                         />
                       ) : (
-                        row.phoneNo
+                        row.phoneNumber
                       )}
                     </td>
                     <td className="p-2 text-center">
