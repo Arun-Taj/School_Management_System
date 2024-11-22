@@ -62,13 +62,13 @@ const Classes = () => {
       ? JSON.parse(localStorage.getItem("classes"))
       : []
   );
-  useEffect(()=>{
-    const loadClasses=() => {
+  useEffect(() => {
+    const loadClasses = () => {
       const savedClasses = localStorage.getItem("classes");
       return savedClasses ? JSON.parse(savedClasses) : [];
-    }
-    setClasses(loadClasses())
-  },[])
+    };
+    setClasses(loadClasses());
+  }, []);
   //const [updated,setUpdated]=useState(false)
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -130,14 +130,7 @@ const Classes = () => {
     setSearchTerm("");
     setClasses(JSON.parse(localStorage.getItem("classes")) || []);
   };
-
-  // const handleUpdate = (classId, updatedSubjects) => {
-  //   const updatedClasses = classes.map((cls) =>
-  //     cls.id === classId ? { ...cls, subjects: updatedSubjects } : cls
-  //   );
-  //   setClasses(updatedClasses);
-  // };
-  const handleUpdateSubjects = (classId, updatedSubjects) => {
+ const handleUpdateSubjects = (classId, updatedSubjects) => {
     setClasses((prevClasses) =>
       prevClasses.map((cls) =>
         cls.id === classId ? { ...cls, subjects: updatedSubjects } : cls
@@ -277,12 +270,7 @@ const Classes = () => {
             </div>
           </div>
           {/* <ClassSubjects classes={classes} onUpdate={handleUpdateSubjects} /> */}
-          <ClassSubjects
-            classes={classes}
-
-            
-          />
-          
+          <ClassSubjects classes={classes} />
         </div>
       </div>
     </div>
