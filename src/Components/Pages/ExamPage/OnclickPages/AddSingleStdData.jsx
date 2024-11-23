@@ -10,9 +10,8 @@ const AddSingleStdData = () => {
   const [recordsPerPage, setRecordsPerPage] = useState(10);
   //const [editingIndexPage, setEditingIndexPage] = useState(null);
 
-  const data = Array({
-    icon: <FaEye />,
-    enrollmentId: "01249999",
+  const data = [{
+     enrollmentId: "01249999",
     studentName: "Rahul Kumar Debnath",
     fatherName: "Johnson Kumar Tajpuriya",
     rollNo: "35",
@@ -25,7 +24,23 @@ const AddSingleStdData = () => {
       Geography: 68,
       Gk: 78,
     },
-  });
+  }]
+  const headers=[
+    "Enrollment ID",
+    "Student Name",
+    "Father's Name",
+    "Roll No.",
+    "English",
+    "Math",
+    "Science",
+    "Social",
+    "Computer",
+    "Geography",
+    "Gk",
+    "Action",
+  ]
+   
+
 
   const totalPages = Math.ceil(data.length / recordsPerPage);
 
@@ -60,6 +75,11 @@ const AddSingleStdData = () => {
     setCurrentRecords(updatedRecords);
     setEditingIndex(null);
   };
+  const handleSubmit = () => {
+    console.log("Submitted Data:", currentRecords);
+    // Add API integration or other logic here
+    alert("Data submitted successfully!");
+  };
 
   return (
     <div className="p-8 bg-pink-100 min-h-screen">
@@ -93,26 +113,13 @@ const AddSingleStdData = () => {
       <p className="flex items-center justify-center font-bold pt-10 text-2xl pb-6">
         Insert Obtained Marks
       </p>
-      <div className=" max-w-7xl bg-white py-4 rounded-lg shadow-lg">
+      <div className=" w-screen bg-white py-4 rounded-lg shadow-lg">
         <div className="">
           <div className="overflow-x-auto">
             <table className=" text-center border-collapse">
               <thead>
                 <tr className="bg-white">
-                  {[
-                    "Enrollment ID",
-                    "Student Name",
-                    "Father's Name",
-                    "Roll No.",
-                    "English",
-                    "Math",
-                    "Science",
-                    "Social",
-                    "Computer",
-                    "Geography",
-                    "Gk",
-                    "Action",
-                  ].map((header, index) => (
+                  {headers.map((header, index) => (
                     <th
                       key={header}
                       className="p-2 whitespace-nowrap min-w-[150px]"
@@ -219,7 +226,7 @@ const AddSingleStdData = () => {
         </div>
       </div>
       <div className="flex justify-center pt-10">
-        <button type="submit" className="bg-pink-500 p-2 px-6 rounded-full">
+        <button type="submit" className="bg-pink-500 p-2 px-6 rounded-full" onClick={handleSubmit}>
           Submit
         </button>
       </div>

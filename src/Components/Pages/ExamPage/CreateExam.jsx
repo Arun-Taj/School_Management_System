@@ -12,7 +12,9 @@ const CreateExam = () => {
   });
 
   const classesData = [
-    {
+    { 
+      // class:{id:1,name:"Class 1"},
+      // subjects:[{id:1,name:"English"},{id:2,name:"Social Science"},{id:3,name:"Math"}]
       className: "Class 1",
       subjects: ["English", "Social Science", "Math"],
     },

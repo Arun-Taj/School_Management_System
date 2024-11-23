@@ -7,6 +7,7 @@ const FeeReceipt = () => {
   const [receiptNo, setReceiptNo] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterOption, setFilterOption] = useState(""); // For filter
+  const [selectedDate, setSelectedDate]=useState("");
 
   useEffect(() => {
     const generateReceiptNo = () => {
@@ -29,7 +30,7 @@ const FeeReceipt = () => {
     setFilterOption("");  // Reset filter
     setReceiptNo(Math.floor(100000 + Math.random() * 900000));  
   };
-
+  const handleDate=(e)=>{e.preventDefault();setSelectedDate(e.target.value)}
   return (
     <div className="bg-pink-100 p-8">
       <div className="flex gap-4 bg-white rounded-3xl p-2">
@@ -56,7 +57,7 @@ const FeeReceipt = () => {
           </div>
           <div className="flex flex-col items-center">
             <label className="font-bold">Date</label>
-            <input type="date" className="rounded-3xl p-2 w-full md:w-44 border border-gray-400" />
+            <input type="date" className="rounded-3xl p-2 w-full md:w-44 border border-gray-400" value={selectedDate} onChange={handleDate}/>
           </div>
           <div className="flex flex-col items-center">
             <label className="font-bold">Enrollment ID</label>
