@@ -31,7 +31,7 @@ import EmployeeReport from "../Pages/AttendencePage/EmployeeReport";
 // import Exam from '../Pages/ExamPage/Exam';
 import CreateExam from "../Pages/ExamPage/CreateExam";
 import EditDeleteExam from "../Pages/ExamPage/EditDeleteExam";
-import Edit from "../Pages/ExamPage/OnclickPages/Edit";
+import Edit from "../Pages/ExamPage/OnclickPages/UpdateExamination";
 import UpdateMarks from "../Pages/ExamPage/UpdateMarks";
 import Search from "../Pages/ExamPage/OnclickPages/Search";
 import Result from "../Pages/ExamPage/Result";
