@@ -12,43 +12,52 @@ const Edit = () => {
   });
 
   const classesData = [
+    
     {
-      className: "Class 1",
-      subjects: ["English", "Social Science", "Math"],
+      class: { id: 1, name: "Class 1" },
+      subjects: [
+        { id: 1, name: "English" },
+        { id: 2, name: "Social Science" },
+        { id: 3, name: "Math" },
+      ],
     },
     {
-      className: "Class 2",
-      subjects: ["General Knowledge computer", "Social Science", "Math"],
+      class: { id: 2, name: "Class 2" },
+      subjects: [
+        { id: 4, name: "English" },
+        { id: 5, name: "Science" },
+        { id: 6, name: "Math" },
+        { id: 7, name: "Computer" },
+      ],
     },
     {
-      className: "Class 3",
-      subjects: ["English", "Social Science", "Math"],
-    },
-    {
-      className: "Class 4",
-      subjects: ["English", "Social Science", "Math"],
+      class: { id: 3, name: "Class 3" },
+      subjects: [
+        { id: 8, name: "English" },
+        { id: 9, name: "Social Science" },
+        { id: 10, name: "Math" },
+        { id: 11, name: "Science" },
+        { id: 12, name: "Arts" },
+      ],
     },
   ];
 
-  const handleClassToggle = (className) => {
+  const handleClassToggle = (classId) => {
     setSelectedClasses((prev) => ({
       ...prev,
-      [className]: prev[className]
+      [classId]: prev[classId]
         ? undefined
         : classesData
-            .find((cls) => cls.className === className)
-            .subjects.reduce((acc, subject) => ({ ...acc, [subject]: "" }), {}),
+            .find((cls) => cls.class.id === classId)
+            .subjects.reduce((acc, subject) => ({ ...acc, [subject.id]: "" }), {}),
     }));
   };
 
   const handleSelectAllClasses = (isSelected) => {
     const allClassesSelected = {};
     classesData.forEach((classItem) => {
-      allClassesSelected[classItem.className] = isSelected
-        ? classItem.subjects.reduce(
-            (acc, subject) => ({ ...acc, [subject]: "" }),
-            {}
-          )
+      allClassesSelected[classItem.class.id] = isSelected
+        ? classItem.subjects.reduce((acc, subject) => ({ ...acc, [subject.id]: "" }), {})
         : undefined;
     });
     setSelectedClasses(allClassesSelected);
@@ -58,29 +67,29 @@ const Edit = () => {
     (isSelected) => isSelected
   );
 
-  const handleMarksChange = (className, subject, value, type) => {
+  const handleMarksChange = (classId, subjectId, value,type) => {
     setSelectedClasses((prev) => ({
       ...prev,
-      [className]: {
-        ...prev[className],
-        [subject]: {
-          ...prev[className][subject],
-          [type]: value,
+      [classId]: {
+        ...prev[classId],
+        [subjectId]: {
+          ...prev[classId][subjectId],
+          [type]:value, 
         },
       },
     }));
   };
 
-  const handleSessionChange = (session) => {
-    const [startYear, endYear] = session.split("-").map(Number);
+    const handleSessionChange = (session) => {
+      const [startYear, endYear] = session.split("-").map(Number);
 
-    setExamDate((prev) => ({
-      ...prev,
-      currentSession: session,
-      startingDate: `${startYear}-01-01`,
-      endingDate: `${endYear}-12-31`,
-    }));
-  };
+      setExamDate((prev) => ({
+        ...prev,
+        currentSession: session,
+        startingDate: `${startYear}-01-01`,
+        endingDate: `${endYear}-12-31`,
+      }));
+    };
 
   const handleStartingDateChange = (date) => {
     setExamDate((prev) => ({
@@ -113,10 +122,10 @@ const Edit = () => {
         ...ExamDate,
         classes: Object.entries(selectedClasses)
           .filter(([_, subjects]) => subjects)
-          .map(([className, subjects]) => ({
-            className,
-            subjects: Object.entries(subjects).map(([subject, marks]) => ({
-              subject,
+          .map(([classId, subjects]) => ({
+            classId,
+            subjects: Object.entries(subjects).map(([subjectId,marks]) => ({
+              subjectId,
               totalMarks: marks?.totalMarks,
               passMarks: marks?.passMarks,
             })),
@@ -128,39 +137,37 @@ const Edit = () => {
 
       alert("Exam created successfully!");
       // Reset the selected classes and exam data
-      setSelectedClasses({});
-      // Calculate the default session based on the current year
-      const currentYear = new Date().getFullYear();
-      const defaultSession = `${currentYear}-${currentYear + 1}`;
-      const defaultStartingDate = `${currentYear}-01-01`;
-      const defaultEndingDate = `${currentYear + 1}-12-31`;
-      setExamDate({
-        currentSession: defaultSession, // Reset session to default
-        startingDate: defaultStartingDate, // Reset starting date to default
-        endingDate: defaultEndingDate, // Reset ending date to default
-        examName: "", // Reset exam name
-      });
+    setSelectedClasses({});
+     // Calculate the default session based on the current year
+     const currentYear = new Date().getFullYear();
+     const defaultSession = `${currentYear}-${currentYear + 1}`;
+     const defaultStartingDate = `${currentYear}-01-01`;
+     const defaultEndingDate = `${currentYear + 1}-12-31`;
+    setExamDate({
+      currentSession: defaultSession, // Reset session to default
+      startingDate: defaultStartingDate, // Reset starting date to default
+      endingDate: defaultEndingDate, // Reset ending date to default
+      examName: "", // Reset exam name
+    });
     } else {
       alert("Exam creation cancelled.");
     }
   };
-  const handleDeleteSubject = (className, subject) => {
+  const handleDeleteSubject = (classId, subjectId) => {
     setSelectedClasses((prev) => {
       // Clone the current class subjects to modify them
-      const updatedSubjects = { ...prev[className] };
-
-      // Remove the subject from the class
-      delete updatedSubjects[subject];
-
-      // If no subjects are left, remove the class itself; otherwise, update the class
+      const updatedSubjects = { ...prev[classId] };
+  
+      // Remove the specific subject
+      delete updatedSubjects[subjectId];
+  
+      // If no subjects remain in the class, remove the class; otherwise, update it
       return {
         ...prev,
-        [className]:
-          Object.keys(updatedSubjects).length > 0 ? updatedSubjects : undefined,
+        [classId]: Object.keys(updatedSubjects).length > 0 ? updatedSubjects : undefined,
       };
     });
   };
-
   return (
     <div className="p-8 bg-pink-100 min-h-screen">
       <div className="flex gap-4  bg-white  rounded-3xl p-2 ">
@@ -183,7 +190,7 @@ const Edit = () => {
       </div>
 
       <div className="pt-10">
-        <h1 className="text-center font-bold text-2xl">Update Examination</h1>
+        <h1 className="text-center font-bold text-2xl">Update Examination Info</h1>
         <div className="flex flex-row pt-6 justify-around">
           <div className="space-y-6">
             <div className="flex flex-row gap-4">
@@ -246,7 +253,7 @@ const Edit = () => {
                 onClick={handleCreateExam}
                 className="bg-pink-500 rounded-full p-2 px-6 border border-gray-300 font-bold"
               >
-                Update
+                Create
               </button>
             </div>
           </div>
@@ -258,80 +265,82 @@ const Edit = () => {
                   <span>Select All Class</span>
                   <input
                     type="checkbox"
-                    onChange={(e) => handleSelectAllClasses(e.target.checked)}
+                    onChange={(e) =>
+                      handleSelectAllClasses(e.target.checked)
+                    }
                     checked={
-                      isAllSelected && Object.keys(selectedClasses).length > 0
+                      isAllSelected &&
+                      Object.keys(selectedClasses).length > 0
                     }
                   />
                 </div>
 
                 {classesData.map((classItem, index) => (
-                  <div key={index} className="mb-2 ">
+                  <div key={classItem.class.id} className="mb-2 ">
                     <div className="flex items-center justify-between p-2 border-b border-purple-200 px-4">
-                      <span>{classItem.className}</span>
+                      <span>{classItem.class.name}</span>
                       <input
                         type="checkbox"
-                        onChange={() => handleClassToggle(classItem.className)}
-                        checked={!!selectedClasses[classItem.className]}
+                        onChange={() => handleClassToggle(classItem.class.id)}
+                        checked={!!selectedClasses[classItem.class.id]}
                       />
                     </div>
 
-                    {selectedClasses[classItem.className] && (
+                    {selectedClasses[classItem.class.id] && (
                       <div className="bg-[#E3D6FF] p-2">
                         {classItem.subjects.map((subject, idx) => (
                           <div
-                            key={idx}
+                          key={subject.id}
                             className="flex items-center justify-between p-1"
                           >
-                            <span>{subject}</span>
+                            <span>{subject.name}</span>
                             <div className="flex gap-2 pl-3">
-                              <input
-                                type="number"
-                                min="0"
-                                placeholder="Total Marks"
-                                onChange={(e) =>
-                                  handleMarksChange(
-                                    classItem.className,
-                                    subject,
-                                    e.target.value,
-                                    "totalMarks"
-                                  )
-                                }
-                                value={
-                                  selectedClasses[classItem.className][subject]
+
+                            
+                            <input
+                              type="number"
+                              min="0"
+                              placeholder="Total Marks"
+                              onChange={(e) =>
+                                handleMarksChange(
+                                  classItem.class.id,
+                                  subject.id,
+                                  e.target.value,
+                                  "totalMarks"
+                                )
+                              }
+                              value={
+                                selectedClasses[classItem.class.id]?.[subject.id]
                                     ?.totalMarks || ""
-                                }
-                                className="bg-white border border-gray-300 px-2 rounded-full w-24"
-                              />
-                              <input
-                                type="number"
-                                min="0"
-                                placeholder="Pass Marks"
-                                onChange={(e) =>
-                                  handleMarksChange(
-                                    classItem.className,
-                                    subject,
-                                    e.target.value,
-                                    "passMarks"
-                                  )
-                                }
-                                value={
-                                  selectedClasses[classItem.className][subject]
+                              }
+                              className="bg-white border border-gray-300 px-2 rounded-full w-24"
+                            />
+                            <input
+                              type="number"
+                              min="0"
+                              placeholder="Pass Marks"
+                              onChange={(e) =>
+                                handleMarksChange(
+                                  classItem.class.id,
+                                  subject.id,
+                                  e.target.value,
+                                  "passMarks"
+                                )
+                              }
+                              value={
+                                selectedClasses[classItem.class.id]?.[subject.id]
                                     ?.passMarks || ""
-                                }
-                                className="bg-white border border-gray-300 px-2 rounded-full w-24"
-                              />
-                              <button
-                                onClick={() =>
-                                  handleDeleteSubject(
-                                    classItem.className,
-                                    subject
-                                  )
-                                }
-                                className="hover:text-red-700"
-                              >
-                                <RiDeleteBin6Line />
-                              </button>
+                              }
+                              className="bg-white border border-gray-300 px-2 rounded-full w-24"
+                            />
+                            <button
+                            onClick={() =>
+                              handleDeleteSubject(classItem.class.id, subject.id)
+                            }
+                            className="hover:text-red-700"
+                          >
+                            <RiDeleteBin6Line />
+                          </button>
                             </div>
                           </div>
                         ))}

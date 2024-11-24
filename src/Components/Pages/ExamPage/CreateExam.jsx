@@ -12,42 +12,52 @@ const CreateExam = () => {
   });
 
   const classesData = [
-    { 
-      // class:{id:1,name:"Class 1"},
-      // subjects:[{id:1,name:"English"},{id:2,name:"Social Science"},{id:3,name:"Math"}]
-      className: "Class 1",
-      subjects: ["English", "Social Science", "Math"],
+    
+    {
+      class: { id: 1, name: "Class 1" },
+      subjects: [
+        { id: 1, name: "English" },
+        { id: 2, name: "Social Science" },
+        { id: 3, name: "Math" },
+      ],
     },
     {
-      className: "Class 2",
-      subjects: ["General Knowledge computer", "Social Science", "Math"],
+      class: { id: 2, name: "Class 2" },
+      subjects: [
+        { id: 4, name: "English" },
+        { id: 5, name: "Science" },
+        { id: 6, name: "Math" },
+        { id: 7, name: "Computer" },
+      ],
     },
     {
-      className: "Class 3",
-      subjects: ["English", "Social Science", "Math"],
-    },
-    {
-      className: "Class 4",
-      subjects: ["English", "Social Science", "Math"],
+      class: { id: 3, name: "Class 3" },
+      subjects: [
+        { id: 8, name: "English" },
+        { id: 9, name: "Social Science" },
+        { id: 10, name: "Math" },
+        { id: 11, name: "Science" },
+        { id: 12, name: "Arts" },
+      ],
     },
   ];
 
-  const handleClassToggle = (className) => {
+  const handleClassToggle = (classId) => {
     setSelectedClasses((prev) => ({
       ...prev,
-      [className]: prev[className]
+      [classId]: prev[classId]
         ? undefined
         : classesData
-            .find((cls) => cls.className === className)
-            .subjects.reduce((acc, subject) => ({ ...acc, [subject]: "" }), {}),
+            .find((cls) => cls.class.id === classId)
+            .subjects.reduce((acc, subject) => ({ ...acc, [subject.id]: "" }), {}),
     }));
   };
 
   const handleSelectAllClasses = (isSelected) => {
     const allClassesSelected = {};
     classesData.forEach((classItem) => {
-      allClassesSelected[classItem.className] = isSelected
-        ? classItem.subjects.reduce((acc, subject) => ({ ...acc, [subject]: "" }), {})
+      allClassesSelected[classItem.class.id] = isSelected
+        ? classItem.subjects.reduce((acc, subject) => ({ ...acc, [subject.id]: "" }), {})
         : undefined;
     });
     setSelectedClasses(allClassesSelected);
@@ -57,13 +67,13 @@ const CreateExam = () => {
     (isSelected) => isSelected
   );
 
-  const handleMarksChange = (className, subject, value,type) => {
+  const handleMarksChange = (classId, subjectId, value,type) => {
     setSelectedClasses((prev) => ({
       ...prev,
-      [className]: {
-        ...prev[className],
-        [subject]: {
-          ...prev[className][subject],
+      [classId]: {
+        ...prev[classId],
+        [subjectId]: {
+          ...prev[classId][subjectId],
           [type]:value, 
         },
       },
@@ -112,10 +122,10 @@ const CreateExam = () => {
         ...ExamDate,
         classes: Object.entries(selectedClasses)
           .filter(([_, subjects]) => subjects)
-          .map(([className, subjects]) => ({
-            className,
-            subjects: Object.entries(subjects).map(([subject,marks]) => ({
-              subject,
+          .map(([classId, subjects]) => ({
+            classId,
+            subjects: Object.entries(subjects).map(([subjectId,marks]) => ({
+              subjectId,
               totalMarks: marks?.totalMarks,
               passMarks: marks?.passMarks,
             })),
@@ -143,24 +153,23 @@ const CreateExam = () => {
       alert("Exam creation cancelled.");
     }
   };
-  const handleDeleteSubject = (className, subject) => {
+  const handleDeleteSubject = (classId, subjectId) => {
     setSelectedClasses((prev) => {
       // Clone the current class subjects to modify them
-      const updatedSubjects = { ...prev[className] };
+      const updatedSubjects = { ...prev[classId] };
   
-      // Remove the subject from the class
-      delete updatedSubjects[subject];
+      // Remove the specific subject
+      delete updatedSubjects[subjectId];
   
-      // If no subjects are left, remove the class itself; otherwise, update the class
+      // If no subjects remain in the class, remove the class; otherwise, update it
       return {
         ...prev,
-        [className]: Object.keys(updatedSubjects).length > 0 ? updatedSubjects : undefined,
+        [classId]: Object.keys(updatedSubjects).length > 0 ? updatedSubjects : undefined,
       };
     });
   };
   
   
-
   return (
     <div className="p-8 bg-pink-100 min-h-screen">
       <div className="flex gap-4 bg-white rounded-3xl p-2">
@@ -261,26 +270,24 @@ const CreateExam = () => {
                 </div>
 
                 {classesData.map((classItem, index) => (
-                  <div key={index} className="mb-2 ">
+                  <div key={classItem.class.id} className="mb-2 ">
                     <div className="flex items-center justify-between p-2 border-b border-purple-200 px-4">
-                      <span>{classItem.className}</span>
+                      <span>{classItem.class.name}</span>
                       <input
                         type="checkbox"
-                        onChange={() =>
-                          handleClassToggle(classItem.className)
-                        }
-                        checked={!!selectedClasses[classItem.className]}
+                        onChange={() => handleClassToggle(classItem.class.id)}
+                        checked={!!selectedClasses[classItem.class.id]}
                       />
                     </div>
 
-                    {selectedClasses[classItem.className] && (
+                    {selectedClasses[classItem.class.id] && (
                       <div className="bg-[#E3D6FF] p-2">
                         {classItem.subjects.map((subject, idx) => (
                           <div
-                            key={idx}
+                          key={subject.id}
                             className="flex items-center justify-between p-1"
                           >
-                            <span>{subject}</span>
+                            <span>{subject.name}</span>
                             <div className="flex gap-2 pl-3">
 
                             
@@ -290,16 +297,15 @@ const CreateExam = () => {
                               placeholder="Total Marks"
                               onChange={(e) =>
                                 handleMarksChange(
-                                  classItem.className,
-                                  subject,
+                                  classItem.class.id,
+                                  subject.id,
                                   e.target.value,
                                   "totalMarks"
                                 )
                               }
                               value={
-                                selectedClasses[classItem.className][
-                                  subject
-                                ]?.totalMarks || ""
+                                selectedClasses[classItem.class.id]?.[subject.id]
+                                    ?.totalMarks || ""
                               }
                               className="bg-white border border-gray-300 px-2 rounded-full w-24"
                             />
@@ -309,25 +315,21 @@ const CreateExam = () => {
                               placeholder="Pass Marks"
                               onChange={(e) =>
                                 handleMarksChange(
-                                  classItem.className,
-                                  subject,
+                                  classItem.class.id,
+                                  subject.id,
                                   e.target.value,
                                   "passMarks"
                                 )
                               }
                               value={
-                                selectedClasses[classItem.className][
-                                  subject
-                                ]?.passMarks || ""
+                                selectedClasses[classItem.class.id]?.[subject.id]
+                                    ?.passMarks || ""
                               }
                               className="bg-white border border-gray-300 px-2 rounded-full w-24"
                             />
                             <button
                             onClick={() =>
-                              handleDeleteSubject(
-                                classItem.className,
-                                subject
-                              )
+                              handleDeleteSubject(classItem.class.id, subject.id)
                             }
                             className="hover:text-red-700"
                           >
