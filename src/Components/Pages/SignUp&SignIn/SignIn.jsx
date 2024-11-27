@@ -3,6 +3,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import MainDashboard from "../../DashBoard/MainDashBoard";
+import Logo from "../../../assets/Logo.svg";
+
 
 const SignInForm = () => {
   const navigate = useNavigate();
@@ -68,55 +70,7 @@ const SignInForm = () => {
   };
 
   
-  //   e.preventDefault();
-    
-  //   // try logging in with provided credentials
-  //   try {
-  //     await login(formValues.username, formValues.password);
-  //     alert("Login successful!");
-  //   } catch (err) {
-  //     alert(err.message);
-  //   }
-    
-  //   if (loggedUser) {
-  //     const { username: storedUsername, password: storedPassword } = loggedUser;
-      
-  //     // DEBUG: Check what values are being compared
-  //     console.log("Stored username:", storedUsername);
-  //     console.log("Stored password:", storedPassword);
-  //     console.log("Entered username:", formValues.username);
-  //     console.log("Entered password:", formValues.password);
-
-  //     // Case-insensitive username comparison
-  //     if (
-  //       formValues.username === storedUsername &&
-  //       formValues.password === storedPassword
-  //     ) {
-  //       navigate("/dashboard"); // Navigate to dashboard on successful login
-  //     } else {
-  //       // Set error messages for incorrect username/password
-  //       setFormErrors({
-  //         username:
-  //           formValues.username === ""
-  //             ? "User name is required!"
-  //             : formValues.username !== storedUsername
-  //             ? "Incorrect username"
-  //             : "",
-  //         password:
-  //           formValues.password === ""
-  //             ? "Password is required!"
-  //             : formValues.password !== storedPassword
-  //             ? "Incorrect password"
-  //             : "",
-  //       });
-  //     }
-  //   } else {
-  //     setFormErrors({
-  //       username: "No registered user found",
-  //       password: "Please sign up first!",
-  //     });
-  //   }
-  // };
+  
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -131,8 +85,10 @@ const SignInForm = () => {
     <div className="flex min-h-screen">
       <div className="flex justify-center bg-white w-full">
         {/* Left Side */}
-        <div className="w-1/2 p-8 h-full">
-          <div className="font-bold text-xl">Logo</div>
+        <div className="w-1/2 p-8 h-full ">
+          <div className="absolute top-4 left-4">
+            <img src={Logo} alt="" className="w-52 h-auto"/>
+          </div>
           <div className="flex justify-center pt-14">
             <div className="w-80">
               <h2 className="text-2xl font-semibold mb-2 text-center">
