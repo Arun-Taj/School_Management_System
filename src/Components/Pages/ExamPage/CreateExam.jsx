@@ -11,7 +11,37 @@ const CreateExam = () => {
     examName: "",
   });
 
-  const classesData = [
+  // const classesData = [
+    
+  //   {
+  //     class: { id: 1, name: "Class 1" },
+  //     subjects: [
+  //       { id: 1, name: "English" },
+  //       { id: 2, name: "Social Science" },
+  //       { id: 3, name: "Math" },
+  //     ],
+  //   },
+  //   {
+  //     class: { id: 2, name: "Class 2" },
+  //     subjects: [
+  //       { id: 4, name: "English" },
+  //       { id: 5, name: "Science" },
+  //       { id: 6, name: "Math" },
+  //       { id: 7, name: "Computer" },
+  //     ],
+  //   },
+  //   {
+  //     class: { id: 3, name: "Class 3" },
+  //     subjects: [
+  //       { id: 8, name: "English" },
+  //       { id: 9, name: "Social Science" },
+  //       { id: 10, name: "Math" },
+  //       { id: 11, name: "Science" },
+  //       { id: 12, name: "Arts" },
+  //     ],
+  //   },
+  // ];
+  const [classesData, setClassesData] = useState([
     
     {
       class: { id: 1, name: "Class 1" },
@@ -40,7 +70,7 @@ const CreateExam = () => {
         { id: 12, name: "Arts" },
       ],
     },
-  ];
+  ]);
 
   const handleClassToggle = (classId) => {
     setSelectedClasses((prev) => ({
@@ -153,20 +183,20 @@ const CreateExam = () => {
       alert("Exam creation cancelled.");
     }
   };
+
   const handleDeleteSubject = (classId, subjectId) => {
-    setSelectedClasses((prev) => {
-      // Clone the current class subjects to modify them
-      const updatedSubjects = { ...prev[classId] };
   
-      // Remove the specific subject
-      delete updatedSubjects[subjectId];
-  
-      // If no subjects remain in the class, remove the class; otherwise, update it
-      return {
-        ...prev,
-        [classId]: Object.keys(updatedSubjects).length > 0 ? updatedSubjects : undefined,
-      };
-    });
+    classesData.forEach((classItem) => {
+      if (classItem.class.id === classId) {
+        classItem.subjects = classItem.subjects.filter(
+          (subject) => subject.id !== subjectId
+        );
+      }
+
+    }
+    );
+    console.log(classesData);
+    setClassesData([...classesData]);
   };
   
   

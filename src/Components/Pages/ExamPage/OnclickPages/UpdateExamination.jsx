@@ -4,6 +4,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 
 const Edit = () => {
   const [selectedClasses, setSelectedClasses] = useState({});
+  
   const [ExamDate, setExamDate] = useState({
     currentSession: "",
     startingDate: "",
@@ -11,7 +12,7 @@ const Edit = () => {
     examName: "",
   });
 
-  const classesData = [
+  const [classesData, setClassesData] = useState([
     
     {
       class: { id: 1, name: "Class 1" },
@@ -40,7 +41,7 @@ const Edit = () => {
         { id: 12, name: "Arts" },
       ],
     },
-  ];
+  ]);
 
   const handleClassToggle = (classId) => {
     setSelectedClasses((prev) => ({
@@ -154,19 +155,18 @@ const Edit = () => {
     }
   };
   const handleDeleteSubject = (classId, subjectId) => {
-    setSelectedClasses((prev) => {
-      // Clone the current class subjects to modify them
-      const updatedSubjects = { ...prev[classId] };
   
-      // Remove the specific subject
-      delete updatedSubjects[subjectId];
-  
-      // If no subjects remain in the class, remove the class; otherwise, update it
-      return {
-        ...prev,
-        [classId]: Object.keys(updatedSubjects).length > 0 ? updatedSubjects : undefined,
-      };
-    });
+    classesData.forEach((classItem) => {
+      if (classItem.class.id === classId) {
+        classItem.subjects = classItem.subjects.filter(
+          (subject) => subject.id !== subjectId
+        );
+      }
+
+    }
+    );
+    console.log(classesData);
+    setClassesData([...classesData]);
   };
   return (
     <div className="p-8 bg-pink-100 min-h-screen">

@@ -29,11 +29,13 @@ function TableReceipt() {
   const [fine, setFine] = useState(0);
   const [transportFee, setTransportFee] = useState(250);
   const [lateFee, setLateFee] = useState(100);
+  const [concessionPercent, setConcessionPercent] = useState();
+  const [deposit, setDeposit] = useState();
   
   const feePerMonth = 700;
   const oldBalance = 2000;
-  const concessionPercent = 5;
-  const deposit = 2000;
+  //const concessionPercent = 5;
+  //const deposit = 2000;
 
   const handleMonthSelection = (month) => {
     setSelectedMonths((prevSelectedMonths) =>
@@ -41,6 +43,15 @@ function TableReceipt() {
         ? prevSelectedMonths.filter((m) => m !== month)
         : [...prevSelectedMonths, month]
     );
+  };
+  const handleConcessionChange = (value) => {
+    const normalizedValue = value ? parseInt(value.replace(/^0+/, ''), 10) : 0; // Remove leading zeros explicitly
+    setConcessionPercent(normalizedValue);
+  };
+  
+  const handleDepositChange = (value) => {
+    const normalizedValue = value ? parseInt(value.replace(/^0+/, ''), 10) : 0; // Remove leading zeros explicitly
+    setDeposit(normalizedValue);
   };
 
   const totalFees = selectedMonths.length > 0
@@ -103,7 +114,7 @@ function TableReceipt() {
               <tr className="bg-[#BCA8EA]">
                 <td className="py-2">01</td>
                 <td className="py-2">Monthly Fee</td>
-                <td className="py-2">{selectedMonths.length * feePerMonth}</td>
+                <td className="py-2 bg-gray-400 p-2 rounded-3xl  w-28 focus:outline-none">{selectedMonths.length * feePerMonth}</td>
               </tr>
               <tr className="bg-[#E3D6FF]">
                 <td className="py-2">02</td>
@@ -113,7 +124,7 @@ function TableReceipt() {
                     type="number"
                     value={admissionFee}
                     onChange={(e) => setAdmissionFee(parseInt(e.target.value) || 0)}
-                    className="text-center bg-transparent w-full focus:outline-none"
+                    className="text-center bg-white p-2 rounded-3xl border border-gray-400 w-28  focus:outline-none"
                   />
                 </td>
               </tr>
@@ -125,7 +136,7 @@ function TableReceipt() {
                     type="number"
                     value={registrationFee}
                     onChange={(e) => setRegistrationFee(parseInt(e.target.value) || 0)}
-                    className="text-center bg-transparent w-full focus:outline-none"
+                    className="text-center bg-white p-2 rounded-3xl border border-gray-400 w-28   focus:outline-none"
                   />
                 </td>
               </tr>
@@ -137,7 +148,7 @@ function TableReceipt() {
                     type="number"
                     value={fine}
                     onChange={(e) => setFine(parseInt(e.target.value) || 0)}
-                    className="text-center bg-transparent w-full focus:outline-none"
+                    className="text-center bg-white p-2 rounded-3xl border border-gray-400 w-28  focus:outline-none"
                   />
                 </td>
               </tr>
@@ -149,7 +160,7 @@ function TableReceipt() {
                     type="number"
                     value={transportFee}
                     onChange={(e) => setTransportFee(parseInt(e.target.value) || 0)}
-                    className="text-center bg-transparent w-full focus:outline-none"
+                    className="text-center bg-white p-2 rounded-3xl border border-gray-400 w-28   focus:outline-none"
                   />
                 </td>
               </tr>
@@ -169,17 +180,17 @@ function TableReceipt() {
               <tr className="bg-[#E3D6FF]">
                 <td className="py-2">06</td>
                 <td className="py-2">Old Balance</td>
-                <td className="py-2">{oldBalance}</td>
+                <td className="py-2  bg-gray-400   p-2 rounded-3xl  w-28  focus:outline-none">{oldBalance}</td>
               </tr>
               <tr className="bg-[#BCA8EA]">
                 <td className="py-2">07</td>
-                <td className="py-2">Late Fee</td>
+                <td className="py-2 ">Late Fee</td>
                 <td className="py-2">
                   <input
                     type="number"
                     value={lateFee}
                     onChange={(e) => setLateFee(parseInt(e.target.value) || 0)}
-                    className="text-center bg-transparent w-full focus:outline-none"
+                    className="text-center  bg-white p-2 rounded-3xl border border-gray-400 w-28  focus:outline-none"
                   />
                 </td>
               </tr>
@@ -197,13 +208,20 @@ function TableReceipt() {
         </div>
         <div className="text-center">
           <p className="text-sm">Concession (%)</p>
-          <div className="col-span-1 bg-gray-200 p-2 rounded-3xl text-center border border-gray-400">
-            <p className="text-sm">{concessionPercent}</p>
-          </div>
+            
+              <input
+      type="number"
+      value={concessionPercent}
+      onChange={(e) => handleConcessionChange(e.target.value)}
+      className=" bg-white p-2 rounded-3xl text-center border border-gray-400 focus:outline-none w-32"
+    />
+              
+          
+          
         </div>
         <div className="text-center">
           <p className="text-sm">Concession (Amount)</p>
-          <div className="col-span-1 bg-gray-200 p-2 rounded-3xl text-center border border-gray-400">
+          <div className="col-span-1 bg-white p-2 rounded-3xl text-center border border-gray-400">
             <p className="text-sm">{concessionAmount}</p>
           </div>
         </div>
@@ -213,11 +231,15 @@ function TableReceipt() {
             <p className="text-sm">{netFees}</p>
           </div>
         </div>
-        <div className="text-center">
+        <div className="text-center ">
           <p className="text-sm">Deposit</p>
-          <div className="col-span-1 bg-gray-200 p-2 rounded-3xl text-center border border-gray-400">
-            <p className="text-sm">{deposit}</p>
-          </div>
+          <input
+  type="number"
+  value={deposit}
+  onChange={(e) => handleDepositChange(e.target.value)}
+  className="col-span-1 bg-white p-2 rounded-3xl w-32 text-center border border-gray-400 focus:outline-none"
+/>
+
         </div>
         <div className="col-span-2 text-center text-sm">
           <p>Payment Mode</p>

@@ -13,7 +13,7 @@ const AddWholeClsData = () => {
   
   const data=[
     {
-      enrollmentId: "01249999",
+    enrollmentId: "01249999",
     studentName: "Rahul Kumar Debnath",
     fatherName: "Johnson Kumar Tajpuriya",
     rollNo: "35",
