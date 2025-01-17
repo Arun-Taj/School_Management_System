@@ -6,33 +6,39 @@ import { FaRegUserCircle } from "react-icons/fa";
 import { AuthContext } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { set } from "date-fns";
+import satesDistrictsJSON from "../../Pages/SignUp&SignIn/statesDistricts.json";
+import { use } from "react";
 
 const base_url = import.meta.env.VITE_API_BASE_URL;
 // Reusable Input Component
-const InputField = ({ label, placeholder, type = "text" }) => (
+const InputField = ({ label, placeholder, onChange, type = "text" }) => (
   <div className="flex flex-col">
     <p className="text-center">{label}</p>
     <input
       type={type}
       placeholder={placeholder}
       className="p-2 rounded-full w-full"
+      onChange={onChange}
     />
   </div>
 );
 
 // Reusable Select Component
-const SelectField = ({ label, options }) => (
-  <div className="flex flex-col">
-    <p className="text-center">{label}</p>
-    <select className="p-2 rounded-full bg-white">
-      {options.map((option, index) => (
-        <option key={index} value={option}>
-          {option}
-        </option>
-      ))}
-    </select>
-  </div>
-);
+// const SelectField = ({ label, options }) => (
+//   <div className="flex flex-col">
+//     <p className="text-center">{label}</p>
+//     <select className="p-2 rounded-full bg-white" value={ }
+//       onChange={(e) => setSelectedOption(e.target.value)}
+
+//     >
+//       {options.map((option, index) => (
+//         <option key={index} value={option}>
+//           {option}
+//         </option>
+//       ))}
+//     </select>
+//   </div>
+// );
 
 // Reusable Contact Info Component
 const ContactInfo = ({ Icon, label, info }) => (
@@ -45,20 +51,43 @@ const ContactInfo = ({ Icon, label, info }) => (
   </div>
 );
 
+function getStates(jsonData) {
+  return jsonData.states.map((stateObj) => stateObj.state);
+}
+function getDistrictsByState(jsonData, stateName) {
+  const stateObj = jsonData.states.find(
+    (stateObj) => stateObj.state === stateName
+  );
+  return stateObj ? stateObj.districts : []; // Return districts or empty array if state not found
+}
+
+
+let schoolId = null
+let adminId = null
+
 const Profile = () => {
   const { api } = useContext(AuthContext);
   const navigate = useNavigate();
   // Define options for select fields
-  const districts = ["Hojai", "Nagaon", "Guwahati"];
-  const states = ["Assam", "Meghalaya", "West Bengal"];
-  const countries = ["India", "Bangladesh", "Nepal"];
+
+  const countries = ["India"];
+  const [states, setStates] = useState(getStates(satesDistrictsJSON));
+  const [districts, setDistricts] = useState([]);
 
   const [logoFile, setLogoFile] = useState(null);
   const [schoolName, setSchoolName] = useState("");
   const [tagLine, setTagLine] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
-  const [schoolBoard, setSchoolBoard] = useState("");
+  const [schoolBoard, setSchoolBoard] = useState('')
+  const [schoolBoards, setSchoolBoards] = useState([
+    "cbse",
+    "icse",
+    "state board",
+    "seba",
+    "ahsec",
+    "other",
+  ]);
   const [townCity, setTownCity] = useState("");
   const [district, setDistrict] = useState(districts[0]);
   const [state, setState] = useState(states[0]);
@@ -74,6 +103,14 @@ const Profile = () => {
     phone: "",
     email: "",
   });
+
+  useEffect(() => {
+    setStates(getStates(satesDistrictsJSON));
+  }, []);
+  useEffect(() => {
+    setDistricts(getDistrictsByState(satesDistrictsJSON, state));
+  }, [state]);
+
   useEffect(() => {
     const getSchoolData = async () => {
       try {
@@ -82,20 +119,27 @@ const Profile = () => {
         const school_data = response.data.school;
         const admin_user = response.data.admin;
 
+        schoolId = school_data.id;
+        adminId = admin_user.id
+
         setSchoolName(school_data.school_name);
+        setSchoolBoard(school_data.school_board);
         setTagLine(school_data.tag_line);
-        setPhone(admin_user.phone_number);
+        setPhone(school_data.phone);
         setAddress(school_data.address);
         setTownCity(school_data.town_village_city);
         setEmail(admin_user.email);
         setPinCode(school_data.pincode);
         setLogoFile(school_data.photo);
+        setState(school_data.state);
+        setDistrict(school_data.district);
+
 
         setDisplayedProfile({
           logo: school_data.photo,
           schoolName: school_data.school_name,
           tagLine: school_data.tag_line,
-          schoolBoard: school_data.school_board,
+          schoolBoard: school_data.school_board.toUpperCase(),
           address: `${school_data.address}, ${school_data.town_village_city}, ${school_data.district}, ${school_data.state}, ${school_data.country}, ${school_data.pincode}`,
           phone: admin_user.phone_number,
           email: admin_user.email,
@@ -117,7 +161,41 @@ const Profile = () => {
     // Trigger the file input click event
     document.getElementById("logo-input").click();
   };
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    formData.append("school_id", schoolId);
+    formData.append("admin_id", adminId);
+    formData.append("school_name", schoolName);
+
+    formData.append("tag_line", tagLine);
+    formData.append("pincode", pinCode);
+    formData.append("address", address);
+    formData.append("phone", phone);
+    formData.append("email", email);
+    formData.append("town_village_city", townCity);
+
+    // console.log(formData.get("address"));
+
+
+
+    // console.log("Form Submitted:", updatedProfile);
+
+    const sendToServer = async () => {
+      try {
+        const response = await api.post("/update_school_info/", formData);
+        // console.log(response.data);
+        alert("Profile updated successfully!");
+        navigate("/dashboard");
+
+      } catch (error) { }
+
+
+    }
+    sendToServer()
+
+
     // Create an object with the form data
     const updatedProfile = {
       logo: logoFile,
@@ -132,7 +210,7 @@ const Profile = () => {
     // Set the state with the updated profile data (Assume you have state for these)
     setDisplayedProfile(updatedProfile);
 
-    console.log("Form Submitted:", updatedProfile);
+
   };
 
   return (
@@ -151,123 +229,169 @@ const Profile = () => {
       <div className="grid grid-cols-3">
         {/* Left Side */}
         <div className="col-span-2">
-          <div className="grid grid-cols-4 gap-4">
-            <div>
-              <p className="text-center">School Logo</p>
-              <div className="flex flex-col bg-white items-center rounded-lg p-4 border">
-                <div className="w-24 h-24 bg-gray-200 rounded-lg">
-                  {logoFile ? (
-                    <img
-                      src={`${base_url}/${logoFile}`}
-                      alt="Logo"
-                      className="w-24 h-24 rounded-lg"
+          <form method="post" onSubmit={handleSubmit} encType="multipart/form-data">
+            <div className="grid grid-cols-4 gap-4">
+              <div>
+                <p className="text-center">School Logo</p>
+                <div className="flex flex-col bg-white items-center rounded-lg p-4 border">
+                  <div className="w-24 h-24 bg-gray-200 rounded-lg">
+                    {logoFile ? (
+                      <img
+                        src={`${base_url}/${logoFile}`}
+                        alt="Logo"
+                        className="w-24 h-24 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <div className="w-24 h-24 bg-gray-200 rounded-lg"></div>
+                    )}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      id="logo-input"
+                      name="photo"
+                      onChange={handleLogoChange}
                     />
-                  ) : (
-                    <div className="w-24 h-24 bg-gray-200 rounded-lg"></div>
-                  )}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    id="logo-input"
-                    onChange={handleLogoChange}
-                  />
+                  </div>
+                  <button
+                    className="mt-2 text-blue-500"
+                    onClick={handleLogoUpload}
+                  >
+                    Change Logo
+                  </button>
                 </div>
-                <button
-                  className="mt-2 text-blue-500"
-                  onClick={handleLogoUpload}
-                >
-                  Change Logo
-                </button>
+              </div>
+
+              <div className="col-span-2 space-y-4">
+                <InputField
+                  label="School Name"
+                  placeholder={schoolName}
+                  value={schoolName}
+                  name="schoolName"
+                  onChange={(e) => setSchoolName(e.target.value)}
+                />
+                <InputField
+                  label="Tag Line"
+                  placeholder={tagLine}
+                  value={tagLine}
+                  name="tag_line"
+                  onChange={(e) => setTagLine(e.target.value)}
+                />
+                <InputField
+                  label="Address"
+                  placeholder={address}
+                  value={address}
+                  name="address"
+                  onChange={(e) => setAddress(e.target.value)}
+                />
+              </div>
+
+              <div className="col-span-1 space-y-4">
+                <InputField
+                  label="Phone No."
+                  placeholder={phone}
+                  type="tel"
+                  value={phone}
+                  name="phone_number"
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+                <div className="flex flex-col">
+                  <p className="text-center">School Board</p>
+                  <select className="p-2 rounded-full bg-white" value={schoolBoard}
+                    onChange={(e) => setSchoolBoard(e.target.value)}
+                    name="school_board"
+
+                  >
+                    {schoolBoards.map((option, index) => (
+                      <option key={index} value={option}>
+                        {option.toUpperCase()}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <InputField
+                  label="Town/Village/City"
+                  placeholder={townCity}
+                  value={townCity}
+                  name="town_village_city"
+                  onChange={(e) => setTownCity(e.target.value)}
+                />
               </div>
             </div>
 
-            <div className="col-span-2 space-y-4">
+            {/* Lower Row */}
+            <div className="flex space-x-4 mt-4">
               <InputField
-                label="School Name"
-                placeholder={schoolName}
-                value={schoolName}
-                onChange={(e) => setSchoolName(e.target.value)}
+                label="Email"
+                placeholder={email}
+                type="email"
+                value={email}
+                name="email"
+                onChange={(e) => setEmail(e.target.value)}
               />
+
+              <div className="flex flex-col">
+                <p className="text-center">Country</p>
+                <select className="p-2 rounded-full bg-white" value={countries}
+                  onChange={(e) => setCountry(e.target.value)}
+                  name="country"
+
+                >
+                  {countries.map((option, index) => (
+                    <option key={index} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col">
+                <p className="text-center">State</p>
+                <select className="p-2 rounded-full bg-white" value={state}
+                  name="state"
+                  onChange={(e) => {
+                    const newState = e.target.value;
+                    setState(newState);
+
+                  }}
+                >
+                  {states.map((option, index) => (
+                    <option key={index} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col">
+                <p className="text-center">District</p>
+                <select className="p-2 rounded-full bg-white" value={district}
+                  onChange={(e) => setDistrict(e.target.value)}
+                  name="district"
+                >
+                  {districts.map((option, index) => (
+                    <option key={index} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <InputField
-                label="Tag Line"
-                placeholder={tagLine}
-                value={tagLine}
-                onChange={(e) => setTagLine(e.target.value)}
-              />
-              <InputField
-                label="Address"
-                placeholder={address}
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
+                label="Pin Code"
+                placeholder={pinCode}
+                value={pinCode}
+                name="pincode"
+                onChange={(e) => setPinCode(e.target.value)}
               />
             </div>
-
-            <div className="col-span-1 space-y-4">
-              <InputField
-                label="Phone No."
-                placeholder={phone}
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-              <SelectField
-                label="School Board"
-                options={["CBSE", "NEB", "SEE"]}
-                value={schoolBoard}
-                onChange={(e) => setSchoolBoard(e.target.value)}
-              />
-              <InputField
-                label="Town/Village/City"
-                placeholder={townCity}
-                value={townCity}
-                onChange={(e) => setTownCity(e.target.value)}
-              />
+            <div className="flex justify-center pt-10">
+              <button
+                className="bg-pink-500 p-2 px-6 rounded-full "
+                type="submit"
+              >
+                Update
+              </button>
             </div>
-          </div>
-
-          {/* Lower Row */}
-          <div className="flex space-x-4 mt-4">
-            <InputField
-              label="Email"
-              placeholder={email}
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <SelectField
-              label="District"
-              options={districts}
-              value={district}
-              onChange={(e) => setDistrict(e.target.value)}
-            />
-            <SelectField
-              label="State"
-              options={states}
-              value={state}
-              onChange={(e) => setState(e.target.value)}
-            />
-            <SelectField
-              label="Country"
-              options={countries}
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-            />
-            <InputField
-              label="Pin Code"
-              placeholder={pinCode}
-              value={pinCode}
-              onChange={(e) => setPinCode(e.target.value)}
-            />
-          </div>
-          <div className="flex justify-center pt-10">
-            <button
-              className="bg-pink-500 p-2 px-6 rounded-full "
-              onClick={handleSubmit}
-            >
-              Update
-            </button>
-          </div>
+          </form>
         </div>
 
         {/* Right Side */}
@@ -280,7 +404,7 @@ const Profile = () => {
                   <img
                     src={`${base_url}/${displayedProfile.logo}`}
                     alt="Logo"
-                    className="w-24 h-24 rounded-md"
+                    className="w-24 h-24 rounded-md object-cover"
                   />
                 )}
               </div>
