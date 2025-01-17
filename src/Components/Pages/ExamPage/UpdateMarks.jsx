@@ -1,15 +1,56 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../../context/AuthContext";
 
 const UpdateMarks = () => {
   const navigate = useNavigate();
 
+  const { api } = useContext(AuthContext);
+
+  const [sessions, setSessions] = React.useState(null);
+  const [selectedSession, setSelectedSession] = React.useState(null);
+
+  const [exams, setExams] = React.useState(null);
+  const [selectedExam, setSelectedExam] = React.useState(null);
+
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        const response = await api.get("/exam_sessions/");
+        setSessions(response.data);
+        setSelectedSession(response.data[0]);
+      } catch (error) {
+        console.error("Error fetching sessions:", error);
+      }
+    };
+    fetchSessions();
+  }, [api]);
+
+  useEffect(() => {
+    const fetchExams = async () => {
+      try {
+        const response = await api.get(`/get_exams/${selectedSession.id}/`);
+        setExams(response.data);
+        setSelectedExam(response.data[0]);
+        // console.log(response.data);
+      } catch (error) {
+        // alert("Exams not found");
+        // console.error("Error fetching exams:", error);
+      }
+    };
+    fetchExams();
+  }, [api, selectedSession]);
+
   const handleSearchClick = () => {
+    localStorage.setItem(
+      "get_exams_classes_id",
+      JSON.stringify(selectedExam.id)
+    );
     navigate("/exam/search"); // Navigate to the edit page
   };
 
-  return (
+  return sessions && exams ? (
     <div className="p-8 bg-pink-100 min-h-screen">
       <div className="flex gap-4  bg-white  rounded-3xl p-2 ">
         <div className="flex items-center space-x-2">
@@ -34,12 +75,19 @@ const UpdateMarks = () => {
           <select
             name=""
             id=""
+            value={selectedSession && selectedSession.id}
+            onChange={(e) =>
+              setSelectedSession(
+                sessions.find((session) => session.id == e.target.value)
+              )
+            }
             className="p-2 bg-white rounded-full border border-gray-300 px-4 w-4/5"
           >
-            <option value="">2020-2021</option>
-            <option value="">2021-2022</option>
-            <option value="">2022-2023</option>
-            <option value="">2023-2024</option>
+            {sessions.map((session) => (
+              <option key={session.id} value={session.id}>
+                {session.name}
+              </option>
+            ))}
           </select>
         </span>
         <span className=" text-center w-2/4">
@@ -47,13 +95,21 @@ const UpdateMarks = () => {
           <select
             name=""
             id=""
+            value={selectedExam?.id}
+            onChange={(e) =>
+              setSelectedExam(exams.find((exam) => exam.id == e.target.value))
+            }
             className="p-2 bg-white rounded-full border border-gray-300 w-3/4 "
           >
-            <option value="" selected disabled></option>
-            <option value="">CBSE</option>
-            <option value="">NEB</option>
-            <option value="">SEE</option>
-            <option value="">DLE</option>
+            {exams.length > 0 ? (
+              exams.map((exam) => (
+                <option key={exam.id} value={exam.id}>
+                  {exam.name}
+                </option>
+              ))
+            ) : (
+              <option>No exams found for this session</option>
+            )}
           </select>
         </span>
       </div>
@@ -67,6 +123,8 @@ const UpdateMarks = () => {
         </button>
       </div>
     </div>
+  ) : (
+    <div>Loading...</div>
   );
 };
 

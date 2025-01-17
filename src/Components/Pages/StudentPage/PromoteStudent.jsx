@@ -1,70 +1,76 @@
-import React,{useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaRegEye, FaUser } from "react-icons/fa";
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
 import { FiRefreshCcw } from "react-icons/fi";
 import { IoFilterSharp } from "react-icons/io5";
+import { AuthContext } from "../../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const PromoteStudent = () => {
+  const navigate = useNavigate();
   // Dummy data to replicate the table
-  const rows = [
-    {
-      "enrollmentId": "01249999",
-      "name": "Rahul Kumar Debnath",
-      "fatherName": "Subham Kumar Debnath",
-      "gender": "Male",
-      "class": "01",
-      "rollNo": "35",
-      "phoneNo": "0123456789"
-  },
-  {
-      "enrollmentId": "01250000",
-      "name": "Ananya Sharma",
-      "fatherName": "Rajesh Sharma",
-      "gender": "Female",
-      "class": "02",
-      "rollNo": "36",
-      "phoneNo": "0123456790"
-  },
-  {
-      "enrollmentId": "01250001",
-      "name": "Vikram Singh",
-      "fatherName": "Rakesh Singh",
-      "gender": "Male",
-      "class": "08",
-      "rollNo": "37",
-      "phoneNo": "0123456791"
-  },
-  {
-      "enrollmentId": "01250002",
-      "name": "Priya Verma",
-      "fatherName": "Ajay Verma",
-      "gender": "Female",
-      "class": "05",
-      "rollNo": "38",
-      "phoneNo": "0123456792"
-  },
-  {
-      "enrollmentId": "01250003",
-      "name": "Amit Patel",
-      "fatherName": "Suresh Patel",
-      "gender": "Male",
-      "class": "09",
-      "rollNo": "39",
-      "phoneNo": "0123456793"
-  },
-  {
-      "enrollmentId": "01250004",
-      "name": "Sneha Reddy",
-      "fatherName": "Kumar Reddy",
-      "gender": "Female",
-      "class": "08",
-      "rollNo": "40",
-      "phoneNo": "0123456794"
-  },
-  ]
+  const { api } = useContext(AuthContext);
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
-  const [filteredRows, setFilteredRows] = useState(rows); // State for filtered rows
+  const [classes, setClasses] = useState([]);
+  const [rows, setRows] = useState([]);
+  const [showFilterOptions, setShowFilterOptions] = useState(false);
+  const [filterOption, setFilterOption] = useState("individual");
+  const [showSubmit, setShowSubmit] = useState(false);
+
+  const [filteredRows, setFilteredRows] = useState(rows);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    recordsPerPage: 10,
+    totalRecords: 0,
+    totalPages: 1,
+  });
+
+  const applyPagination = () => {
+    let startIndex =
+      pagination.totalRecords == 0
+        ? 0
+        : pagination.currentPage * pagination.recordsPerPage -
+          pagination.recordsPerPage;
+    let endIndex =
+      pagination.currentPage * pagination.recordsPerPage >
+      pagination.totalRecords
+        ? pagination.totalRecords
+        : pagination.currentPage * pagination.recordsPerPage;
+
+    setFilteredRows(rows.slice(startIndex, endIndex));
+  };
+
+  useEffect(() => {
+    applyPagination();
+  }, [rows, pagination]);
+
+  const fetchData = async () => {
+    try {
+      const response = await api.get("/student/");
+      // console.log(response.data);
+      setRows(response.data);
+      setFilteredRows(response.data);
+      setPagination({
+        ...pagination,
+        totalRecords: response.data.length,
+        totalPages: Math.ceil(response.data.length / pagination.recordsPerPage),
+      });
+    } catch (error) {
+      alert("Something went wrong");
+    }
+    try {
+      const response = await api.get("/get_classes_for_config/");
+      // console.log("classes", response.data);
+
+      setClasses(response.data);
+    } catch (error) {
+      alert("Something went wrong");
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, [api]);
 
   // Function to handle search input change
   const handleSearchChange = (e) => {
@@ -76,21 +82,49 @@ const PromoteStudent = () => {
     const lowerCaseQuery = searchQuery.toLowerCase();
     const results = rows.filter(
       (row) =>
-        row.name.toLowerCase().includes(lowerCaseQuery) ||
-        row.class.toLowerCase().includes(lowerCaseQuery)
+        row.student_full_name.toLowerCase().includes(lowerCaseQuery) ||
+        row.enrollmentId.toLowerCase() == lowerCaseQuery ||
+        classes
+          .find((class_data) => class_data.id == row.classOfAdmission)
+          ?.name.toLowerCase()
+          .replace("class", "")
+          .includes(lowerCaseQuery.replace("class", ""))
     );
     setFilteredRows(results);
+    setShowSubmit(true);
   };
 
   // Reset the search and display all rows
   const handleRefreshClick = () => {
     setSearchQuery("");
     setFilteredRows(rows);
+    setShowSubmit(false);
+  };
+
+  const handleClassChange = (index, new_class_id) => {
+    const new_rows = filteredRows.map((row, i) => {
+      if (i == index) {
+        row.classOfAdmission = parseInt(new_class_id);
+      }
+      return row;
+    });
+
+    setFilteredRows(new_rows);
+  };
+
+  const promote = () => {
+    try {
+      const response = api.post("/students/promote/", filteredRows);
+      alert("Students promoted successfully!");
+      navigate("/students/allStudents");
+    } catch {
+      alert("Something went wrong");
+    }
   };
 
   return (
-    <div className="p-8 bg-pink-100">
-        <div className="flex gap-4 bg-white rounded-3xl p-2">
+    <div className="p-8 bg-pink-100 min-h-full">
+      <div className="flex gap-4 bg-white rounded-3xl p-2">
         <div className="flex items-center space-x-2">
           <FaUser className="text-gray-700" />
           <span className="text-gray-700 font-medium">Students</span>
@@ -108,9 +142,46 @@ const PromoteStudent = () => {
       {/* Search Bar */}
       <div className="flex flex-row gap-4 justify-end items-center py-10 px-8">
         <div className="">
-          <div className="flex items-center bg-white rounded-full">
+          <div className="relative flex items-center bg-white rounded-full">
             {/* Filter Icon */}
-            <IoFilterSharp className="text-gray-600 ml-4 cursor-pointer" size={24} />
+
+            {/* Left Side: Three-Line Menu Icon */}
+            <IoFilterSharp
+              className="ml-4 text-gray-600 hover:text-blue-500 transform hover:scale-110 transition-transform duration-200 text-xl"
+              size={24}
+              onClick={() => setShowFilterOptions((prev) => !prev)}
+            />
+            {/* Sorting Options Popup */}
+            {showFilterOptions && (
+              <div className="absolute left-[-150px]">
+                {/* Tooltip container */}
+                <div className="relative bg-white border border-gray-300 p-2 rounded-lg shadow-lg w-40">
+                  {/* Tip/Arrow
+                              <div className="absolute top-0 right-2 w-3 h-3 bg-white border-l border-t border-gray-300 transform rotate-45 -translate-y-1/2"></div> */}
+
+                  {/* Sort Options */}
+                  <div
+                    className="p-2 cursor-pointer hover:bg-gray-200"
+                    onClick={() => {
+                      setShowFilterOptions(false);
+                      setFilterOption("individual");
+                    }}
+                  >
+                    individual
+                  </div>
+                  <div
+                    className="p-2 cursor-pointer hover:bg-gray-200"
+                    onClick={() => {
+                      setShowFilterOptions(false);
+                      setFilterOption("classwise");
+                    }}
+                  >
+                    class-wise
+                  </div>
+                  {/* Tip/Arrow at the bottom */}
+                </div>
+              </div>
+            )}
 
             {/* Vertical Line Divider */}
             <div className="w-px h-6 bg-gray-600 mx-4"></div>
@@ -118,18 +189,24 @@ const PromoteStudent = () => {
             {/* Input Field */}
             <input
               type="text"
-              placeholder="Search "
+              placeholder={
+                filterOption === "individual"
+                  ? "eg. ENR-DDA1F1DA8C	or John Doe"
+                  : "eg. class 01"
+              }
               value={searchQuery}
               onChange={handleSearchChange}
               className="flex-grow px-4 py-2 text-gray-600 placeholder-gray-500 bg-transparent focus:outline-none"
             />
 
             {/* Search Icon */}
-            <IoSearch
-              className="text-gray-600 mr-4 cursor-pointer transition-colors duration-300 hover:text-blue-500"
-              size={24}
-              onClick={handleSearchClick}
-            />
+            {searchQuery.length > 0 && (
+              <IoSearch
+                className="text-gray-600 mr-4 cursor-pointer transition-colors duration-300 hover:text-blue-500"
+                size={24}
+                onClick={handleSearchClick}
+              />
+            )}
           </div>
         </div>
         {/* Refresh Button */}
@@ -156,38 +233,60 @@ const PromoteStudent = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredRows.length > 0 ? (
-              filteredRows.map((row, index) => (
-                <tr
-                  key={index}
-                  className={`border border-gray-300 ${
-                    index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"
-                  }`}
-                >
-                  <td className="p-2 text-center">{row.enrollmentId}</td>
-                  <td className="p-2 text-center">{row.name}</td>
-                  <td className="p-2 text-center">{row.fatherName}</td>
-                  <td className="p-2 text-center">{row.gender}</td>
-                  <td className="p-2 text-center">{row.class}</td>
-                  <td className="p-2 text-center">{row.rollNo}</td>
-                  <td className="p-2 text-center">
-                    <select className="border border-gray-400 rounded-3xl p-2 px-10 bg-white">
-                      <option value="" disabled selected>
-                        Select Class
-                      </option>
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                        <option key={num} value={`0${num}`}>
-                          Class {num}
+            {showSubmit ? (
+              filteredRows.length > 0 ? (
+                filteredRows.map((row, index) => (
+                  <tr
+                    key={index}
+                    className={`border border-gray-300 ${
+                      index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"
+                    }`}
+                  >
+                    <td className="p-2 text-center">{row.enrollmentId}</td>
+                    <td className="p-2 text-center">{row.student_full_name}</td>
+                    <td className="p-2 text-center">{row.father_full_name}</td>
+                    <td className="p-2 text-center">{row.gender}</td>
+                    <td className="p-2 text-center">
+                      {
+                        classes.find((class_data) => {
+                          return class_data.id === row.classOfAdmission;
+                        })?.name
+                      }
+                    </td>
+                    <td className="p-2 text-center">{row.rollNo}</td>
+                    <td className="p-2 text-center">
+                      <select
+                        className="border border-gray-400 rounded-3xl p-2 px-10 bg-white"
+                        onChange={(e) =>
+                          handleClassChange(index, e.target.value)
+                        }
+                      >
+                        <option value="" disabled selected>
+                          Select Class
                         </option>
-                      ))}
-                    </select>
+                        {classes &&
+                          classes.map((class_data) => {
+                            return (
+                              <option value={class_data.id}>
+                                {class_data.name}
+                              </option>
+                            );
+                          })}
+                      </select>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="text-center p-4">
+                    No students found.
                   </td>
                 </tr>
-              ))
+              )
             ) : (
               <tr>
                 <td colSpan="7" className="text-center p-4">
-                  No students found.
+                  Please search for students.
                 </td>
               </tr>
             )}
@@ -195,39 +294,104 @@ const PromoteStudent = () => {
         </table>
       </div>
 
-      {/* Pagination Controls */}
-      <div className="mt-4 flex justify-between items-center pb-10 ">
+      {/* pagination  */}
+      <div className="mt-4 flex justify-between items-center pb-10">
         <div className="flex space-x-2 items-center">
-          <button className="px-3 py-2 border border-gray-400 rounded-full ">
+          <button
+            className={
+              pagination.recordsPerPage == 10
+                ? "bg-[#BCA8EA] text-white px-3 py-2 border border-gray-400 rounded-full "
+                : "px-3 py-2 border border-gray-400 rounded-full "
+            }
+            value="10"
+            onClick={(e) => setRecordsPerPage(e.currentTarget.value)}
+          >
             10
           </button>
-          <button className="px-3 py-2 border border-gray-400 rounded-full ">
+          <button
+            className={
+              pagination.recordsPerPage == 25
+                ? "bg-[#BCA8EA] text-white px-3 py-2 border border-gray-400 rounded-full "
+                : "px-3 py-2 border border-gray-400 rounded-full "
+            }
+            value="25"
+            onClick={(e) => setRecordsPerPage(e.currentTarget.value)}
+          >
             25
           </button>
-          <button className="px-3 py-2 border border-gray-400 rounded-full ">
+          <button
+            className={
+              pagination.recordsPerPage == 50
+                ? "bg-[#BCA8EA] text-white px-3 py-2 border border-gray-400 rounded-full "
+                : "px-3 py-2 border border-gray-400 rounded-full "
+            }
+            value="50"
+            onClick={(e) => setRecordsPerPage(e.currentTarget.value)}
+          >
             50
           </button>
           <p>Records per page </p>
         </div>
-        <div className="flex">
-          <div className="text-sm text-gray-600">
-          Showing 1 to 25 of 78 records
+        <div className="flex flex-row items-center">
+          <div className="text-sm text-gray-600 ">
+            Showing{" "}
+            {pagination.totalRecords == 0
+              ? 0
+              : pagination.currentPage * pagination.recordsPerPage -
+                (pagination.recordsPerPage - 1)}{" "}
+            &nbsp; to &nbsp;
+            {pagination.currentPage * pagination.recordsPerPage >
+            pagination.totalRecords
+              ? pagination.totalRecords
+              : pagination.currentPage * pagination.recordsPerPage}{" "}
+            &nbsp; of {pagination.totalRecords} records
+          </div>
+          <div className="flex space-x-2 items-center">
+            <button
+              className="px-3  "
+              onClick={() =>
+                pagination.currentPage > 1 &&
+                setPagination({
+                  ...pagination,
+                  currentPage: pagination.currentPage - 1,
+                })
+              }
+            >
+              <IoIosArrowDropleft size={30} />
+            </button>
+            <p className="border border-gray-700 px-2 rounded-full">
+              {" "}
+              {pagination.currentPage}
+            </p>
+            <button
+              className="px-3 "
+              onClick={() =>
+                pagination.currentPage < pagination.totalPages &&
+                setPagination({
+                  ...pagination,
+                  currentPage: pagination.currentPage + 1,
+                })
+              }
+            >
+              <IoIosArrowDropright size={30} />
+            </button>
+          </div>
         </div>
-        <div className="flex space-x-2 items-center">
-          <button className="px-3   ">
-            <IoIosArrowDropleft size={30} />
-          </button>
-          <p className="border border-gray-400 px-2 rounded-full"> 1</p>
-          <button className="px-3 ">
-            <IoIosArrowDropright size={30} />
-          </button>
-        </div>
-        </div>
-        
       </div>
+
+      {showSubmit && filteredRows.length > 0 && (
+        <div className="w-full flex justify-center">
+          <button
+            type="submit"
+            className="bg-pink-500 text-white font-semibold px-6 py-2 rounded-3xl shadow-md hover:bg-pink-600"
+            onClick={promote}
+          >
+            Submit
+          </button>
+        </div>
+      )}
     </div>
   );
 };
 
 export default PromoteStudent;
-

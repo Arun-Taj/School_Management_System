@@ -15,7 +15,6 @@ import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
 import { MdBusinessCenter } from "react-icons/md";
 import Logo from "../../assets/Logo.svg";
 
-
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [expandedMenu, setExpandedMenu] = useState(null);
@@ -208,9 +207,7 @@ const Sidebar = () => {
       style={{ boxShadow: "4px 4px 4px 0px #00000040" }}
     >
       <div className="flex justify-between items-center">
-        <h1 className={`text-black ${!isOpen && "hidden"}`}>
-          <img src={Logo} alt="" className="w-44"/>
-        </h1>
+        <h1 className={`text-black ${!isOpen && "hidden"}`}><img src={Logo} alt="" className="w-44"/></h1>
         {isOpen ? (
           <IoIosArrowDropleft
             className="text-gray-700 cursor-pointer text-2xl"

@@ -1,5 +1,10 @@
-import React, {useContext} from "react";
-import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
+import React, { useContext } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useNavigate,
+} from "react-router-dom";
 
 import Sidebar from "./Sidebar";
 import Dashboard from "./DashBoard";
@@ -14,6 +19,7 @@ import PromoteStudent from "../Pages/StudentPage/PromoteStudent";
 // import Employees from '../Pages/EmployeePage/Employees';
 import AddEmployee from "../Pages/EmployeePage/AddEmployee";
 import AllEmployee from "../Pages/EmployeePage/AllEmployee";
+import ViewEmployee from "../Pages/EmployeePage/ViewEmployee";
 // import EmpID from '../Pages/EmployeePage/EmpID';
 
 // import Accounts from '../Pages/AccountPage/Accounts';
@@ -61,10 +67,12 @@ import EditPage from "../Pages/ConfigurationPage/EditPage";
 import SignIn from "../Pages/SignUp&SignIn/SignIn";
 
 import { AuthContext } from "../../context/AuthContext";
+import ViewStudent from "../Pages/StudentPage/ViewStudent";
+import EditStudent from "../Pages/StudentPage/EditStudent";
+import EditEmployee from "../Pages/EmployeePage/EditEmployee";
 
 function MainDashBoard() {
-
-  const {auth} = useContext(AuthContext);
+  const { auth } = useContext(AuthContext);
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -74,7 +82,7 @@ function MainDashBoard() {
   }, [auth, navigate]);
 
   return auth.isAuthenticated ? (
-      <div className="flex ">
+    <div className="flex ">
       <div className="sticky top-0 h-screen z-10">
         <Sidebar className="h-full overflow-hidden" />
       </div>
@@ -93,6 +101,8 @@ function MainDashBoard() {
             <Route path="/accountSetting" element={<AccountSetting />} />
 
             {/* <Route path="/students" element={<Students />} /> */}
+            <Route path="/student/view" element={<ViewStudent />} />
+            <Route path="/student/edit" element={<EditStudent />} />
             <Route path="/students/admissionForm" element={<AdmissionForm />} />
             <Route path="/students/allStudents" element={<AllStudents />} />
             <Route
@@ -104,6 +114,8 @@ function MainDashBoard() {
             {/* <Route path="/employees" element={<Employees />} /> */}
             <Route path="/employees/employeeForm" element={<AddEmployee />} />
             <Route path="/employees/allEmployees" element={<AllEmployee />} />
+            <Route path="/employees/view" element={<ViewEmployee />} />
+            <Route path="/employees/edit" element={<EditEmployee />} />
             {/* <Route path="/employees/eId" element={<EmpID />} /> */}
 
             {/* <Route path="/accounts" element={<Accounts />} /> */}
@@ -162,12 +174,9 @@ function MainDashBoard() {
         </div>
       </div>
     </div>
-    ) : (
-      <SignIn />
-    )
-  
-  
-  
+  ) : (
+    <SignIn />
+  );
 }
 
 export default MainDashBoard;

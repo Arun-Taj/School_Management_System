@@ -169,7 +169,7 @@ const SignUpDetails = () => {
       schoolFormData.append("state", updatedSchoolDetailsData.state);
       schoolFormData.append("country", updatedSchoolDetailsData.country);
       schoolFormData.append("pincode", updatedSchoolDetailsData.pinCode);
-      schoolFormData.append("admin", data.user.url);
+      schoolFormData.append("admin", parseInt(data.user.id));
 
       // Call school creation API
       const response = await fetch(`${baseUrl}/school/`, {
@@ -181,16 +181,19 @@ const SignUpDetails = () => {
       const schoolData = await response.json();
 
       if (response.ok) {
-        console.log("Signup successful", schoolData);
+        // console.log("Signup successful", schoolData);
+        alert("Signup Successful");
       }else{
         console.log("School Creation failed", schoolData);
       }
 
       
-    } else {
-      console.log("Signup failed", data);
+    }
+     else {
+      // console.log("Signup failed", data);
+      alert("User registration failed");
       
-      throw new Error("Signup failed");
+      // throw new Error("Signup failed");
     }
   };
 

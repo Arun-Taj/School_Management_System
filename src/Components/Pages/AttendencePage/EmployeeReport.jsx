@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { FaHandPaper } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import { FiRefreshCcw } from "react-icons/fi";
@@ -9,115 +9,131 @@ import EmpSearch from "./Components/EmpSearch";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
-
-// Function to get the number of days in a given month and year
-const getMonthDates = (year, month) => {
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  return Array.from({ length: daysInMonth }, (_, i) => i + 1);
-};
-
-// Generate attendance based on the number of days in the month
-const generateAttendance = (days) => {
-  return Array.from({ length: days }, (_, i) =>
-    i % 3 === 0 ? "P" : i % 3 === 1 ? "A" : "L"
-  );
-};
+import { AuthContext } from "../../../context/AuthContext";
+import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
 
 const EmployeeReport = () => {
-
+  const { api } = useContext(AuthContext);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [initialEmployees, setInitialEmployees] = useState([]);
+  const [employees, setEmployees] = useState(initialEmployees);
+  const [month, setMonth] = useState(null);
+  const [year, setYear] = useState(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    recordsPerPage: 10,
+    totalRecords: 0,
+    totalPages: 1,
+  });
 
-  const now = new Date();
-  const [currentMonthIndex, setCurrentMonthIndex] = useState(now.getMonth());
-  const [year, setYear] = useState(now.getFullYear());
+  const applyPagination = () => {
+    let startIndex =
+      pagination.totalRecords == 0
+        ? 0
+        : pagination.currentPage * pagination.recordsPerPage -
+          pagination.recordsPerPage;
+    let endIndex =
+      pagination.currentPage * pagination.recordsPerPage >
+      pagination.totalRecords
+        ? pagination.totalRecords
+        : pagination.currentPage * pagination.recordsPerPage;
 
-  // Get dates for the currently selected month
-  const dates = getMonthDates(year, currentMonthIndex);
+    setEmployees(initialEmployees.slice(startIndex, endIndex));
+  };
+  useEffect(() => {
+    applyPagination();
+  }, [pagination]);
+  const resetPagination = () => {
+    setPagination({
+      currentPage: 1,
+      recordsPerPage: 10,
+      totalRecords: 0,
+      totalPages: 1,
+    });
+  };
+  const setRecordsPerPage = (recordsPerPage) => {
+    setPagination((prevPagination) => ({
+      ...prevPagination,
+      recordsPerPage: parseInt(recordsPerPage),
+      currentPage: 1,
+      totalPages: Math.ceil(
+        prevPagination.totalRecords / parseInt(recordsPerPage)
+      ),
+    }));
+  };
+  const handleRefresh = () => {
+    setSelectedDate("");
+    setMonth("");
+    setYear("");
+    setInitialEmployees([]);
+    setEmployees([]);
+  };
 
-  // Sample data for demonstration
-  const employees = [
-    {
-      employeeId: "012345",
-      name: "Rahul Kumar Debnath",
-      type: "Teacher",
-      attendance: generateAttendance(dates.length), // Dynamically set attendance based on the current month's number of days
-      totalP: generateAttendance(dates.length).filter((a) => a === "P").length,
-      totalA: generateAttendance(dates.length).filter((a) => a === "A").length,
-      totalL: generateAttendance(dates.length).filter((a) => a === "L").length,
-    },
-    {
-      employeeId: "012346",
-      name: "Sita Sharma",
-      type: "Teacher",
-      attendance: generateAttendance(dates.length), // Dynamically set attendance based on the current month's number of days
-      totalP: generateAttendance(dates.length).filter((a) => a === "P").length,
-      totalA: generateAttendance(dates.length).filter((a) => a === "A").length,
-      totalL: generateAttendance(dates.length).filter((a) => a === "L").length,
-    },
-    {
-      employeeId: "012347",
-      name: "Arjun Singh",
-      type: "Teacher",
-      attendance: generateAttendance(dates.length), // Dynamically set attendance based on the current month's number of days
-      totalP: generateAttendance(dates.length).filter((a) => a === "P").length,
-      totalA: generateAttendance(dates.length).filter((a) => a === "A").length,
-      totalL: generateAttendance(dates.length).filter((a) => a === "L").length,
-    },
-    {
-      employeeId: "012348",
-      name: "Meera Joshi",
-      type: "Teacher",
-      attendance: generateAttendance(dates.length), // Dynamically set attendance based on the current month's number of days
-      totalP: generateAttendance(dates.length).filter((a) => a === "P").length,
-      totalA: generateAttendance(dates.length).filter((a) => a === "A").length,
-      totalL: generateAttendance(dates.length).filter((a) => a === "L").length,
-    },
-    {
-      employeeId: "012349",
-      name: "Vikram Patel",
-      type: "Teacher",
-      attendance: generateAttendance(dates.length), // Dynamically set attendance based on the current month's number of days
-      totalP: generateAttendance(dates.length).filter((a) => a === "P").length,
-      totalA: generateAttendance(dates.length).filter((a) => a === "A").length,
-      totalL: generateAttendance(dates.length).filter((a) => a === "L").length,
-    },
-    {
-      employeeId: "012350",
-      name: "Anita Roy",
-      type: "Teacher",
-      attendance: generateAttendance(dates.length), // Dynamically set attendance based on the current month's number of days
-      totalP: generateAttendance(dates.length).filter((a) => a === "P").length,
-      totalA: generateAttendance(dates.length).filter((a) => a === "A").length,
-      totalL: generateAttendance(dates.length).filter((a) => a === "L").length,
-    },
-    {
-      employeeId: "012351",
-      name: "Rajesh Kumar",
-      type: "Teacher",
-      attendance: generateAttendance(dates.length), // Dynamically set attendance based on the current month's number of days
-      totalP: generateAttendance(dates.length).filter((a) => a === "P").length,
-      totalA: generateAttendance(dates.length).filter((a) => a === "A").length,
-      totalL: generateAttendance(dates.length).filter((a) => a === "L").length,
-    },
-  ];
+  const get_employee_attendance_by_month = async (year, month) => {
+    try {
+      const response = await api.get(
+        `/get_employee_attendance_by_month/${year}/${month}/`
+      );
+      setInitialEmployees(response.data);
+      setPagination({
+        currentPage: 1,
+        recordsPerPage: 10,
+        totalRecords: response.data.length,
+        totalPages: Math.ceil(response.data.length / pagination.recordsPerPage),
+      });
+    } catch (error) {
+      // alert(error.data.message);
+      setInitialEmployees([]);
+      setEmployees([]);
+      resetPagination();
+      alert(error.response.data.message);
+    }
+  };
+
+  const handleSearch = () => {
+    if (!selectedDate) {
+      alert("Please select date ");
+      return;
+    }
+    const newMonth = parseInt(selectedDate.getMonth() + 1);
+    const newYear = parseInt(selectedDate.getFullYear());
+    get_employee_attendance_by_month(newYear, newMonth);
+    setYear(newYear);
+    setMonth(newMonth);
+  };
 
   // Handle month changes
   const handlePreviousMonth = () => {
-    if (currentMonthIndex === 0) {
-      setCurrentMonthIndex(11);
-      setYear(year - 1);
+    if (month == 1) {
+      const newMonth = 12;
+      const newYear = year - 1;
+      get_employee_attendance_by_month(newYear, newMonth);
+      setYear(newYear);
+      setMonth(newMonth);
     } else {
-      setCurrentMonthIndex((prev) => prev - 1);
+      const newMonth = month - 1;
+      get_employee_attendance_by_month(year, newMonth);
+      setMonth(newMonth);
     }
   };
 
   const handleNextMonth = () => {
-    if (currentMonthIndex === 11) {
-      setCurrentMonthIndex(0);
-      setYear(year + 1);
-    } else {
-      setCurrentMonthIndex((prev) => prev + 1);
+    const now = new Date();
+
+    const currentYear = now.getFullYear();
+    const validYear = year <= currentYear;
+    if (validYear) {
+      if (month == 12) {
+        const newYear = year + 1;
+        const newMonth = 1;
+        get_employee_attendance_by_month(newYear, newMonth);
+        setYear(newYear);
+        setMonth(newMonth);
+      } else {
+        const newMonth = month + 1;
+        get_employee_attendance_by_month(year, newMonth);
+        setMonth(newMonth);
+      }
     }
   };
 
@@ -179,23 +195,29 @@ const EmployeeReport = () => {
 
       <div className="flex justify-between my-10">
         <div className="flex gap-4 items-center">
-        <DatePicker
-      selected={selectedDate}
-      onChange={(date) => setSelectedDate(date)}
-      dateFormat="MM/yyyy"
-      showMonthYearPicker
-      className="p-2 rounded-3xl border border-gray-300 text-center w-32 cursor-pointer"
-      placeholderText="mm-yyy"
-    />
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date) => {
+              setSelectedDate(date);
+              const month = parseInt(date.getMonth() + 1);
+              const year = parseInt(date.getFullYear());
+              setMonth(month);
+              setYear(year);
+            }}
+            dateFormat="MM/yyyy"
+            showMonthYearPicker
+            className="p-2 rounded-3xl border border-gray-300 text-center w-32 cursor-pointer"
+            placeholderText="mm-yyy"
+          />
           <div className="bg-white p-2 px-4 rounded-full border border-gray-300 cursor-pointer hover:bg-indigo-200">
-            <IoSearch className="cursor-pointer transition-colors duration-300 hover:text-blue-600 text-xl"/>
+            <IoSearch
+              className="cursor-pointer transition-colors duration-300 hover:text-blue-600 text-xl"
+              onClick={handleSearch}
+            />
           </div>
         </div>
         <div className="flex flex-row gap-4 justify-end items-center">
-        <div
-            className="border border-[#BCA8EA] p-2 bg-white rounded-full cursor-pointer transition-all duration-200 hover:bg-[#F3E8FF] hover:shadow-lg"
-            
-          >
+          <div className="border border-[#BCA8EA] p-2 bg-white rounded-full cursor-pointer transition-all duration-200 hover:bg-[#F3E8FF] hover:shadow-lg">
             <FiRefreshCcw className="text-gray-600 transition-transform duration-200 hover:rotate-180 text-xl " />
           </div>
         </div>
@@ -207,7 +229,9 @@ const EmployeeReport = () => {
           <FaChevronLeft className="text-gray-600 hover:text-gray-800" />
         </button>
         <h2 className="mx-4 text-lg font-semibold">
-          {months[currentMonthIndex]} {year}{" "}
+          {month && year
+            ? `${months[month - 1]} ${year}`
+            : "Please select a date"}
         </h2>
         <button onClick={handleNextMonth}>
           <FaChevronRight className="text-gray-600 hover:text-gray-800" />
@@ -221,7 +245,7 @@ const EmployeeReport = () => {
             <thead>
               <tr className="bg-white">
                 <th className="p-2 text-center">Employee ID</th>
-                <th className="p-2 text-center min-w-[200px]">Name</th>
+                <th className="p-2 text-center">Name</th>
                 <th className="p-2 text-center">Type</th>
                 <th className="p-2 text-center">
                   <p className="">Date</p>
@@ -233,14 +257,18 @@ const EmployeeReport = () => {
                     className="flex overflow-x-auto max-w-[500px]"
                   >
                     <div className="flex">
-                      {dates.map((date) => (
-                        <div
-                          key={date}
-                          className="p-2 min-w-[40px] text-center"
-                        >
-                          {date}
-                        </div>
-                      ))}
+                      {employees.length > 0 ? (
+                        Object.keys(employees[0].status).map((date) => (
+                          <div
+                            key={date}
+                            className="p-2 min-w-[40px] text-center"
+                          >
+                            {date}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-2 ">loading...</div>
+                      )}
                     </div>
                   </div>
                 </th>
@@ -250,37 +278,39 @@ const EmployeeReport = () => {
               </tr>
             </thead>
             <tbody>
-              {employees.map((employee, index) => (
-                <tr
-                  key={employee.employeeId}
-                  className={index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"}
-                >
-                  <td className="p-2 text-center">{employee.employeeId}</td>
-                  <td className="p-2 text-center">{employee.name}</td>
-                  <td className="p-2 text-center">{employee.type}</td>
-                  <td className="p-2">
-                    {/* Scrollable Attendance (Sync with Date Scroll) */}
-                    <div
-                      ref={(el) => (attendanceScrollRefs.current[index] = el)}
-                      className="flex overflow-x-hidden max-w-[500px]" // Changed overflow to hidden
-                    >
-                      <div className="flex">
-                        {employee.attendance.map((status, i) => (
-                          <div
-                            key={`${employee.employeeId}-${i}-${status}`}
-                            className="p-2 min-w-[40px] text-center"
-                          >
-                            {status}
-                          </div>
-                        ))}
+              {employees.length > 0 &&
+                employees.map((employee, index) => (
+                  <tr
+                    key={employee.id}
+                    className={
+                      index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"
+                    }
+                  >
+                    <td className="p-2 text-center">{employee.employeeId}</td>
+                    <td className="p-2 text-center">{employee.name}</td>
+                    <td className="p-2 text-center">{employee.role}</td>
+                    <td className="p-2">
+                      <div
+                        ref={(el) => (attendanceScrollRefs.current[index] = el)}
+                        className="flex overflow-x-hidden max-w-[500px]" // Changed overflow to hidden
+                      >
+                        <div className="flex">
+                          {Object.values(employee.status).map((status, i) => (
+                            <div
+                              key={`${employee.rollNo}-${i}-${status}`}
+                              className="p-2 min-w-[40px] text-center"
+                            >
+                              {status === "" ? "--" : status}
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="p-2 text-center">{employee.totalP}</td>
-                  <td className="p-2 text-center">{employee.totalA}</td>
-                  <td className="p-2 text-center">{employee.totalL}</td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="p-2 text-center">{employee.totalP}</td>
+                    <td className="p-2 text-center">{employee.totalA}</td>
+                    <td className="p-2 text-center">{employee.totalL}</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -288,26 +318,88 @@ const EmployeeReport = () => {
       {/* Pagination */}
       <div className="flex justify-between items-center mt-4 pl-2">
         <div className="flex items-center space-x-2">
-          {[10, 25, 50].map((size) => (
-            <button className="p-2 px-3 rounded-full border border-gray-300">
-              {size}
-            </button>
-          ))}
-          <span className="text-sm">Records per page</span>
+          <button
+            className={
+              pagination.recordsPerPage == 10
+                ? "bg-[#BCA8EA] text-white px-3 py-2 border border-gray-400 rounded-full "
+                : "px-3 py-2 border border-gray-400 rounded-full "
+            }
+            value="10"
+            onClick={(e) => setRecordsPerPage(e.currentTarget.value)}
+          >
+            10
+          </button>
+          <button
+            className={
+              pagination.recordsPerPage == 25
+                ? "bg-[#BCA8EA] text-white px-3 py-2 border border-gray-400 rounded-full "
+                : "px-3 py-2 border border-gray-400 rounded-full "
+            }
+            value="25"
+            onClick={(e) => setRecordsPerPage(e.currentTarget.value)}
+          >
+            25
+          </button>
+          <button
+            className={
+              pagination.recordsPerPage == 50
+                ? "bg-[#BCA8EA] text-white px-3 py-2 border border-gray-400 rounded-full "
+                : "px-3 py-2 border border-gray-400 rounded-full "
+            }
+            value="50"
+            onClick={(e) => setRecordsPerPage(e.currentTarget.value)}
+          >
+            50
+          </button>
+          <p>Records per page </p>
         </div>
 
         <div className="flex space-x-1 items-center pr-2">
-          <p>Showing 1 to 10 of 15 records</p>
-          <button className="p-1 rounded-full border border-gray-300">
-            <MdChevronLeft size={24} />
-          </button>
-          <p className="border border-gray-300 px-3 py-1 rounded-full">1</p>
-          <button className="p-1 rounded-full border border-gray-300">
-            <MdChevronRight size={24} />
-          </button>
+          <div className="text-sm text-gray-600 ">
+            Showing{" "}
+            {pagination.totalRecords == 0
+              ? 0
+              : pagination.currentPage * pagination.recordsPerPage -
+                (pagination.recordsPerPage - 1)}{" "}
+            &nbsp; to &nbsp;
+            {pagination.currentPage * pagination.recordsPerPage >
+            pagination.totalRecords
+              ? pagination.totalRecords
+              : pagination.currentPage * pagination.recordsPerPage}{" "}
+            &nbsp; of {pagination.totalRecords} records
+          </div>
+          <div className="flex space-x-2 items-center">
+            <button
+              className="px-3  "
+              onClick={() =>
+                pagination.currentPage > 1 &&
+                setPagination({
+                  ...pagination,
+                  currentPage: pagination.currentPage - 1,
+                })
+              }
+            >
+              <IoIosArrowDropleft size={30} />
+            </button>
+            <p className="border border-gray-700 px-2 rounded-full">
+              {" "}
+              {pagination.currentPage}
+            </p>
+            <button
+              className="px-3 "
+              onClick={() =>
+                pagination.currentPage < pagination.totalPages &&
+                setPagination({
+                  ...pagination,
+                  currentPage: pagination.currentPage + 1,
+                })
+              }
+            >
+              <IoIosArrowDropright size={30} />
+            </button>
+          </div>
         </div>
       </div>
-      <EmpSearch />
       <EmployeeTable />
     </div>
   );

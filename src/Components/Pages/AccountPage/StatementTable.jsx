@@ -1,68 +1,168 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
+import { AuthContext } from "../../../context/AuthContext";
 
 // Function to filter the data based on date
 const filterExpenses = (expenses, filterType, fromDate, toDate) => {
   const today = new Date();
-  const currentMonth = today.getMonth();
-  const currentYear = today.getFullYear();
 
   if (filterType === "thisMonth") {
+    //get this month
+    const currentMonth = today.getMonth() + 1;
+
     return expenses.filter((expense) => {
-      const expenseDate = new Date(expense.date.split("-").reverse().join("-"));
-      return expenseDate.getMonth() === currentMonth && expenseDate.getFullYear() === currentYear;
+      const expenseMonth = expense.date.split("-")[1];
+
+      return expenseMonth == currentMonth;
     });
   } else if (filterType === "range" && fromDate && toDate) {
-    const from = new Date(fromDate);
-    const to = new Date(toDate);
-    return expenses.filter((expense) => {
-      const expenseDate = new Date(expense.date.split("-").reverse().join("-"));
-      return expenseDate >= from && expenseDate <= to;
-    });
+    const fromDateObj = fromDate ? new Date(fromDate) : null;
+    const toDateObj = toDate ? new Date(toDate) : null;
+
+    if (fromDateObj && toDateObj) {
+      return expenses.filter((expense) => {
+        const expenseDate = new Date(expense.date);
+        return expenseDate >= fromDateObj && expenseDate <= toDateObj;
+      });
+    }
   }
 
   return expenses;
 };
 
-const StatementTable = ({ filterType, fromDate, toDate }) => {
-  const [expenses, setExpenses] = useState([
-    { date: "14-05-2024", description: "Uniform", expense: 0, income: 5000 },
-    { date: "20-05-2024", description: "Books", expense: 1500, income: 0 },
-    { date: "01-06-2024", description: "Tuition Fee", expense: 2000, income: 0 },
-    { date: "15-06-2024", description: "School Trip", expense: 800, income: 0 },
-    { date: "25-06-2024", description: "Sports Equipment", expense: 1200, income: 0 },
-    { date: "05-07-2024", description: "Scholarship", expense: 0, income: 3000 },
-    { date: "10-07-2024", description: "Art Supplies", expense: 600, income: 0 },
-    { date: "22-07-2024", description: "Music Lessons", expense: 500, income: 0 },
-    { date: "01-08-2024", description: "Summer Camp", expense: 1000, income: 0 },
-    { date: "15-08-2024", description: "Birthday Gift", expense: 300, income: 0 },
-    { date: "30-08-2024", description: "Part-time Job", expense: 0, income: 2000 },
-    { date: "05-09-2024", description: "School Supplies", expense: 400, income: 0 },
-    { date: "18-09-2024", description: "Field Trip", expense: 700, income: 0 },
-    { date: "10-10-2024", description: "Extracurricular Activities", expense: 500, income: 0 },
-    { date: "25-10-2024", description: "Gift for Teacher", expense: 250, income: 0 }
-  ]);
+const StatementTable = ({
+  filterType,
+  fromDate,
+  toDate,
+  pagination,
+  setPagination,
+  selectedFilter,
+}) => {
+  const { api } = useContext(AuthContext);
+
+  const [incomeExpenses, setIncomeExpenses] = useState([]);
+  const [filteredIncomeExpenses, setFilteredIncomeExpenses] = useState([]);
+
+  useEffect(() => {
+    if (selectedFilter !== "") {
+      if (selectedFilter === "income") {
+        setFilteredIncomeExpenses(
+          incomeExpenses.filter((row) => row.head_type === "income")
+        );
+      } else if (selectedFilter === "expense") {
+        setFilteredIncomeExpenses(
+          incomeExpenses.filter((row) => row.head_type === "expense")
+        );
+      }
+    }
+  }, [selectedFilter]);
+
+  useEffect(() => {
+    const getIncomeExpenses = async () => {
+      try {
+        const response = await api.get("/get_income_expenses/");
+        // setExpenses(response.data);
+        // console.log(response.data);
+        setIncomeExpenses(response.data);
+        setPagination({
+          ...pagination,
+          totalRecords: response.data.length,
+          totalPages: Math.ceil(
+            response.data.length / pagination.recordsPerPage
+          ),
+        });
+      } catch (error) {
+        console.error("Error fetching income and expenses:", error);
+      }
+    };
+
+    getIncomeExpenses();
+  }, [api]);
+
+  const applyPagination = (records) => {
+    let startIndex =
+      pagination.totalRecords == 0
+        ? 0
+        : pagination.currentPage * pagination.recordsPerPage -
+          pagination.recordsPerPage;
+    let endIndex =
+      pagination.currentPage * pagination.recordsPerPage >
+      pagination.totalRecords
+        ? pagination.totalRecords
+        : pagination.currentPage * pagination.recordsPerPage;
+
+    setFilteredIncomeExpenses(records.slice(startIndex, endIndex));
+  };
+
+  useEffect(() => {
+    if (filterType === "all") {
+      applyPagination(incomeExpenses);
+    } else {
+      applyPagination(
+        filterExpenses(incomeExpenses, filterType, fromDate, toDate)
+      );
+    }
+  }, [pagination]);
 
   // Filter the data based on filterType
-  const filteredExpenses = filterExpenses(expenses, filterType, fromDate, toDate);
+  useEffect(() => {
+    const filteredData = filterExpenses(
+      incomeExpenses,
+      filterType,
+      fromDate,
+      toDate
+    );
+    setPagination({
+      ...pagination,
+      totalRecords: filteredData.length,
+      totalPages: Math.ceil(filteredData.length / pagination.recordsPerPage),
+    });
+    setFilteredIncomeExpenses(filteredData);
+    // applyPagination(filteredData);
+  }, [incomeExpenses, filterType, fromDate, toDate]); // Dependencies
 
   // Total income and expense calculations
-  const totalExpense = filteredExpenses.reduce((acc, item) => acc + item.expense, 0);
-  const totalIncome = filteredExpenses.reduce((acc, item) => acc + item.income, 0);
+  const totalExpense = filteredIncomeExpenses
+    .filter((item) => item.head_type === "expense") // Filter only expenses
+    .reduce((acc, item) => acc + parseFloat(item.amount), 0);
+
+  const totalIncome = filteredIncomeExpenses
+    .filter((item) => item.head_type === "income") // Filter only income
+    .reduce((acc, item) => acc + parseFloat(item.amount), 0);
   const profitOrLoss = totalIncome - totalExpense;
 
   // Function to delete a row
-  const handleDelete = (index) => {
+  const handleDelete = (id) => {
     // Show confirmation dialog
-    const confirmDelete = window.confirm("Are you sure you want to delete this expense?");
-    
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this expense?"
+    );
+
     // Proceed with deletion if confirmed
     if (confirmDelete) {
-        const updatedExpenses = expenses.filter((_, i) => i !== index);
-        setExpenses(updatedExpenses);
-    }
-};
+      const updatedExpenses = incomeExpenses.filter((item) => item.id !== id);
+      setIncomeExpenses(updatedExpenses);
+      setPagination({
+        ...pagination,
+        totalRecords: updatedExpenses.length,
+        totalPages: Math.ceil(
+          updatedExpenses.length / pagination.recordsPerPage
+        ),
+      });
 
+      // Make the API call to delete the expense
+      const deleteIncomeExpense = async () => {
+        try {
+          const response = await api.delete(`/delete_income_expense/${id}/`);
+          alert("IncomeExpense deleted successfully.");
+        } catch (error) {
+          alert("Failed to delete expense.");
+        }
+      };
+
+      deleteIncomeExpense();
+    }
+  };
 
   return (
     <div className="bg-white rounded-2xl shadow-lg">
@@ -77,22 +177,34 @@ const StatementTable = ({ filterType, fromDate, toDate }) => {
           </tr>
         </thead>
         <tbody>
-          {filteredExpenses.length === 0 ? (
+          {filteredIncomeExpenses.length === 0 ? (
             <tr>
               <td colSpan="5" className="text-center p-4 text-gray-500">
                 No data found
               </td>
             </tr>
           ) : (
-            filteredExpenses.map((item, index) => (
-              <tr key={index} className={index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"}>
+            filteredIncomeExpenses.map((item, index) => (
+              <tr
+                key={index}
+                className={index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"}
+              >
                 <td className="p-3 pl-3">{item.date}</td>
-                <td className="p-3 pl-3">{item.description}</td>
-                <td className="p-3 pl-3 text-black">{item.expense ? item.expense.toLocaleString() : ""}</td>
-                <td className="p-3 pl-3 text-black">{item.income ? item.income.toLocaleString() : ""}</td>
+                <td className="p-3 pl-3">
+                  {item.head_name}-({item.particulars && item.particulars})
+                </td>
+                <td className="p-3 pl-3 text-black">
+                  {item.head_type === "expense" ? item.amount : ""}
+                </td>
+                <td className="p-3 pl-3 text-black">
+                  {item.head_type === "income" ? item.amount : ""}
+                </td>
                 <td className="p-3 pl-6">
-                  <button onClick={() => handleDelete(index)} className=" text-white px-2 py-2 rounded-md transition duration-300 hover:bg-red-600 hover:shadow-lg hover:scale-105">
-                    <MdDelete className="text-black"/>
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className=" text-white px-2 py-2 rounded-md transition duration-300 hover:bg-red-600 hover:shadow-lg hover:scale-105"
+                  >
+                    <MdDelete className="text-black" />
                   </button>
                 </td>
               </tr>
@@ -104,15 +216,25 @@ const StatementTable = ({ filterType, fromDate, toDate }) => {
             <td className="p-2 font-bold" colSpan="2">
               Total
             </td>
-            <td className="p-2 text-red-500">{totalExpense.toLocaleString()}</td>
-            <td className="p-2 text-green-500">{totalIncome.toLocaleString()}</td>
+            <td className="p-2 text-red-500">
+              {totalExpense.toLocaleString()}
+            </td>
+            <td className="p-2 text-green-500">
+              {totalIncome.toLocaleString()}
+            </td>
             <td className="p-2"></td>
           </tr>
           <tr>
             <td className="p-2" colSpan="5">
               <div className="border border-gray-500 p-2">
-                <span className="font-bold">Profit / Loss - </span>
-                <span className={profitOrLoss >= 0 ? "text-green-500" : "text-red-500"}>
+                <span className="font-bold">
+                  {profitOrLoss >= 0 ? " Profit" : " Loss"} - &nbsp; &nbsp;
+                </span>
+                <span
+                  className={
+                    profitOrLoss >= 0 ? "text-green-500" : "text-red-500"
+                  }
+                >
                   {profitOrLoss.toLocaleString()}
                 </span>
               </div>

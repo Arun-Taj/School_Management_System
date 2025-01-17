@@ -1,76 +1,65 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import {AuthContext} from '../../../context/AuthContext';
+import axios from "axios";
+import { parse } from "date-fns";
 
 const CreateExam = () => {
   const [selectedClasses, setSelectedClasses] = useState({});
+  const currentYear = new Date().getFullYear();
+
   const [ExamDate, setExamDate] = useState({
     currentSession: "",
-    startingDate: "",
-    endingDate: "",
+    currentSessionName: "",
+    startingDate: `${currentYear}-01-01`,
+    endingDate: `${currentYear}-12-31`,
     examName: "",
   });
 
-  // const classesData = [
-    
-  //   {
-  //     class: { id: 1, name: "Class 1" },
-  //     subjects: [
-  //       { id: 1, name: "English" },
-  //       { id: 2, name: "Social Science" },
-  //       { id: 3, name: "Math" },
-  //     ],
-  //   },
-  //   {
-  //     class: { id: 2, name: "Class 2" },
-  //     subjects: [
-  //       { id: 4, name: "English" },
-  //       { id: 5, name: "Science" },
-  //       { id: 6, name: "Math" },
-  //       { id: 7, name: "Computer" },
-  //     ],
-  //   },
-  //   {
-  //     class: { id: 3, name: "Class 3" },
-  //     subjects: [
-  //       { id: 8, name: "English" },
-  //       { id: 9, name: "Social Science" },
-  //       { id: 10, name: "Math" },
-  //       { id: 11, name: "Science" },
-  //       { id: 12, name: "Arts" },
-  //     ],
-  //   },
-  // ];
-  const [classesData, setClassesData] = useState([
-    
-    {
-      class: { id: 1, name: "Class 1" },
-      subjects: [
-        { id: 1, name: "English" },
-        { id: 2, name: "Social Science" },
-        { id: 3, name: "Math" },
-      ],
-    },
-    {
-      class: { id: 2, name: "Class 2" },
-      subjects: [
-        { id: 4, name: "English" },
-        { id: 5, name: "Science" },
-        { id: 6, name: "Math" },
-        { id: 7, name: "Computer" },
-      ],
-    },
-    {
-      class: { id: 3, name: "Class 3" },
-      subjects: [
-        { id: 8, name: "English" },
-        { id: 9, name: "Social Science" },
-        { id: 10, name: "Math" },
-        { id: 11, name: "Science" },
-        { id: 12, name: "Arts" },
-      ],
-    },
-  ]);
+  const {api}  = useContext(AuthContext)
+  const [examSessions, setExamSessions] = useState([]);
+  const [defaultExamDate, setDefaultExamDate] = useState({});
+
+
+  
+  const [classesData, setClassesData] = useState([]);
+
+  useEffect(() => {
+    const loadExamSessionsFromServer = async () => {
+      try {
+        const response = await api.get('exam_sessions/')
+        // console.log(response.data);
+        setExamSessions(response.data);
+        
+        setExamDate((prev) => ({
+          ...prev,
+          currentSession: response.data[0].id,
+          currentSessionName: response.data[0].name
+        }))
+
+        setDefaultExamDate(ExamDate);
+        
+      } catch (error) {
+        console.error('Error loading exam sessions:', error);
+      }
+    }
+    loadExamSessionsFromServer();
+
+    const loadClassesSubjectsFromServer = async () => {
+      try {
+        const response = await api.get('/get_class_subjects/')
+        // console.log(response.data);
+        setClassesData(response.data);
+      } catch (error) {
+        console.error('Error loading classes and subjects:', error);
+      }
+    }
+    loadClassesSubjectsFromServer();
+
+
+  }, [api]);
+
 
   const handleClassToggle = (classId) => {
     setSelectedClasses((prev) => ({
@@ -110,18 +99,24 @@ const CreateExam = () => {
     }));
   };
 
-    const handleSessionChange = (session) => {
-      const [startYear, endYear] = session.split("-").map(Number);
+  const handleSessionChange = (session_id) => {
+    
+    const session_name = examSessions.find((session) => session.id == session_id).name;
+    
+    const [startYear, endYear] = session_name.split("-").map(Number);
 
-      setExamDate((prev) => ({
-        ...prev,
-        currentSession: session,
-        startingDate: `${startYear}-01-01`,
-        endingDate: `${endYear}-12-31`,
-      }));
-    };
+    setExamDate((prev) => ({
+      ...prev,
+      currentSession: parseInt(session_id) ,
+      currentSessionName: session_name,
+      startingDate: `${startYear}-01-01`,
+      endingDate: `${endYear}-12-31`,
+    }));
+  };
 
   const handleStartingDateChange = (date) => {
+    console.log("changing starting date", date);
+    
     setExamDate((prev) => ({
       ...prev,
       startingDate: date,
@@ -129,60 +124,97 @@ const CreateExam = () => {
   };
 
   const handleEndingDateChange = (date) => {
+    console.log("changing ending date", date);
     setExamDate((prev) => ({
       ...prev,
       endingDate: date,
     }));
   };
 
-  useEffect(() => {
-    const currentYear = new Date().getFullYear();
-    const session = `${currentYear}-${currentYear + 1}`;
-    handleSessionChange(session);
-  }, []);
-
+ 
   const handleCreateExam = () => {
+    // Check if exam name is empty
+    if (ExamDate.examName.trim() === "") {
+      alert("Please enter a name for the exam.");
+      return;
+    }
+  
+    // Check if any classes are selected
+    if (Object.keys(selectedClasses).length === 0) {
+      alert("Please select at least one class.");
+      return;
+    }
+  
     const userConfirmed = window.confirm(
       "Are you sure want to create this new exam? Are all details correct?"
     );
-
+  
     if (userConfirmed) {
-      // Prepare the payload
       const payload = {
         ...ExamDate,
         classes: Object.entries(selectedClasses)
           .filter(([_, subjects]) => subjects)
-          .map(([classId, subjects]) => ({
-            classId,
-            subjects: Object.entries(subjects).map(([subjectId,marks]) => ({
-              subjectId,
-              totalMarks: marks?.totalMarks,
-              passMarks: marks?.passMarks,
-            })),
-          })),
+          .map(([classId, subjects]) => {
+            // Validate that each subject has totalMarks and passMarks
+            const subjectsWithValidation = Object.entries(subjects).map(
+              ([subjectId, marks]) => {
+                // Check if totalMarks or passMarks are undefined
+                if (marks?.totalMarks === undefined || marks?.passMarks === undefined) {
+                  alert(`Total Marks or Pass Marks are missing for Subject ID: ${subjectId}`);
+                  return null; // return null to skip this subject
+                }
+  
+                return {
+                  subjectId: parseInt(subjectId),
+                  totalMarks: marks.totalMarks,
+                  passMarks: marks.passMarks,
+                };
+              }
+            ).filter(subject => subject !== null); // Remove null subjects
+  
+            // If no subjects are valid, alert and return early to stop further processing
+            if (subjectsWithValidation.length === 0) {
+              alert("No valid subjects found in this class.");
+              return null; // return null to skip this class
+            }
+  
+            return {
+              classId: parseInt(classId),
+              subjects: subjectsWithValidation,
+            };
+          })
+          .filter(classData => classData !== null), // Remove null classes
       };
-
+  
+      // If payload is invalid (null classes or subjects), stop execution
+      if (payload.classes.length === 0) {
+        return; // Early return if no valid classes
+      }
+  
       // Simulate sending data to the database
-      console.log("Exam created with data:", payload);
+      console.log("Payload:", payload);
 
-      alert("Exam created successfully!");
-      // Reset the selected classes and exam data
-    setSelectedClasses({});
-     // Calculate the default session based on the current year
-     const currentYear = new Date().getFullYear();
-     const defaultSession = `${currentYear}-${currentYear + 1}`;
-     const defaultStartingDate = `${currentYear}-01-01`;
-     const defaultEndingDate = `${currentYear + 1}-12-31`;
-    setExamDate({
-      currentSession: defaultSession, // Reset session to default
-      startingDate: defaultStartingDate, // Reset starting date to default
-      endingDate: defaultEndingDate, // Reset ending date to default
-      examName: "", // Reset exam name
-    });
+
+
+      const configureExamPapers = async () => {
+        try {
+          const response = await api.post('configure_exam_papers/', payload);
+          // console.log(response.data.message);
+          alert(response.data.message);
+        } catch (error) {
+          alert('Failed to configure exam.');
+        }
+      }
+
+      configureExamPapers();
+  
+      // Reset the exam date to default after successful submission
+      setExamDate(defaultExamDate);
     } else {
       alert("Exam creation cancelled.");
     }
   };
+  
 
   const handleDeleteSubject = (classId, subjectId) => {
   
@@ -200,7 +232,7 @@ const CreateExam = () => {
   };
   
   
-  return (
+  return examSessions && (
     <div className="p-8 bg-pink-100 min-h-screen">
       <div className="flex gap-4 bg-white rounded-3xl p-2">
         <div className="flex items-center space-x-2">
@@ -222,16 +254,15 @@ const CreateExam = () => {
                 <p className="text-center font-bold">Select Session</p>
                 <select
                   value={ExamDate.currentSession}
-                  onChange={(e) => handleSessionChange(e.target.value)}
+                  onChange={(e) => handleSessionChange(e.currentTarget.value)}
                   className="p-2 bg-white rounded-full border border-gray-300"
                 >
-                  <option value="2020-2021">2020-2021</option>
-                  <option value="2021-2022">2021-2022</option>
-                  <option value="2022-2023">2022-2023</option>
-                  <option value="2023-2024">2023-2024</option>
-                  <option value="2024-2025">2024-2025</option>
-                  <option value="2025-2026">2025-2026</option>
-                  <option value="2026-2027">2026-2027</option>
+                  {
+                   examSessions && examSessions.map((session) => (
+                    <option key={session.id} value={session.id}>{session.name}</option>
+                   ))
+                  }
+                  
                 </select>
               </span>
               <span>
@@ -239,9 +270,9 @@ const CreateExam = () => {
                 <input
                   type="date"
                   value={ExamDate.startingDate}
-                  min={`${ExamDate.currentSession.split("-")[0]}-01-01`}
-                  max={`${ExamDate.currentSession.split("-")[0]}-12-31`}
-                  onChange={(e) => handleStartingDateChange(e.target.value)}
+                  // min={`${ExamDate.currentSessionName.split("-")[0]}-01-01`}
+                  // max={`${ExamDate.currentSessionName.split("-")[0]}-12-31`}
+                  onChange={(e) => handleStartingDateChange(e.currentTarget.value)}
                   className="p-2 border border-gray-300 rounded-full"
                 />
               </span>
@@ -250,9 +281,9 @@ const CreateExam = () => {
                 <input
                   type="date"
                   value={ExamDate.endingDate}
-                  min={`${ExamDate.currentSession.split("-")[1]}-01-01`}
-                  max={`${ExamDate.currentSession.split("-")[1]}-12-31`}
-                  onChange={(e) => handleEndingDateChange(e.target.value)}
+                  // min={`${ExamDate.currentSessionName.split("-")[1]}-01-01`}
+                  // max={`${ExamDate.currentSessionName.split("-")[1]}-12-31`}
+                  onChange={(e) => handleEndingDateChange(e.currentTarget.value)}
                   className="p-2 border border-gray-300 rounded-full"
                 />
               </span>
@@ -262,12 +293,13 @@ const CreateExam = () => {
               <input
                 type="text"
                 value={ExamDate.examName}
-                onChange={(e) =>
+                onChange={(e) =>{
+                 
                   setExamDate((prev) => ({
                     ...prev,
                     examName: e.target.value,
                   }))
-                }
+                }}
                 className="p-2 rounded-full w-full border border-gray-300"
                 placeholder="Name the exam"
               />

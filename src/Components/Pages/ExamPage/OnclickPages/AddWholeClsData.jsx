@@ -1,248 +1,125 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { IoIosArrowDropright, IoIosArrowDropleft } from "react-icons/io";
 import { FaEye } from "react-icons/fa6";
 import { MdChevronRight } from "react-icons/md";
 import { MdChevronLeft } from "react-icons/md";
+import { AuthContext } from "../../../../context/AuthContext";
+import { set, sub } from "date-fns";
 
 const AddWholeClsData = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [recordsPerPage, setRecordsPerPage] = useState(10);
-  const [editingIndexPage, setEditingIndexPage] = useState(null);
+  const { api } = useContext(AuthContext);
 
-  
-  const data=[
-    {
-    enrollmentId: "01249999",
-    studentName: "Rahul Kumar Debnath",
-    fatherName: "Johnson Kumar Tajpuriya",
-    rollNo: "35",
-    marks: {
-      English: 78,
-      Math: 78,
-      Science: 78,
-      Social: 78,
-      Computer: 89,
-      Geography: 68,
-      Gk: 78,
-    }},
-    {
-      enrollmentId: "01249999",
-      studentName: "Rahul Kumar Debnath",
-      fatherName: "Johnson Kumar Tajpuriya",
-      rollNo: "35",
-      marks: {
-        English: 78,
-        Math: 78,
-        Science: 78,
-        Social: 78,
-        Computer: 89,
-        Geography: 68,
-        Gk: 78,
-      },
-    },
-    {
-      enrollmentId: "01250000",
-      studentName: "Anjali Sharma",
-      fatherName: "Ramesh Sharma",
-      rollNo: "36",
-      marks: {
-        English: 85,
-        Math: 92,
-        Science: 88,
-        Social: 76,
-        Computer: 94,
-        Geography: 81,
-        Gk: 83,
-      },
-    },
-    {
-      enrollmentId: "01250001",
-      studentName: "Vikram Patel",
-      fatherName: "Mohan Patel",
-      rollNo: "37",
-      marks: {
-        English: 72,
-        Math: 64,
-        Science: 70,
-        Social: 75,
-        Computer: 80,
-        Geography: 60,
-        Gk: 65,
-      },
-    },
-    {
-      enrollmentId: "01250002",
-      studentName: "Pooja Reddy",
-      fatherName: "Suresh Reddy",
-      rollNo: "38",
-      marks: {
-        English: 90,
-        Math: 95,
-        Science: 92,
-        Social: 85,
-        Computer: 96,
-        Geography: 88,
-        Gk: 91,
-      },
-    },
-    {
-      enrollmentId: "01250003",
-      studentName: "Rohan Das",
-      fatherName: "Rajiv Das",
-      rollNo: "39",
-      marks: {
-        English: 60,
-        Math: 55,
-        Science: 58,
-        Social: 62,
-        Computer: 70,
-        Geography: 50,
-        Gk: 59,
-      },
-    },
-    {
-      enrollmentId: "01250004",
-      studentName: "Neha Gupta",
-      fatherName: "Anil Gupta",
-      rollNo: "40",
-      marks: {
-        English: 88,
-        Math: 85,
-        Science: 90,
-        Social: 83,
-        Computer: 91,
-        Geography: 84,
-        Gk: 87,
-      },
-    },
-    {
-      enrollmentId: "01250005",
-      studentName: "Amit Kumar",
-      fatherName: "Suraj Kumar",
-      rollNo: "41",
-      marks: {
-        English: 65,
-        Math: 70,
-        Science: 68,
-        Social: 63,
-        Computer: 78,
-        Geography: 66,
-        Gk: 67,
-      },
-    },
-    {
-      enrollmentId: "01250006",
-      studentName: "Ritu Yadav",
-      fatherName: "Vikash Yadav",
-      rollNo: "42",
-      marks: {
-        English: 79,
-        Math: 82,
-        Science: 81,
-        Social: 77,
-        Computer: 85,
-        Geography: 80,
-        Gk: 83,
-      },
-    },
-    {
-      enrollmentId: "01250007",
-      studentName: "Sumit Roy",
-      fatherName: "Dipak Roy",
-      rollNo: "43",
-      marks: {
-        English: 50,
-        Math: 55,
-        Science: 53,
-        Social: 60,
-        Computer: 65,
-        Geography: 58,
-        Gk: 59,
-      },
-    },
-    {
-      enrollmentId: "01250008",
-      studentName: "Priya Singh",
-      fatherName: "Karan Singh",
-      rollNo: "44",
-      marks: {
-        English: 92,
-        Math: 94,
-        Science: 95,
-        Social: 91,
-        Computer: 98,
-        Geography: 90,
-        Gk: 93,
-      },
-    },
-    {
-      enrollmentId: "01250009",
-      studentName: "Aditya Verma",
-      fatherName: "Naresh Verma",
-      rollNo: "45",
-      marks: {
-        English: 78,
-        Math: 82,
-        Science: 80,
-        Social: 76,
-        Computer: 88,
-        Geography: 75,
-        Gk: 77,
-      },
-    },
-  ]
- const headers= [
-    "Enrollment ID",
-    "Student Name",
-    "Father's Name",
-    "Roll No.",
-    "English",
-    "Math",
-    "Science",
-    "Social",
-    "Computer",
-    "Geography",
-    "Gk",
-    "Action",
-  ]
+  const selected_class = JSON.parse(localStorage.getItem("selectedClassId"));
+  const selected_exam_id = JSON.parse(
+    localStorage.getItem("get_exams_classes_id")
+  );
 
-  const totalPages = Math.ceil(data.length / recordsPerPage);
+  const [intialData, setInitialData] = useState([]);
+  const [data, setData] = useState([]);
+  let [headers, setHeaders] = useState([]);
 
-  const indexOfLastRecord = currentPage * recordsPerPage;
-  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const currentRecordsPages = data.slice(indexOfFirstRecord, indexOfLastRecord);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    recordsPerPage: 10,
+    totalRecords: 0,
+    totalPages: 1,
+  });
+  const applyPagination = () => {
+    let startIndex =
+      pagination.totalRecords == 0
+        ? 0
+        : pagination.currentPage * pagination.recordsPerPage -
+          pagination.recordsPerPage;
+    let endIndex =
+      pagination.currentPage * pagination.recordsPerPage >
+      pagination.totalRecords
+        ? pagination.totalRecords
+        : pagination.currentPage * pagination.recordsPerPage;
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  const changeRecordsPerPage = (e) => {
-    setRecordsPerPage(Number(e.target.value));
-    setCurrentPage(1);
+    setData(intialData.slice(startIndex, endIndex));
   };
-  const [currentRecords, setCurrentRecords] = useState(data);
-  const [editingIndex, setEditingIndex] = useState(null);
-  const [editingMarks, setEditingMarks] = useState({});
+  useEffect(() => {
+    applyPagination();
+  }, [pagination]);
+  const setRecordsPerPage = (recordsPerPage) => {
+    setPagination((prevPagination) => ({
+      ...prevPagination,
+      recordsPerPage: parseInt(recordsPerPage),
+      currentPage: 1,
+      totalPages: Math.ceil(
+        prevPagination.totalRecords / parseInt(recordsPerPage)
+      ),
+    }));
+  };
+
+  useEffect(() => {
+    const getSubjectsForHeadersOfExam = async () => {
+      try {
+        const response = await api.get(
+          `/get_subjects_for_this_exam/${selected_exam_id}/${selected_class.class_id}/`
+        );
+        // console.log(response.data);
+        setHeaders((prevHeaders) => [
+          "Enrollment ID",
+          "Student Name",
+          "Father's Name",
+          ...response.data.map((data) => data.subject_name),
+          "Action",
+        ]);
+      } catch (error) {
+        console.error("Error fetching subjects:", error);
+      }
+    };
+    getSubjectsForHeadersOfExam();
+
+    const getStudentsForMarksEntry = async () => {
+      try {
+        const response = await api.get(
+          `/get_students_for_marks_entry/${selected_exam_id}/${selected_class.class_id}/`
+        );
+        // console.log(response.data);
+        // setData(response.data);
+        setInitialData(response.data);
+        setPagination({
+          ...pagination,
+          totalRecords: response.data.length,
+          totalPages: Math.ceil(
+            response.data.length / pagination.recordsPerPage
+          ),
+        });
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      }
+    };
+    getStudentsForMarksEntry();
+  }, []);
+
+  const [editingIndex, setEditingIndex] = useState(-1);
 
   const handleEditClick = (index) => {
     setEditingIndex(index);
-    setEditingMarks({ ...currentRecords[index].marks });
   };
 
-  const handleInputChange = (subject, value) => {
-    setEditingMarks({
-      ...editingMarks,
-      [subject]: value,
-    });
-  };
+  const handleInputChange = (subject, value) => {};
 
   const handleSaveClick = (index) => {
-    const updatedRecords = [...currentRecords];
-    updatedRecords[index].marks = { ...editingMarks };
-    setCurrentRecords(updatedRecords);
-    setEditingIndex(null);
+    // console.log("saving", data[index]);
+
+    const updateMarks = async () => {
+      try {
+        const response = await api.post(`/update_marks/`, data[index]);
+        // console.log(response.data);
+      } catch (error) {
+        console.error("Error updating marks:", error);
+      }
+    };
+    updateMarks();
+    setEditingIndex(-1);
   };
   const handleSubmit = () => {
-    console.log("Submitted Data:", currentRecords);
-    // Add API integration or other logic here
+    // console.log(data);
+
     alert("Data submitted successfully!");
   };
 
@@ -276,17 +153,14 @@ const AddWholeClsData = () => {
       </div>
 
       <p className="flex items-center justify-center font-bold pt-10 text-2xl pb-6">
-        Insert Obtained Marks (Class 08)
+        Insert Obtained Marks ({selected_class.class_name})
       </p>
-    <div className="w-screen">
-
-    
+      {/* <div className="w-screen"> */}
       <div className=" bg-white py-4  rounded-lg shadow-lg">
         <div className="overflow-x-auto">
-          <div className="max-h-[400px] overflow-y-auto ">
+          <div className=" overflow-y-auto ">
             <table className=" text-center border-collapse">
               <thead className="sticky top-0">
-                
                 <tr className="bg-white">
                   {headers.map((header, index) => (
                     <th
@@ -299,16 +173,18 @@ const AddWholeClsData = () => {
                 </tr>
               </thead>
               <tbody className="">
-                {currentRecords.map((record, index) => (
+                {data.map((student, index) => (
                   <tr
                     key={index}
                     className={index % 2 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"}
                   >
-                    <td className="p-2 min-w-[150px]">{record.enrollmentId}</td>
-                    <td className="p-2 min-w-[250px]">{record.studentName}</td>
-                    <td className="p-2 min-w-[250px]">{record.fatherName}</td>
-                    <td className="p-2 min-w-[30px]">{record.rollNo}</td>
-                    {Object.keys(record.marks).map((subject, i) => (
+                    <td className="p-2 min-w-[150px]">{student.enr_no}</td>
+                    <td className="p-2 min-w-[250px]">
+                      {student.student_name}
+                    </td>
+                    <td className="p-2 min-w-[250px]">{student.father_name}</td>
+                    {/* <td className="p-2 min-w-[30px]">{record.rollNo}</td> */}
+                    {student.marks.map((subject, i) => (
                       <td
                         key={i}
                         className={`p-2 ${
@@ -321,14 +197,50 @@ const AddWholeClsData = () => {
                         {editingIndex === index ? (
                           <input
                             type="number"
-                            value={editingMarks[subject]}
-                            onChange={(e) =>
-                              handleInputChange(subject, e.target.value)
-                            }
+                            value={subject.marks}
+                            onChange={(e) => {
+                              if (e.target.value > subject.paper_full_marks) {
+                                alert(
+                                  `Marks cannot be greater than full marks i.e. ${subject.paper_full_marks}`
+                                );
+                              } else if (e.target.value < 0) {
+                                alert("Marks cannot be negative");
+                              } else {
+                                const updatedMarks = data.map((studentData) => {
+                                  if (
+                                    studentData.student_id ===
+                                    student.student_id
+                                  ) {
+                                    // Replace 'studentId' with the actual ID of the student being updated
+                                    return {
+                                      ...studentData,
+                                      marks: studentData.marks.map(
+                                        (subjectData) => {
+                                          if (
+                                            subjectData.paper_id ===
+                                            subject.paper_id
+                                          ) {
+                                            // Replace 'subjectId' with the actual ID of the subject being updated
+                                            return {
+                                              ...subjectData,
+                                              marks: e.target.value,
+                                            };
+                                          }
+                                          return subjectData;
+                                        }
+                                      ),
+                                    };
+                                  }
+                                  return studentData;
+                                });
+
+                                setData(updatedMarks);
+                              } // Assuming setData is the state setter function
+                            }}
                             className="w-14 rounded-full pl-1"
                           />
                         ) : (
-                          record.marks[subject]
+                          subject.marks
                         )}
                       </td>
                     ))}
@@ -355,49 +267,92 @@ const AddWholeClsData = () => {
             </table>
           </div>
         </div>
-      </div></div>
-
-
-      {/* Pagination */}
-      <div className="flex justify-between items-center mt-4 pl-2">
-        <div className="flex items-center space-x-2">
-          {[10, 25, 50].map((size) => (
-            <button
-              key={size}
-              onClick={() => setRecordsPerPage(size)}
-              className="p-2 px-3 rounded-full border border-gray-300"
-            >
-              {size}
-            </button>
-          ))}
-          <span className="text-sm">Records per page</span>
-        </div>
-
-        <div className="flex space-x-1 items-center pr-2">
-          <p>Showing 1 to 10 of 15 records</p>
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="p-1 rounded-full border border-gray-300"
-          >
-            <MdChevronLeft size={24} />
-          </button>
-          <p className="border border-gray-400 px-3 py-1 rounded-full">
-            {currentPage}
-          </p>
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="p-1 rounded-full border border-gray-300"
-          >
-            <MdChevronRight size={24} />
-          </button>
-        </div>
       </div>
-      <div className="flex justify-center pt-10">
-        <button type="submit" className="bg-pink-500 p-2 px-6 rounded-full" onClick={handleSubmit}>
-          Submit
-        </button>
+      {/* </div> */}
+
+      {/* Pagination Controls */}
+      <div className="mt-4 flex justify-between items-center pb-10">
+        <div className="flex space-x-2 items-center">
+          <button
+            className={
+              pagination.recordsPerPage == 10
+                ? "bg-[#BCA8EA] text-white px-3 py-2 border border-gray-400 rounded-full "
+                : "px-3 py-2 border border-gray-400 rounded-full "
+            }
+            value="10"
+            onClick={(e) => setRecordsPerPage(e.currentTarget.value)}
+          >
+            10
+          </button>
+          <button
+            className={
+              pagination.recordsPerPage == 25
+                ? "bg-[#BCA8EA] text-white px-3 py-2 border border-gray-400 rounded-full "
+                : "px-3 py-2 border border-gray-400 rounded-full "
+            }
+            value="25"
+            onClick={(e) => setRecordsPerPage(e.currentTarget.value)}
+          >
+            25
+          </button>
+          <button
+            className={
+              pagination.recordsPerPage == 50
+                ? "bg-[#BCA8EA] text-white px-3 py-2 border border-gray-400 rounded-full "
+                : "px-3 py-2 border border-gray-400 rounded-full "
+            }
+            value="50"
+            onClick={(e) => setRecordsPerPage(e.currentTarget.value)}
+          >
+            50
+          </button>
+          <p>Records per page </p>
+        </div>
+        <div className="flex flex-row items-center">
+          <div className="text-sm text-gray-600 ">
+            Showing{" "}
+            {pagination.totalRecords == 0
+              ? 0
+              : pagination.currentPage * pagination.recordsPerPage -
+                (pagination.recordsPerPage - 1)}{" "}
+            &nbsp; to &nbsp;
+            {pagination.currentPage * pagination.recordsPerPage >
+            pagination.totalRecords
+              ? pagination.totalRecords
+              : pagination.currentPage * pagination.recordsPerPage}{" "}
+            &nbsp; of {pagination.totalRecords} records
+          </div>
+          <div className="flex space-x-2 items-center">
+            <button
+              className="px-3  "
+              onClick={() =>
+                pagination.currentPage > 1 &&
+                setPagination({
+                  ...pagination,
+                  currentPage: pagination.currentPage - 1,
+                })
+              }
+            >
+              <IoIosArrowDropleft size={30} />
+            </button>
+            <p className="border border-gray-700 px-2 rounded-full">
+              {" "}
+              {pagination.currentPage}
+            </p>
+            <button
+              className="px-3 "
+              onClick={() =>
+                pagination.currentPage < pagination.totalPages &&
+                setPagination({
+                  ...pagination,
+                  currentPage: pagination.currentPage + 1,
+                })
+              }
+            >
+              <IoIosArrowDropright size={30} />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

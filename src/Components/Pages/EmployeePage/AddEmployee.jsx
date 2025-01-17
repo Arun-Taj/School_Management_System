@@ -1,35 +1,63 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { MdBusinessCenter } from "react-icons/md";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { formValidationSchema } from "./EmpValidations";
 // import DistrictStates from "./DistrictStates";
 import statesDistricts from "../SignUp&SignIn/statesDistricts.json";
-import {AuthContext} from "../../../context/AuthContext"
-
+import { AuthContext } from "../../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { sub } from "date-fns";
 function AddEmployee() {
-  // Select complimentry logic
-  const [selectedOptions, setSelectedOptions] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  // const [district, SetDistrict] = useState("district");
-  const {api} = useContext(AuthContext)
+  const navigate = useNavigate();
 
-  const options = ["Python", "C++", "DSA"];
+  const { api } = useContext(AuthContext);
+  const [roles, setRoles] = useState([]);
+  const [subjects, setSubjects] = useState([]);
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
+  const [states, setStates] = useState(getStates(statesDistricts));
+  const [districts, setDistricts] = useState([]);
 
-  const selectOption = (option) => {
-    if (!selectedOptions.includes(option)) {
-      setSelectedOptions([...selectedOptions, option]);
-    }
-    setIsOpen(false);
-  };
+  const [cstates, setcStates] = useState(getStates(statesDistricts));
+  const [cdistricts, setcDistricts] = useState([]);
 
-  const removeOption = (option) => {
-    setSelectedOptions(selectedOptions.filter((item) => item !== option));
-  };
+  useEffect(() => {
+    const getRoles = async () => {
+      try {
+        const response = await api.get("/get_roles/");
+
+        if (response.data.length > 0) {
+          setRoles(response.data);
+        } else {
+          alert("Please request admin to add roles first, then try again");
+          navigate("/employees/allEmployees");
+        }
+      } catch (error) {
+        alert("Something went wrong");
+        // console.error("Error fetching roles:", error);
+      }
+    };
+
+    getRoles();
+
+    const getSubjects = async () => {
+      try {
+        const response = await api.get("/get_subjects_for_config/");
+
+        if (response.data.length > 0) {
+          setSubjects(response.data);
+        } else {
+          alert("Please add subjects first, then try again");
+          navigate("/config/createSub");
+        }
+      } catch (error) {
+        alert("Something went wrong");
+        // console.error("Error fetching subjects:", error);
+      }
+    };
+
+    getSubjects();
+  }, [api]);
 
   const initialValues = {
     employeeFirstName: "",
@@ -74,8 +102,8 @@ function AddEmployee() {
     bioData: "",
     educationalDetails: "",
     experience: "",
-    mainSubject: "",
-    complementarySubject: "",
+    mainSubject: null,
+    complementarySubjects: null,
     remarks: "",
   };
 
@@ -119,50 +147,6 @@ function AddEmployee() {
     }
   };
 
-  const handleSubmit = async (values, { resetForm }) => {
-    // Log the form values
-    console.log("Form Submitted successfully");
-    console.log("Form Data", values);
-
-    // Reset the form after successful submission
-    resetForm();
-    // Manually reset the file input
-    if (fileInputRef1.current) {
-      fileInputRef1.current.value = null; // Reset the file input field
-    }
-    if (fileInputRef2.current) {
-      fileInputRef2.current.value = null; // Reset the file input field
-    }
-
-
-    // Clear the file name and any errors
-    setFileName1("");
-    setFileSizeError("");
-    setFileName2("");
-    setFileSizeError2("");
-
-    let FORMDATA = new FormData();
-    for (const key in values) {
-      FORMDATA.append(key, values[key]);        
-      
-    }
-    // console.log(values, FORMDATA);
-    
-
-    try {
-      // Make the API call to update the student
-      const response = await api.post(`/employee/`, FORMDATA);
-      // console.log(response.data);
-      
-      
-    } catch (error) {
-      console.error("Failed ", error.response);
-      // Handle error (e.g., show a notification)
-    }
-
-    
-  };
-
   function getStates(jsonData) {
     return jsonData.states.map((stateObj) => stateObj.state);
   }
@@ -174,14 +158,48 @@ function AddEmployee() {
     return stateObj ? stateObj.districts : []; // Return districts or empty array if state not found
   }
 
-  const [states, setStates] = useState(getStates(statesDistricts));
-  const [districts, setDistricts] = useState([]);
+  const handleSubmit = async (values,) => {
 
-  const [cstates, setcStates] = useState(getStates(statesDistricts));
-  const [cdistricts, setcDistricts] = useState([]);
+    // Manually reset the file input
+    if (fileInputRef1.current) {
+      fileInputRef1.current.value = null; // Reset the file input field
+    }
+    if (fileInputRef2.current) {
+      fileInputRef2.current.value = null; // Reset the file input field
+    }
 
+    // Clear the file name and any errors
+    setFileName1("");
+    setFileSizeError("");
+    setFileName2("");
+    setFileSizeError2("");
 
+    const updatedValues = {
+      ...values,
+      complementarySubjects: values.complementarySubjects && values.complementarySubjects.map((value) =>
+        parseInt(value, 10)
+      ) || [],
+      mainSubject: parseInt(values.mainSubject, 10),
+      selectRole: parseInt(values.selectRole, 10),
+    };
+    // console.log(updatedValues);
 
+    let FORMDATA = new FormData();
+    for (const key in updatedValues) {
+      FORMDATA.append(key, values[key]);
+    }
+    // console.log(values, FORMDATA);
+
+    try {
+      // / Make the API call to update the student
+      const response = await api.post(`/employee/`, FORMDATA);
+      // console.log(response.data);
+      alert("Employee added successfully!");
+      navigate("/employees/allEmployees")
+    } catch (error) {
+
+    }
+  };
 
   return (
     <div className="bg-pink-100 min-h-screen p-8">
@@ -207,7 +225,7 @@ function AddEmployee() {
         onSubmit={handleSubmit}
         validateOnChange={true}
       >
-        {({ setFieldValue, values, setValues , resetForm }) => (
+        {({ setFieldValue, values, setValues, resetForm }) => (
           <Form className=" ">
             <div className="my-8 text-center">
               <h2 className="text-3xl font-bold text-black">Employee Form</h2>
@@ -418,10 +436,11 @@ function AddEmployee() {
                     <option value="" disabled selected>
                       Select Role
                     </option>
-                    <option value="teacher">Teacher</option>
-                    <option value="peon">Peon</option>
-                    <option value="finance">Finance Manager</option>
-                    <option value="labAssistance">Lab Assistance</option>
+                    {roles.map((role) => (
+                      <option key={role.id} value={role.id}>
+                        {role.name}
+                      </option>
+                    ))}
                   </Field>
                   <ErrorMessage
                     name="selectRole"
@@ -679,43 +698,40 @@ function AddEmployee() {
                     className="mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded-3xl"
                     onChange={(e) => {
                       const isChecked = e.target.checked;
-                      
-                    
-                    if (isChecked) {
-                      // Batch update current address fields using setValues
-                       const selectedState = values.state;
-                      const filteredDistricts = getDistrictsByState(
-                        statesDistricts,
-                        selectedState
-                      );
-                     
-                      setcDistricts(filteredDistricts); // Update districts for the selected state
-                      setValues({
-                        ...values,
-                        sameAsPermanentAddress: true,
-                        currentAddress1: values.address1,
-                        currentTownVillageCity: values.townVillageCity,
-                        currentCountry: values.country,
-                        currentState: values.state,
-                        currentDistrict: values.district,
-                        currentZipCode: values.zipCode,
-                      });
-                    } else {
-                      // Clear current address fields
-                      setValues({
-                        ...values,
-                        sameAsPermanentAddress: false,
-                        currentAddress1: '',
-                        currentTownVillageCity: '',
-                        currentState: '',
-                        currentDistrict: '',
-                        currentCountry: '',
-                        currentZipCode: '',
-                      });
-                    }
 
-                  }}
-                    
+                      if (isChecked) {
+                        // Batch update current address fields using setValues
+                        const selectedState = values.state;
+                        const filteredDistricts = getDistrictsByState(
+                          statesDistricts,
+                          selectedState
+                        );
+
+                        setcDistricts(filteredDistricts); // Update districts for the selected state
+                        setValues({
+                          ...values,
+                          sameAsPermanentAddress: true,
+                          currentAddress1: values.address1,
+                          currentTownVillageCity: values.townVillageCity,
+                          currentCountry: values.country,
+                          currentState: values.state,
+                          currentDistrict: values.district,
+                          currentZipCode: values.zipCode,
+                        });
+                      } else {
+                        // Clear current address fields
+                        setValues({
+                          ...values,
+                          sameAsPermanentAddress: false,
+                          currentAddress1: "",
+                          currentTownVillageCity: "",
+                          currentState: "",
+                          currentDistrict: "",
+                          currentCountry: "",
+                          currentZipCode: "",
+                        });
+                      }
+                    }}
                   />
 
                   <label className="text-sm">Same as Permanent Address</label>
@@ -776,8 +792,7 @@ function AddEmployee() {
                       setFieldValue("currentState", selectedState); // Update state in Formik
                       setFieldValue("currentDistrict", ""); // Clear district when state changes
                       setcDistricts(filteredDistricts); // Update districts for the selected state
-                      console.log("changed state"); 
-                      
+                      console.log("changed state");
                     }}
                   >
                     <option value="" disabled selected>
@@ -799,12 +814,11 @@ function AddEmployee() {
                     as="select"
                     name="currentDistrict"
                     className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
-                    
                   >
                     <option value="" disabled selected>
                       District
                     </option>
-                   {cdistricts.map((district, index) => (
+                    {cdistricts.map((district, index) => (
                       <option key={index} value={district}>
                         {district}
                       </option>
@@ -1001,10 +1015,12 @@ function AddEmployee() {
                     <option value="" disabled selected>
                       Main Subject
                     </option>
-                    <option value="Math">Maths</option>
-                    <option value="Science">Science</option>
-                    <option value="Social">Social</option>
-                    <option value="English">English</option>
+                    {subjects &&
+                      subjects.map((subject) => (
+                        <option value={parseInt(subject.id)}>
+                          {subject.name}
+                        </option>
+                      ))}
                   </Field>
                   <ErrorMessage
                     name="mainSubject"
@@ -1018,51 +1034,23 @@ function AddEmployee() {
                   <label className="font-sans text-base font-bold leading-5 text-left">
                     Complimentary Subjects
                   </label>
-                  <div className="relative">
-                    <div
-                      className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl cursor-pointer"
-                      onClick={toggleDropdown}
-                    >
-                      <div className="flex flex-wrap">
-                        {selectedOptions.length > 0 ? (
-                          selectedOptions.map((option, index) => (
-                            <div
-                              key={index}
-                              className="bg-blue-500 text-white px-2 py-1 rounded-full mr-2 mb-2 flex items-center"
-                            >
-                              {option}
-                              <button
-                                className="ml-2 text-white"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  removeOption(option);
-                                }}
-                              >
-                                &times;
-                              </button>
-                            </div>
-                          ))
-                        ) : (
-                          <span className="text-gray-400">
-                            Select subjects...
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    {isOpen && (
-                      <ul className="absolute w-full bg-white border border-gray-300 rounded-3xl mt-1 max-h-48 overflow-y-auto z-10">
-                        {options.map((option, index) => (
-                          <li
-                            key={index}
-                            className="p-2 cursor-pointer hover:bg-gray-200"
-                            onClick={() => selectOption(option)}
-                          >
-                            {option}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
+                  <Field
+                    as="select"
+                    multiple
+                    name="complementarySubjects"
+                    className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
+                  >
+                    {subjects &&
+                      subjects.map((subject) => {
+                        if (subject.id !== parseInt(values.mainSubject)) {
+                          return (
+                            <option value={parseInt(subject.id)}>
+                              {subject.name}
+                            </option>
+                          );
+                        }
+                      })}
+                  </Field>
                 </div>
               </div>
               <div className=" mb-4">
@@ -1095,7 +1083,7 @@ function AddEmployee() {
                 <button
                   type="submit"
                   className="bg-pink-500 text-white font-semibold px-6 py-2 rounded-3xl shadow-md hover:bg-pink-600"
-                  // onClick={handleSubmit}
+                  onClick={handleSubmit}
                 >
                   Submit
                 </button>
@@ -1109,6 +1097,3 @@ function AddEmployee() {
 }
 
 export default AddEmployee;
-
-
-

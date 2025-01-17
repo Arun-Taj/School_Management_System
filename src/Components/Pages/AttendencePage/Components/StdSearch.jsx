@@ -11,6 +11,9 @@ import "react-datepicker/dist/react-datepicker.css";
 const SearchCompo = () => {
   const [selectedDate, setSelectedDate] = useState(null);
 
+  const [year, setYear] = useState("");
+  const [month, setMonth] = useState("");
+
   return (
     <div>
       <div className="flex flex-row gap-4  py-10 justify-between">
@@ -34,7 +37,13 @@ const SearchCompo = () => {
           </div>
           <DatePicker
             selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)}
+            onChange={(date) => {
+              setSelectedDate(date);
+              const month = parseInt(date.getMonth() + 1);
+              const year = parseInt(date.getFullYear());
+              setMonth(month);
+              setYear(year);
+            }}
             dateFormat="MM/yyyy"
             showMonthYearPicker
             className="p-2 rounded-3xl border border-gray-300 text-center w-32 cursor-pointer"

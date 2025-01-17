@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaMoneyBill } from "react-icons/fa";
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
@@ -6,17 +6,19 @@ import { IoSearch } from "react-icons/io5";
 import { FiRefreshCcw } from "react-icons/fi";
 import { SlCalender } from "react-icons/sl";
 import { MdLocalPrintshop } from "react-icons/md";
+import { AuthContext } from "../../../context/AuthContext";
 
 // Helper function to check if a date is within a range
 const isDateInRange = (date, startDate, endDate) => {
-  const d = new Date(date.split("-").reverse().join("-")); // Convert to valid Date
+  const d = new Date(date); // Convert to valid Date
   return d >= new Date(startDate) && d <= new Date(endDate);
 };
 
 // Helper function to check if a date is in the current month
 const isCurrentMonth = (date) => {
   const today = new Date();
-  const d = new Date(date.split("-").reverse().join("-"));
+  const d = new Date(date);
+
   return (
     d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear()
   );
@@ -24,157 +26,29 @@ const isCurrentMonth = (date) => {
 
 const FeeReport = () => {
   // Dummy data to replicate the table
-  const initialRows = [
-    {
-      receiptNo: "205",
-      date: "14-05-2024",
-      enrollmentId: "01249999",
-      studentName: "Rahul Kumar Debnath",
-      class: "08",
-      description: "Monthly fee paid for - January, February and March",
-      rank: "first",
-      remainingFee: "2000",
-      paid: "3000 of 5000",
-      remark: "good",
-    },
-    {
-      receiptNo: "206",
-      date: "20-06-2024",
-      enrollmentId: "01250000",
-      studentName: "Anjali Sharma",
-      class: "09",
-      description: "Quarterly fee paid for - April, May and June",
-      rank: "second",
-      remainingFee: "1500",
-      paid: "4500 of 6000",
-      remark: "excellent",
-    },
-    {
-      receiptNo: "207",
-      date: "01-08-2024",
-      enrollmentId: "01250001",
-      studentName: "Aditya Chopra",
-      class: "07",
-      description: "Monthly fee paid for - July",
-      rank: "third",
-      remainingFee: "2500",
-      paid: "1500 of 4000",
-      remark: "average",
-    },
-    {
-      receiptNo: "208",
-      date: "15-09-2024",
-      enrollmentId: "01250002",
-      studentName: "Priya Kapoor",
-      class: "11",
-      description: "Half-yearly fee paid for - April to September",
-      rank: "first",
-      remainingFee: "3000",
-      paid: "7000 of 10000",
-      remark: "good",
-    },
-    {
-      receiptNo: "209",
-      date: "01-10-2024",
-      enrollmentId: "01250003",
-      studentName: "Rohan Malhotra",
-      class: "12",
-      description: "Annual fee paid for - 2024-2025",
-      rank: "second",
-      remainingFee: "5000",
-      paid: "15000 of 20000",
-      remark: "excellent",
-    },
-    {
-      receiptNo: "210",
-      date: "10-11-2024",
-      enrollmentId: "01250004",
-      studentName: "Neha Gupta",
-      class: "06",
-      description: "Monthly fee paid for - October and November",
-      rank: "third",
-      remainingFee: "1000",
-      paid: "2000 of 3000",
-      remark: "average",
-    },
-    {
-      receiptNo: "211",
-      date: "20-12-2024",
-      enrollmentId: "01250005",
-      studentName: "Arjun Singh",
-      class: "10",
-      description: "Half-yearly fee paid for - October to March",
-      rank: "first",
-      remainingFee: "4000",
-      paid: "6000 of 10000",
-      remark: "good",
-    },
-    {
-      receiptNo: "212",
-      date: "05-01-2025",
-      enrollmentId: "01250006",
-      studentName: "Sofia Ahmed",
-      class: "08",
-      description: "Monthly fee paid for - December",
-      rank: "first",
-      remainingFee: "1800",
-      paid: "3200 of 5000",
-      remark: "good",
-    },
-    {
-      receiptNo: "213",
-      date: "15-02-2025",
-      enrollmentId: "01250007",
-      studentName: "Vikram Joshi",
-      class: "09",
-      description: "Quarterly fee paid for - January to March",
-      rank: "second",
-      remainingFee: "1200",
-      paid: "4800 of 6000",
-      remark: "excellent",
-    },
-    {
-      receiptNo: "214",
-      date: "25-03-2025",
-      enrollmentId: "01250008",
-      studentName: "Meera Nair",
-      class: "07",
-      description: "Monthly fee paid for - March",
-      rank: "third",
-      remainingFee: "2200",
-      paid: "1800 of 4000",
-      remark: "average",
-    },
-    {
-      receiptNo: "215",
-      date: "10-04-2025",
-      enrollmentId: "01250009",
-      studentName: "Karan Verma",
-      class: "11",
-      description: "Half-yearly fee paid for - October to March",
-      rank: "first",
-      remainingFee: "3500",
-      paid: "6500 of 10000",
-      remark: "good",
-    },
-    {
-      receiptNo: "216",
-      date: "30-05-2025",
-      enrollmentId: "01250010",
-      studentName: "Tara Rao",
-      class: "12",
-      description: "Annual fee paid for - 2025-2026",
-      rank: "second",
-      remainingFee: "6000",
-      paid: "14000 of 20000",
-      remark: "excellent",
-    },
-  ];
+  const [initialRows, setInitialRows] = useState([]);
+
+  const { api } = useContext(AuthContext);
 
   const [rows, setRows] = useState(initialRows); // Filtered data
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [searchId, setSearchId] = useState("");
+
+  useEffect(() => {
+    const getAllReceipts = async () => {
+      try {
+        const response = await api.get("/get_receipts/");
+        // console.log(response.data);
+
+        setInitialRows(response.data);
+        setRows(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getAllReceipts();
+  }, [api]);
 
   // Handle search by date range
   const handleDateSearch = () => {
@@ -189,6 +63,9 @@ const FeeReport = () => {
   // Handle "This Month" button
   const handleThisMonthSearch = () => {
     const filteredRows = initialRows.filter((row) => isCurrentMonth(row.date));
+    console.log("initialRows", initialRows);
+    console.log("filteredRows", filteredRows);
+
     setRows(filteredRows.length ? filteredRows : []);
   };
 
@@ -240,10 +117,27 @@ const FeeReport = () => {
   // Handle delete functionality
   const handleDelete = () => {
     const confirmDelete = window.confirm("Are you sure you want to delete?");
-    if(confirmDelete){
-      setRows([]);
+
+    if (confirmDelete) {
+      setInitialRows(
+        initialRows.filter((row) => !checkedItems.includes(row.id))
+      );
+      setRows(rows.filter((row) => !checkedItems.includes(row.id)));
+
+      setCheckedItems([]);
+
+      const deleteReceipts = async () => {
+        try {
+          const response = await api.delete("/delete_receipt/", {
+            data: checkedItems,
+          });
+          alert(response.data.message);
+        } catch (error) {
+          alert(error.data.message);
+        }
+      };
+      deleteReceipts();
     }
-    
   };
 
   //for checkbox
@@ -252,7 +146,7 @@ const FeeReport = () => {
   const handleSelectAll = (e) => {
     if (e.target.checked) {
       // If checked, select all checkboxes
-      const allChecked = rows.map((row) => row.receiptNo);
+      const allChecked = rows.map((row) => row.id);
       setCheckedItems(allChecked);
     } else {
       // If unchecked, clear all selections
@@ -260,13 +154,13 @@ const FeeReport = () => {
     }
   };
 
-  const handleCheckboxChange = (receiptNo) => {
-    if (checkedItems.includes(receiptNo)) {
+  const handleCheckboxChange = (id) => {
+    if (checkedItems.includes(id)) {
       // If already checked, remove it
-      setCheckedItems(checkedItems.filter((item) => item !== receiptNo));
+      setCheckedItems(checkedItems.filter((item) => item !== id));
     } else {
       // If not checked, add it
-      setCheckedItems([...checkedItems, receiptNo]);
+      setCheckedItems([...checkedItems, id]);
     }
   };
 
@@ -336,7 +230,7 @@ const FeeReport = () => {
               type="text"
               placeholder="Enrollment Id"
               value={searchId}
-              onChange={(e) => setSearchId(e.target.value)}
+              onChange={(e) => setSearchId(e.target.value.trim())}
               className="flex-grow px-4 py-2  placeholder-black bg-transparent focus:outline-none "
             />
             {/* Right Side: Search Icon */}
@@ -394,11 +288,10 @@ const FeeReport = () => {
                     "Enrollment ID",
                     "Student Name",
                     "Class",
-                    "Description",
-                    "Rank",
+
                     "Remaining Fee",
                     "Paid",
-                    "Remark",
+                    "Description",
                   ].map((header, index) => (
                     <th
                       key={index}
@@ -422,8 +315,8 @@ const FeeReport = () => {
                       <td className="p-2 text-center">
                         <input
                           type="checkbox"
-                          checked={checkedItems.includes(row.receiptNo)}
-                          onChange={() => handleCheckboxChange(row.receiptNo)}
+                          checked={checkedItems.includes(row.id)}
+                          onChange={() => handleCheckboxChange(row.id)}
                         />
                       </td>
                       <td className="p-2 text-center ">{row.receiptNo}</td>
@@ -432,14 +325,20 @@ const FeeReport = () => {
                       <td className="p-2 text-center min-w-[200px]">
                         {row.studentName}
                       </td>
-                      <td className="p-2 text-center ">{row.class}</td>
-                      <td className="p-2 text-center min-w-[350px] ">
-                        {row.description}
-                      </td>
-                      <td className="p-2 text-center ">{row.rank}</td>
+                      <td className="p-2 text-center ">{row.className}</td>
+
                       <td className="p-2 text-center ">{row.remainingFee}</td>
-                      <td className="p-2 text-center ">{row.paid}</td>
-                      <td className="p-2 text-center ">{row.remark}</td>
+                      <td className="p-2 text-center ">
+                        {row.paid} of {row.netFees}
+                      </td>
+                      <td className="p-2 text-center ">
+                        monthly fees paid for{" "}
+                        {row.months.length === 1 && row.months[0]}
+                        {row.months.slice(0, -1).join(", ")}
+                        {row.months.length > 1
+                          ? ` and ${row.months[row.months.length - 1]}`
+                          : ""}
+                      </td>
                     </tr>
                   ))
                 ) : (
@@ -456,7 +355,7 @@ const FeeReport = () => {
       </div>
 
       {/* Pagination Controls */}
-      <div className="mt-4 flex justify-between items-center pb-10">
+      {/* <div className="mt-4 flex justify-between items-center pb-10">
         <div className="flex space-x-2 items-center">
           <button className="px-3 py-2 border border-gray-400 rounded-full ">
             10
@@ -483,7 +382,7 @@ const FeeReport = () => {
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

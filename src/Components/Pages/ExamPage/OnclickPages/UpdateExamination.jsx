@@ -1,98 +1,111 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { AuthContext } from "../../../../context/AuthContext";
+import axios from "axios";
+import { parse, set } from "date-fns";
+import { get } from "react-hook-form";
 
 const Edit = () => {
   const [selectedClasses, setSelectedClasses] = useState({});
-  
+  const currentYear = new Date().getFullYear();
+  const selectedExamId = localStorage.getItem("selectedExamId");
+  const [orgData, setOrgData] = useState(null);
+
   const [ExamDate, setExamDate] = useState({
     currentSession: "",
-    startingDate: "",
-    endingDate: "",
+    currentSessionName: "",
+    startingDate: `${currentYear}-01-01`,
+    endingDate: `${currentYear}-12-31`,
     examName: "",
   });
 
-  const [classesData, setClassesData] = useState([
-    
-    {
-      class: { id: 1, name: "Class 1" },
-      subjects: [
-        { id: 1, name: "English" },
-        { id: 2, name: "Social Science" },
-        { id: 3, name: "Math" },
-      ],
-    },
-    {
-      class: { id: 2, name: "Class 2" },
-      subjects: [
-        { id: 4, name: "English" },
-        { id: 5, name: "Science" },
-        { id: 6, name: "Math" },
-        { id: 7, name: "Computer" },
-      ],
-    },
-    {
-      class: { id: 3, name: "Class 3" },
-      subjects: [
-        { id: 8, name: "English" },
-        { id: 9, name: "Social Science" },
-        { id: 10, name: "Math" },
-        { id: 11, name: "Science" },
-        { id: 12, name: "Arts" },
-      ],
-    },
-  ]);
+  const { api } = useContext(AuthContext);
+  const [examSessions, setExamSessions] = useState(null);
+  const [defaultExamDate, setDefaultExamDate] = useState({});
 
-  const handleClassToggle = (classId) => {
-    setSelectedClasses((prev) => ({
-      ...prev,
-      [classId]: prev[classId]
-        ? undefined
-        : classesData
-            .find((cls) => cls.class.id === classId)
-            .subjects.reduce((acc, subject) => ({ ...acc, [subject.id]: "" }), {}),
-    }));
-  };
+  useEffect(() => {
+    const loadExamSessionsFromServer = async () => {
+      try {
+        const response = await api.get("exam_sessions/");
+        // console.log(response.data);
+        setExamSessions(response.data);
 
-  const handleSelectAllClasses = (isSelected) => {
-    const allClassesSelected = {};
-    classesData.forEach((classItem) => {
-      allClassesSelected[classItem.class.id] = isSelected
-        ? classItem.subjects.reduce((acc, subject) => ({ ...acc, [subject.id]: "" }), {})
-        : undefined;
-    });
-    setSelectedClasses(allClassesSelected);
-  };
+        setExamDate((prev) => ({
+          ...prev,
+          currentSession: response.data[0].id,
+          currentSessionName: response.data[0].name,
+        }));
 
-  const isAllSelected = Object.values(selectedClasses).every(
-    (isSelected) => isSelected
-  );
-
-  const handleMarksChange = (classId, subjectId, value,type) => {
-    setSelectedClasses((prev) => ({
-      ...prev,
-      [classId]: {
-        ...prev[classId],
-        [subjectId]: {
-          ...prev[classId][subjectId],
-          [type]:value, 
-        },
-      },
-    }));
-  };
-
-    const handleSessionChange = (session) => {
-      const [startYear, endYear] = session.split("-").map(Number);
-
-      setExamDate((prev) => ({
-        ...prev,
-        currentSession: session,
-        startingDate: `${startYear}-01-01`,
-        endingDate: `${endYear}-12-31`,
-      }));
+        setDefaultExamDate(ExamDate);
+      } catch (error) {
+        console.error("Error loading exam sessions:", error);
+      }
     };
+    loadExamSessionsFromServer();
+
+    const getPrevExamData = async () => {
+      try {
+        const response = await api.get(`/get_exam_papers/${selectedExamId}/`);
+        console.log(response.data);
+        setOrgData(response.data);
+      } catch (error) {
+        console.error("Error fetching previous exam data:", error);
+      }
+    };
+    getPrevExamData();
+  }, [api]);
+
+  const handleMarksChange = (markType, exam_paper_id, value) => {
+    // Make a copy of the current state to avoid direct mutation
+    const updatedOrgData = { ...orgData };
+
+    // Loop through each class in the exam_papers
+    for (const className in updatedOrgData.exam_papers) {
+      // Find the paper by its exam_paper_id
+      const paperIndex = updatedOrgData.exam_papers[className].findIndex(
+        (paper) => paper.exam_paper_id === exam_paper_id
+      );
+
+      // If the paper is found, update the corresponding mark (total_marks or pass_marks)
+      if (paperIndex !== -1) {
+        updatedOrgData.exam_papers[className][paperIndex][markType] = value;
+      }
+    }
+
+    // Update the state with the modified data
+    setOrgData(updatedOrgData);
+  };
+
+  const handleSessionChange = (session_id) => {
+    const session_name = examSessions.find(
+      (session) => session.id == session_id
+    ).name;
+
+    const [startYear, endYear] = session_name.split("-").map(Number);
+
+    setOrgData((prev) => ({
+      ...prev,
+      session: { id: parseInt(session_id), name: session_name },
+    }));
+
+    setExamDate((prev) => ({
+      ...prev,
+      currentSession: parseInt(session_id),
+      currentSessionName: session_name,
+      startingDate: `${startYear}-01-01`,
+      endingDate: `${endYear}-12-31`,
+    }));
+  };
 
   const handleStartingDateChange = (date) => {
+    console.log("changing starting date", date);
+
+    setOrgData((prev) => ({
+      ...prev,
+      start_date: date,
+    }));
+
     setExamDate((prev) => ({
       ...prev,
       startingDate: date,
@@ -100,124 +113,111 @@ const Edit = () => {
   };
 
   const handleEndingDateChange = (date) => {
+    console.log("changing ending date", date);
+
+    setOrgData((prev) => ({
+      ...prev,
+      end_date: date,
+    }));
+
     setExamDate((prev) => ({
       ...prev,
       endingDate: date,
     }));
   };
 
-  useEffect(() => {
-    const currentYear = new Date().getFullYear();
-    const session = `${currentYear}-${currentYear + 1}`;
-    handleSessionChange(session);
-  }, []);
-
-  const handleCreateExam = () => {
-    const userConfirmed = window.confirm(
-      "Are you sure want to create this new exam? Are all details correct?"
-    );
-
-    if (userConfirmed) {
-      // Prepare the payload
-      const payload = {
-        ...ExamDate,
-        classes: Object.entries(selectedClasses)
-          .filter(([_, subjects]) => subjects)
-          .map(([classId, subjects]) => ({
-            classId,
-            subjects: Object.entries(subjects).map(([subjectId,marks]) => ({
-              subjectId,
-              totalMarks: marks?.totalMarks,
-              passMarks: marks?.passMarks,
-            })),
-          })),
-      };
-
-      // Simulate sending data to the database
-      console.log("Exam created with data:", payload);
-
-      alert("Exam created successfully!");
-      // Reset the selected classes and exam data
-    setSelectedClasses({});
-     // Calculate the default session based on the current year
-     const currentYear = new Date().getFullYear();
-     const defaultSession = `${currentYear}-${currentYear + 1}`;
-     const defaultStartingDate = `${currentYear}-01-01`;
-     const defaultEndingDate = `${currentYear + 1}-12-31`;
-    setExamDate({
-      currentSession: defaultSession, // Reset session to default
-      startingDate: defaultStartingDate, // Reset starting date to default
-      endingDate: defaultEndingDate, // Reset ending date to default
-      examName: "", // Reset exam name
-    });
-    } else {
-      alert("Exam creation cancelled.");
-    }
-  };
-  const handleDeleteSubject = (classId, subjectId) => {
-  
-    classesData.forEach((classItem) => {
-      if (classItem.class.id === classId) {
-        classItem.subjects = classItem.subjects.filter(
-          (subject) => subject.id !== subjectId
-        );
+  const handleUpdateExam = () => {
+    // console.log(orgData);
+    const sendUpdatedDataToServer = async () => {
+      try {
+        const response = await api.post("/update_exam_papers/", orgData);
+        // console.log(response.message);
+        alert(response.data.message);
+      } catch (error) {
+        console.error("Error updating exam data:", error);
       }
+    };
 
-    }
-    );
-    console.log(classesData);
-    setClassesData([...classesData]);
+    sendUpdatedDataToServer();
   };
-  return (
+
+  const handleDeletePaper = (exam_paper_id) => {
+    // Create a copy of the current state (orgData)
+    const updatedOrgData = { ...orgData };
+
+    // Loop through each class in the exam_papers
+    for (const className in updatedOrgData.exam_papers) {
+      // Filter the papers for the class and remove the one with the matching exam_paper_id
+      updatedOrgData.exam_papers[className] = updatedOrgData.exam_papers[
+        className
+      ].filter((paper) => paper.exam_paper_id !== exam_paper_id);
+
+      // If the class has no papers left, delete the class from the exam_papers object
+      if (updatedOrgData.exam_papers[className].length === 0) {
+        delete updatedOrgData.exam_papers[className];
+      }
+    }
+
+    const deleteExamPaperFromDB = async () => {
+      try {
+        const response = await api.delete(
+          `/delete_exam_paper/${exam_paper_id}/`
+        );
+        response.status === 204 && alert("Exam paper deleted successfully");
+      } catch (error) {
+        // console.error("Error deleting exam paper:", error);
+        alert("Failed to delete exam paper");
+      }
+    };
+
+    // Update the state with the modified data
+    setOrgData(updatedOrgData);
+    deleteExamPaperFromDB();
+  };
+
+  return examSessions && orgData ? (
     <div className="p-8 bg-pink-100 min-h-screen">
-      <div className="flex gap-4  bg-white  rounded-3xl p-2 ">
+      <div className="flex gap-4 bg-white rounded-3xl p-2">
         <div className="flex items-center space-x-2">
           <FaEdit className="text-gray-700 " />
           <span className="text-gray-700 font-medium">Exam </span>
         </div>
-
-        {/* Vertical divider */}
-        <div className="border-l border-gray-700 h-6"></div>
-
-        {/* "Add New" text */}
-        <div>
-          <span className="text-gray-700 font-medium">Edit or Delete</span>
-        </div>
         <div className="border-l border-gray-700 h-6"></div>
         <div>
-          <span className="text-gray-700 font-medium">Edit</span>
+          <span className="text-gray-700 font-medium">Update Exam</span>
         </div>
       </div>
 
       <div className="pt-10">
-        <h1 className="text-center font-bold text-2xl">Update Examination Info</h1>
+        <h1 className="text-center font-bold text-2xl">Update Examination</h1>
         <div className="flex flex-row pt-6 justify-around">
           <div className="space-y-6">
             <div className="flex flex-row gap-4">
               <span>
                 <p className="text-center font-bold">Select Session</p>
                 <select
-                  value={ExamDate.currentSession}
-                  onChange={(e) => handleSessionChange(e.target.value)}
+                  value={orgData.session.id}
+                  onChange={(e) => handleSessionChange(e.currentTarget.value)}
                   className="p-2 bg-white rounded-full border border-gray-300"
                 >
-                  <option value="2020-2021">2020-2021</option>
-                  <option value="2021-2022">2021-2022</option>
-                  <option value="2022-2023">2022-2023</option>
-                  <option value="2023-2024">2023-2024</option>
-                  <option value="2024-2025">2024-2025</option>
-                  <option value="2025-2026">2025-2026</option>
-                  <option value="2026-2027">2026-2027</option>
+                  {examSessions &&
+                    examSessions.map((session) => (
+                      <option key={session.id} value={session.id}>
+                        {session.name}
+                      </option>
+                    ))}
                 </select>
               </span>
               <span>
-                <p className="text-center font-bold">Starting Date</p>
+                <p className="text-center font-bold">Starting Date </p>
                 <input
                   type="date"
-                  value={ExamDate.startingDate}
-                  min={`${ExamDate.currentSession.split("-")[0]}-01-01`}
-                  max={`${ExamDate.currentSession.split("-")[0]}-12-31`}
-                  onChange={(e) => handleStartingDateChange(e.target.value)}
+                  value={orgData.start_date}
+                  // min={`${ExamDate.currentSessionName.split("-")[0]}-01-01`}
+                  // max={`${ExamDate.currentSessionName.split("-")[0]}-12-31`}
+                  onChange={(e) =>
+                    handleStartingDateChange(e.currentTarget.value)
+                  }
                   className="p-2 border border-gray-300 rounded-full"
                 />
               </span>
@@ -225,10 +225,12 @@ const Edit = () => {
                 <p className="text-center font-bold">Ending Date</p>
                 <input
                   type="date"
-                  value={ExamDate.endingDate}
-                  min={`${ExamDate.currentSession.split("-")[1]}-01-01`}
-                  max={`${ExamDate.currentSession.split("-")[1]}-12-31`}
-                  onChange={(e) => handleEndingDateChange(e.target.value)}
+                  value={orgData.end_date}
+                  // min={`${ExamDate.currentSessionName.split("-")[1]}-01-01`}
+                  // max={`${ExamDate.currentSessionName.split("-")[1]}-12-31`}
+                  onChange={(e) =>
+                    handleEndingDateChange(e.currentTarget.value)
+                  }
                   className="p-2 border border-gray-300 rounded-full"
                 />
               </span>
@@ -237,23 +239,23 @@ const Edit = () => {
               <p className="text-center font-bold">Examination Name</p>
               <input
                 type="text"
-                value={ExamDate.examName}
-                onChange={(e) =>
-                  setExamDate((prev) => ({
+                value={orgData.exam_name}
+                onChange={(e) => {
+                  setOrgData((prev) => ({
                     ...prev,
-                    examName: e.target.value,
-                  }))
-                }
+                    exam_name: e.target.value,
+                  }));
+                }}
                 className="p-2 rounded-full w-full border border-gray-300"
                 placeholder="Name the exam"
               />
             </div>
             <div className="flex justify-center items-center pt-10">
               <button
-                onClick={handleCreateExam}
+                onClick={handleUpdateExam}
                 className="bg-pink-500 rounded-full p-2 px-6 border border-gray-300 font-bold"
               >
-                Create
+                Update
               </button>
             </div>
           </div>
@@ -261,99 +263,73 @@ const Edit = () => {
             <div className="bg-white py-4 rounded-lg shadow-xl">
               <h2 className="text-xl font-bold text-center">Classes</h2>
               <div className="mt-4">
-                <div className="flex items-center justify-between p-2 bg-[#BCA8EA] px-4">
-                  <span>Select All Class</span>
-                  <input
-                    type="checkbox"
-                    onChange={(e) =>
-                      handleSelectAllClasses(e.target.checked)
-                    }
-                    checked={
-                      isAllSelected &&
-                      Object.keys(selectedClasses).length > 0
-                    }
-                  />
-                </div>
+                {orgData &&
+                  Object.entries(orgData.exam_papers).map(
+                    ([class_name, papers]) => (
+                      <div key={class_name} className="mb-2">
+                        <div className="flex items-center justify-between p-2 border-b border-purple-200 px-4">
+                          <span>{class_name}</span>
+                        </div>
 
-                {classesData.map((classItem, index) => (
-                  <div key={classItem.class.id} className="mb-2 ">
-                    <div className="flex items-center justify-between p-2 border-b border-purple-200 px-4">
-                      <span>{classItem.class.name}</span>
-                      <input
-                        type="checkbox"
-                        onChange={() => handleClassToggle(classItem.class.id)}
-                        checked={!!selectedClasses[classItem.class.id]}
-                      />
-                    </div>
-
-                    {selectedClasses[classItem.class.id] && (
-                      <div className="bg-[#E3D6FF] p-2">
-                        {classItem.subjects.map((subject, idx) => (
-                          <div
-                          key={subject.id}
-                            className="flex items-center justify-between p-1"
-                          >
-                            <span>{subject.name}</span>
-                            <div className="flex gap-2 pl-3">
-
-                            
-                            <input
-                              type="number"
-                              min="0"
-                              placeholder="Total Marks"
-                              onChange={(e) =>
-                                handleMarksChange(
-                                  classItem.class.id,
-                                  subject.id,
-                                  e.target.value,
-                                  "totalMarks"
-                                )
-                              }
-                              value={
-                                selectedClasses[classItem.class.id]?.[subject.id]
-                                    ?.totalMarks || ""
-                              }
-                              className="bg-white border border-gray-300 px-2 rounded-full w-24"
-                            />
-                            <input
-                              type="number"
-                              min="0"
-                              placeholder="Pass Marks"
-                              onChange={(e) =>
-                                handleMarksChange(
-                                  classItem.class.id,
-                                  subject.id,
-                                  e.target.value,
-                                  "passMarks"
-                                )
-                              }
-                              value={
-                                selectedClasses[classItem.class.id]?.[subject.id]
-                                    ?.passMarks || ""
-                              }
-                              className="bg-white border border-gray-300 px-2 rounded-full w-24"
-                            />
-                            <button
-                            onClick={() =>
-                              handleDeleteSubject(classItem.class.id, subject.id)
-                            }
-                            className="hover:text-red-700"
-                          >
-                            <RiDeleteBin6Line />
-                          </button>
+                        <div className="bg-[#E3D6FF] p-2">
+                          {papers.map((paper, idx) => (
+                            <div
+                              key={paper.exam_paper_id}
+                              className="flex items-center justify-between p-1"
+                            >
+                              <span>{paper.subject_name}</span>
+                              <div className="flex gap-2 pl-3">
+                                <input
+                                  type="number"
+                                  min="0"
+                                  value={paper.total_marks}
+                                  placeholder="Total Marks"
+                                  onChange={(e) =>
+                                    handleMarksChange(
+                                      "total_marks",
+                                      paper.exam_paper_id,
+                                      e.target.value
+                                    )
+                                  }
+                                  className="bg-white border border-gray-300 px-2 rounded-full w-24"
+                                />
+                                <input
+                                  type="number"
+                                  min="0"
+                                  placeholder="Pass Marks"
+                                  value={paper.pass_marks}
+                                  onChange={(e) =>
+                                    handleMarksChange(
+                                      "pass_marks",
+                                      paper.exam_paper_id,
+                                      e.target.value
+                                    )
+                                  }
+                                  className="bg-white border border-gray-300 px-2 rounded-full w-24"
+                                />
+                                <button
+                                  onClick={() =>
+                                    handleDeletePaper(paper.exam_paper_id)
+                                  }
+                                  className="hover:text-red-700"
+                                >
+                                  <RiDeleteBin6Line />
+                                </button>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
-                    )}
-                  </div>
-                ))}
+                    )
+                  )}
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+  ) : (
+    <div>loading...</div>
   );
 };
 

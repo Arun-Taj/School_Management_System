@@ -1,18 +1,52 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { FaEdit } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import { FiRefreshCcw } from "react-icons/fi";
 import { IoFilterSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../../../context/AuthContext";
 
 const Search = () => {
- const navigate=useNavigate();
- const AddWholeClsDataClick=()=>{
-  navigate("/exam/search/addWholeClsData");
- }
- const AddSingleStdDataClick=()=>{
-  navigate("/exam/search/addSinglestdData");
- }
+  const { api } = useContext(AuthContext);
+
+  const exam_id = localStorage.getItem("get_exams_classes_id");
+
+  const [classes, setClasses] = React.useState([]);
+  const [selectedClass, setSelectedClass] = React.useState(null);
+
+  const [studentEnrNo, setStudentEnrNo] = React.useState("");
+
+  useEffect(() => {
+    const getExamsClasses = async () => {
+      try {
+        const response = await api.get(`/get_exams_classes/${exam_id}/`);
+        // console.log(response.data);
+        setClasses(response.data);
+        setSelectedClass(response.data[0]);
+        // localStorage.removeItem("get_exams_classes_id");
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getExamsClasses();
+  }, []);
+
+  const navigate = useNavigate();
+  const AddWholeClsDataClick = () => {
+    localStorage.setItem("selectedClassId", JSON.stringify(selectedClass));
+    navigate("/exam/search/addWholeClsData");
+  };
+  const AddSingleStdDataClick = () => {
+    if (studentEnrNo === "") {
+      alert("Please enter student Registration Number eg.ENR-EE45D3C93C");
+    } else {
+      localStorage.removeItem("studentEnrNo");
+      localStorage.setItem("studentEnrNo", JSON.stringify(studentEnrNo));
+
+      navigate("/exam/search/addSinglestdData");
+    }
+  };
 
   return (
     <div className="p-8 bg-pink-100 min-h-screen">
@@ -46,27 +80,34 @@ const Search = () => {
           <select
             name=""
             id=""
+            value={selectedClass?.class_id}
+            onChange={(e) =>
+              setSelectedClass(
+                classes.find((cls) => cls.class_id == e.target.value)
+              )
+            }
             className="p-2 bg-white rounded-full border border-gray-300 w-64 "
           >
-            <option value="" disabled selected></option>
-            <option value="class 1">Class 1</option>
-            <option value="class 2">Class 2</option>
-            <option value="class 3">Class 3</option>
-            <option value="class 4">Class 4</option>
-            <option value="class 5">Class 5</option>
-            <option value="class 6">Class 6</option>
-            <option value="class 7">Class 7</option>
-            <option value="class 8">Class 8</option>
-            <option value="class 9">Class 9</option>
-            <option value="class 10">Class 10</option>
+            {classes.length > 0 ? (
+              classes.map((cls) => (
+                <option key={cls.class_id} value={cls.class_id}>
+                  {cls.class_name}
+                </option>
+              ))
+            ) : (
+              <option selected>class not available for this exam</option>
+            )}
           </select>
         </div>
-        <button
-          type="button"
-          className="flex justify-center bg-pink-500 rounded-full p-2 px-8 "
-          onClick={AddWholeClsDataClick}>
-          Search
-        </button>
+        {classes.length > 0 && (
+          <button
+            type="button"
+            className="flex justify-center bg-pink-500 rounded-full p-2 px-8 "
+            onClick={AddWholeClsDataClick}
+          >
+            Search
+          </button>
+        )}
       </div>
       <div className="flex flex-col justify-center items-center pt-10">
         <p className="text-center font-bold text-xl">
@@ -74,12 +115,18 @@ const Search = () => {
         </p>
         <div className="flex flex-col justify-center items-center mb-10 mt-10">
           <p className="text-center font-bold">Enter Registration No.</p>
-         <input type="text" className="p-2 rounded-full w-64 border border-gray-300"/>
+          <input
+            type="text"
+            value={studentEnrNo}
+            onChange={(e) => setStudentEnrNo(e.target.value)}
+            className="p-2 rounded-full w-64 border border-gray-300"
+          />
         </div>
         <button
           type="button"
           className="flex justify-center bg-pink-500 rounded-full p-2 px-8 "
-        onClick={AddSingleStdDataClick}>
+          onClick={AddSingleStdDataClick}
+        >
           Search
         </button>
       </div>

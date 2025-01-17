@@ -2,10 +2,36 @@ import React, { useRef, useState, useEffect } from "react";
 import { FaEdit } from "react-icons/fa";
 import { MdLocalPrintshop } from "react-icons/md";
 import { useLocation } from "react-router-dom";
+import { AuthContext } from "../../../../context/AuthContext"; // Import the AuthContext}
+import { use } from "react";
 
 const IndividualRes = () => {
   const tableRef = useRef();
   const location = useLocation();
+  const { api } = useContext(AuthContext);
+
+  useEffect(() => {
+    const student_result_info = JSON.parse(
+      localStorage.getItem("student_result_info")
+    );
+    const getStudentResult = async () => {
+      try {
+        const response = await api.get(
+          `/get_student_report/${student_result_info.exam_id}/${student_result_info.search_key}/`
+        );
+        console.log(response.data);
+
+        // const studentResult = response.data;
+        // localStorage.setItem(
+        //   "student_result_info",
+        //   JSON.stringify(studentResult)
+        // );
+      } catch (error) {
+        console.error("Error fetching student result:", error);
+      }
+    };
+    getStudentResult();
+  }, []);
 
   // Retrieve student data from the state passed through navigate
   const { enrollmentId, studentName, rollNo, marks } = location.state || {};
@@ -16,11 +42,13 @@ const IndividualRes = () => {
   useEffect(() => {
     if (marks) {
       // Convert the marks object to an array for rendering in the table
-      const subjectsArray = Object.entries(marks).map(([subject, obtained]) => ({
-        subject,
-        total: 100,
-        obtained,
-      }));
+      const subjectsArray = Object.entries(marks).map(
+        ([subject, obtained]) => ({
+          subject,
+          total: 100,
+          obtained,
+        })
+      );
       setSubjects(subjectsArray);
     }
   }, [marks]);
@@ -32,7 +60,10 @@ const IndividualRes = () => {
   // Calculate total, obtained marks, and percentage whenever subjects change
   useEffect(() => {
     const total = subjects.reduce((sum, subject) => sum + subject.total, 0);
-    const obtained = subjects.reduce((sum, subject) => sum + subject.obtained, 0);
+    const obtained = subjects.reduce(
+      (sum, subject) => sum + subject.obtained,
+      0
+    );
     const percent = (obtained / total) * 100;
 
     setTotalMarks(total);
@@ -120,7 +151,9 @@ const IndividualRes = () => {
                   {subjects.map((item, index) => (
                     <tr
                       key={index}
-                      className={index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"}
+                      className={
+                        index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"
+                      }
                     >
                       <td className="p-2">{`0${index + 1}`}</td>
                       <td className="p-2">{item.subject}</td>

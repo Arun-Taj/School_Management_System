@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { FaPhoneAlt } from "react-icons/fa";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { CiLocationOn } from "react-icons/ci";
 import { FaRegUserCircle } from "react-icons/fa";
+import { AuthContext } from "../../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { set } from "date-fns";
 
+const base_url = import.meta.env.VITE_API_BASE_URL;
 // Reusable Input Component
 const InputField = ({ label, placeholder, type = "text" }) => (
   <div className="flex flex-col">
@@ -42,6 +46,8 @@ const ContactInfo = ({ Icon, label, info }) => (
 );
 
 const Profile = () => {
+  const { api } = useContext(AuthContext);
+  const navigate = useNavigate();
   // Define options for select fields
   const districts = ["Hojai", "Nagaon", "Guwahati"];
   const states = ["Assam", "Meghalaya", "West Bengal"];
@@ -68,6 +74,38 @@ const Profile = () => {
     phone: "",
     email: "",
   });
+  useEffect(() => {
+    const getSchoolData = async () => {
+      try {
+        const response = await api.get("/school_info/");
+        // console.log(response.data);
+        const school_data = response.data.school;
+        const admin_user = response.data.admin;
+
+        setSchoolName(school_data.school_name);
+        setTagLine(school_data.tag_line);
+        setPhone(admin_user.phone_number);
+        setAddress(school_data.address);
+        setTownCity(school_data.town_village_city);
+        setEmail(admin_user.email);
+        setPinCode(school_data.pincode);
+        setLogoFile(school_data.photo);
+
+        setDisplayedProfile({
+          logo: school_data.photo,
+          schoolName: school_data.school_name,
+          tagLine: school_data.tag_line,
+          schoolBoard: school_data.school_board,
+          address: `${school_data.address}, ${school_data.town_village_city}, ${school_data.district}, ${school_data.state}, ${school_data.country}, ${school_data.pincode}`,
+          phone: admin_user.phone_number,
+          email: admin_user.email,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getSchoolData();
+  }, [api]);
 
   const handleLogoChange = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -83,7 +121,7 @@ const Profile = () => {
     // Create an object with the form data
     const updatedProfile = {
       logo: logoFile,
-      schoolName:schoolName,
+      schoolName: schoolName,
       tagLine,
       schoolBoard,
       address: `${address}, ${townCity}, ${district}, ${state}, ${country}, ${pinCode}`,
@@ -120,7 +158,7 @@ const Profile = () => {
                 <div className="w-24 h-24 bg-gray-200 rounded-lg">
                   {logoFile ? (
                     <img
-                      src={URL.createObjectURL(logoFile)}
+                      src={`${base_url}/${logoFile}`}
                       alt="Logo"
                       className="w-24 h-24 rounded-lg"
                     />
@@ -147,19 +185,19 @@ const Profile = () => {
             <div className="col-span-2 space-y-4">
               <InputField
                 label="School Name"
-                placeholder="Name of the School"
+                placeholder={schoolName}
                 value={schoolName}
                 onChange={(e) => setSchoolName(e.target.value)}
               />
               <InputField
                 label="Tag Line"
-                placeholder="Tag Line (Optional)"
+                placeholder={tagLine}
                 value={tagLine}
                 onChange={(e) => setTagLine(e.target.value)}
               />
               <InputField
                 label="Address"
-                placeholder="Address"
+                placeholder={address}
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
               />
@@ -168,7 +206,7 @@ const Profile = () => {
             <div className="col-span-1 space-y-4">
               <InputField
                 label="Phone No."
-                placeholder="Phone"
+                placeholder={phone}
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
@@ -181,7 +219,7 @@ const Profile = () => {
               />
               <InputField
                 label="Town/Village/City"
-                placeholder="Town/Village/City"
+                placeholder={townCity}
                 value={townCity}
                 onChange={(e) => setTownCity(e.target.value)}
               />
@@ -192,7 +230,7 @@ const Profile = () => {
           <div className="flex space-x-4 mt-4">
             <InputField
               label="Email"
-              placeholder="xyzh@gmail.com"
+              placeholder={email}
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -217,7 +255,7 @@ const Profile = () => {
             />
             <InputField
               label="Pin Code"
-              placeholder="782435"
+              placeholder={pinCode}
               value={pinCode}
               onChange={(e) => setPinCode(e.target.value)}
             />
@@ -240,7 +278,7 @@ const Profile = () => {
               <div className="w-24 h-24 bg-gray-200 rounded-md">
                 {displayedProfile.logo && (
                   <img
-                    src={URL.createObjectURL(displayedProfile.logo)}
+                    src={`${base_url}/${displayedProfile.logo}`}
                     alt="Logo"
                     className="w-24 h-24 rounded-md"
                   />
@@ -250,32 +288,35 @@ const Profile = () => {
 
             {/* School Name */}
             <h2 className="text-xl font-bold text-center mb-2">
-              {displayedProfile.schoolName || "XYZ Higher Secondary School"}
+              {displayedProfile.schoolName}
             </h2>
 
             {/* Tagline */}
             <p className="text-gray-600 text-center mb-4">
-              {displayedProfile.tagLine ||
-                "Lorem ipsum dolor sit amet consectetur. Feugiat id."}
+              {displayedProfile.tagLine}
             </p>
             {/* School Board */}
-            {/* <p className="text-gray-600 text-center mb-4">
-              {displayedProfile.schoolBoard || "CBSE"}
-            </p> */}
+            <p className="text-gray-600 text-center mb-4">
+              {displayedProfile.schoolBoard}
+            </p>
             <hr className="my-4" />
 
             {/* Contact Information */}
             <div className="space-y-3">
-              <ContactInfo Icon={FaPhoneAlt} label="Phone" info="0123456789" />
+              <ContactInfo
+                Icon={FaPhoneAlt}
+                label="Phone"
+                info={displayedProfile.phone}
+              />
               <ContactInfo
                 Icon={MdOutlineMailOutline}
                 label="Email"
-                info="xyzh@gmail.com"
+                info={displayedProfile.email}
               />
               <ContactInfo
                 Icon={CiLocationOn}
                 label="Address"
-                info="PHE Road, Near public health office, Rampur, Hojai, Assam, 782435"
+                info={displayedProfile.address}
               />
             </div>
           </div>

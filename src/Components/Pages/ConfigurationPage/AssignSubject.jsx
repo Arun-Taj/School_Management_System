@@ -1,74 +1,89 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FcSettings } from "react-icons/fc";
 import { IoSearch } from "react-icons/io5";
 import { FiRefreshCcw } from "react-icons/fi";
 import ClassSubjects from "./ClassSubjects";
+import { AuthContext } from "../../../context/AuthContext";
 
 const Classes = () => {
-  const classList = [
-    { id: 1, name: "Class Nursery" },
-    { id: 2, name: "Class LKG" },
-    { id: 3, name: "Class UKG" },
-    { id: 4, name: "Class 01" },
-    { id: 5, name: "Class 02" },
-    { id: 6, name: "Class 03" },
-    { id: 7, name: "Class 04" },
-    { id: 8, name: "Class 05" },
-    { id: 9, name: "Class 06" },
-    { id: 10, name: "Class 07" },
-    { id: 11, name: "Class 08" },
-    { id: 12, name: "Class 09" },
-    { id: 13, name: "Class 10" },
-  ];
+  const [loading, setLoading] = useState(true);
+  const [classList, setClassList] = useState([]);
 
-  const subjectList = [
-    { id: 1, name: "English" },
-    { id: 2, name: "Mathematics" },
-    { id: 3, name: "Science" },
-    { id: 4, name: "Social Studies" },
-    { id: 5, name: "Hindi" },
-    { id: 6, name: "Computer Science" },
-    { id: 7, name: "Physics" },
-    { id: 8, name: "Chemistry" },
-    { id: 9, name: "Biology" },
-    { id: 10, name: "Geography" },
-    { id: 11, name: "History" },
-    { id: 12, name: "Economics" },
-    { id: 13, name: "Physical Education" },
-  ];
+  const [subjectList, setSubjectList] = useState([]);
 
-  const teacherList = [
-    { id: 1, name: "John Smith" },
-    { id: 2, name: "Emily Johnson" },
-    { id: 3, name: "Michael Brown" },
-    { id: 4, name: "Sarah Davis" },
-    { id: 5, name: "David Wilson" },
-    { id: 6, name: "Anna Taylor" },
-    { id: 7, name: "James Anderson" },
-    { id: 8, name: "Sophia Martinez" },
-    { id: 9, name: "William Hernandez" },
-    { id: 10, name: "Olivia Moore" },
-    { id: 11, name: "Lucas Martin" },
-    { id: 12, name: "Amelia Garcia" },
-    { id: 13, name: "Benjamin Lee" },
-  ];
+  const [teacherList, setTeacherList] = useState([]);
 
   const [selectedClassId, setSelectedClassId] = useState("");
   const [assignedSubjects, setAssignedSubjects] = useState([
     { subjectId: "", teacherId: "" },
   ]);
-  const [classes, setClasses] = useState(
-    localStorage.getItem("classes")
-      ? JSON.parse(localStorage.getItem("classes"))
-      : []
-  );
+  const [classes, setClasses] = useState([]);
+
+  const { api } = useContext(AuthContext);
+  const loadClassSubjectsFromServer = async () => {
+    try {
+      const response = await api.get("/get_classes_and_subjects/");
+      setClasses(response.data);
+      localStorage.setItem("classes", JSON.stringify(response.data));
+      // console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   useEffect(() => {
-    const loadClasses = () => {
-      const savedClasses = localStorage.getItem("classes");
-      return savedClasses ? JSON.parse(savedClasses) : [];
+    const loadClassListFromServer = async () => {
+      try {
+        const response = await api.get("/get_classes_for_config/");
+        setClassList(response.data);
+        localStorage.setItem(
+          "classes_for_config",
+          JSON.stringify(response.data)
+        );
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
-    setClasses(loadClasses());
-  }, []);
+    loadClassListFromServer();
+
+    const loadSubjectListFromServer = async () => {
+      try {
+        const response = await api.get(`/get_subjects_for_config/`);
+        setSubjectList(response.data);
+        localStorage.setItem(
+          "subjects_for_config",
+          JSON.stringify(response.data)
+        );
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    loadSubjectListFromServer();
+
+    const loadTeacherListFromServer = async () => {
+      try {
+        const response = await api.get("/get_teachers_for_config/");
+        setTeacherList(response.data);
+        localStorage.setItem(
+          "teachers_for_config",
+          JSON.stringify(response.data)
+        );
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    loadTeacherListFromServer();
+
+    setLoading(false);
+
+    // const loadClasses=() => {
+    //   const savedClasses = localStorage.getItem("classes");
+    //   return savedClasses ? JSON.parse(savedClasses) : [];
+    // }
+    // setClasses(loadClasses())
+
+    loadClassSubjectsFromServer();
+  }, [api]);
   //const [updated,setUpdated]=useState(false)
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -84,34 +99,56 @@ const Classes = () => {
   };
 
   const handleAssign = () => {
+    // console.log(selectedClassId, assignedSubjects);
+
     if (selectedClassId && assignedSubjects.length > 0) {
-      const classExists = classes.some(
-        (cls) => cls.id === parseInt(selectedClassId)
-      );
-
-      if (classExists) {
-        const updatedClasses = classes.map((cls) =>
-          cls.id === parseInt(selectedClassId)
-            ? { ...cls, subjects: [...cls.subjects, ...assignedSubjects] }
-            : cls
-        );
-        setClasses(updatedClasses);
-      } else {
-        const selectedClassName = classList.find(
-          (cls) => cls.id === parseInt(selectedClassId)
-        )?.name;
-        setClasses([
-          ...classes,
-          {
-            id: parseInt(selectedClassId),
-            name: selectedClassName,
+      //sending to server
+      const sendToServer = async () => {
+        try {
+          const response = await api.post("/assign_subjects_to_class/", {
+            class_id: parseInt(selectedClassId),
             subjects: assignedSubjects,
-          },
-        ]);
-      }
+          });
+          // console.log(response.data);
+          updateUI();
+          // loadClassSubjectsFromServer();
+        } catch (error) {
+          alert(error.response.data.error);
+        }
+      };
 
-      setSelectedClassId("");
-      setAssignedSubjects([{ subjectId: "", teacherId: "" }]);
+      sendToServer();
+      const updateUI = () => {
+        const classExists = classes.some(
+          (cls) => cls.id === parseInt(selectedClassId)
+        );
+        // console.log(classExists);
+
+        if (classExists) {
+          const updatedClasses = classes.map((cls) =>
+            cls.id === parseInt(selectedClassId)
+              ? { ...cls, subjects: [...cls.subjects, ...assignedSubjects] }
+              : cls
+          );
+
+          setClasses(updatedClasses);
+        } else {
+          const selectedClassName = classList.find(
+            (cls) => cls.id === parseInt(selectedClassId)
+          )?.name;
+          setClasses([
+            ...classes,
+            {
+              id: parseInt(selectedClassId),
+              name: selectedClassName,
+              subjects: assignedSubjects,
+            },
+          ]);
+        }
+
+        setSelectedClassId("");
+        setAssignedSubjects([{ subjectId: "", teacherId: "" }]);
+      };
     }
   };
 
@@ -130,7 +167,14 @@ const Classes = () => {
     setSearchTerm("");
     setClasses(JSON.parse(localStorage.getItem("classes")) || []);
   };
- const handleUpdateSubjects = (classId, updatedSubjects) => {
+
+  // const handleUpdate = (classId, updatedSubjects) => {
+  //   const updatedClasses = classes.map((cls) =>
+  //     cls.id === classId ? { ...cls, subjects: updatedSubjects } : cls
+  //   );
+  //   setClasses(updatedClasses);
+  // };
+  const handleUpdateSubjects = (classId, updatedSubjects) => {
     setClasses((prevClasses) =>
       prevClasses.map((cls) =>
         cls.id === classId ? { ...cls, subjects: updatedSubjects } : cls
@@ -138,7 +182,9 @@ const Classes = () => {
     );
   };
 
-  return (
+  return loading ? (
+    "Loading..."
+  ) : (
     <div className="p-8 bg-pink-100 min-h-screen">
       {/* Header */}
       <div className="flex gap-4 bg-white rounded-3xl p-2">
@@ -165,7 +211,9 @@ const Classes = () => {
           <div className="px-6">
             <select
               value={selectedClassId}
-              onChange={(e) => setSelectedClassId(e.target.value)}
+              onChange={(e) => {
+                setSelectedClassId(e.target.value);
+              }}
               className="p-3 px-4 mb-4 rounded-3xl bg-white border border-blue-500 w-96"
             >
               <option value="" disabled>

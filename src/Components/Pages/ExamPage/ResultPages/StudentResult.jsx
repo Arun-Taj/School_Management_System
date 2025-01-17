@@ -1,18 +1,65 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { FaEdit } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import { FiRefreshCcw } from "react-icons/fi";
 import { IoFilterSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-
+import { AuthContext } from "../../../../context/AuthContext";
 
 const StudentResult = () => {
   const navigate = useNavigate();
 
+  const { api } = useContext(AuthContext);
+
+  const [sessions, setSessions] = React.useState(null);
+  const [selectedSession, setSelectedSession] = React.useState(null);
+
+  const [exams, setExams] = React.useState(null);
+  const [selectedExam, setSelectedExam] = React.useState(null);
+
+  const [searchKey, setSearchKey] = React.useState("");
+
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        const response = await api.get("/exam_sessions/");
+        setSessions(response.data);
+        setSelectedSession(response.data[0]);
+      } catch (error) {
+        console.error("Error fetching sessions:", error);
+      }
+    };
+    fetchSessions();
+  }, [api]);
+
+  useEffect(() => {
+    const fetchExams = async () => {
+      try {
+        const response = await api.get(`/get_exams/${selectedSession.id}/`);
+        setExams(response.data);
+        setSelectedExam(response.data[0]);
+        // console.log(response.data);
+      } catch (error) {
+        // alert("Exams not found");
+        // console.error("Error fetching exams:", error);
+      }
+    };
+    fetchExams();
+  }, [api, selectedSession]);
+
   const handleResultClick = () => {
+    localStorage.setItem(
+      "student_result_info",
+      JSON.stringify({
+        exam_id: selectedExam.id,
+        search_key: searchKey,
+      })
+    );
+
     navigate("/exam/studentResult"); // Navigate to the edit page
   };
-  return (
+
+  return sessions && exams ? (
     <div className="p-8 bg-pink-100 min-h-screen">
       <div className="flex gap-4  bg-white  rounded-3xl p-2 ">
         <div className="flex items-center space-x-2">
@@ -43,12 +90,19 @@ const StudentResult = () => {
             <select
               name=""
               id=""
-              className="p-2 bg-white rounded-full border border-gray-300 w-40 "
+              value={selectedSession && selectedSession.id}
+              onChange={(e) =>
+                setSelectedSession(
+                  sessions.find((session) => session.id == e.target.value)
+                )
+              }
+              className="p-2 bg-white rounded-full border border-gray-300"
             >
-              <option value="">2020-2021</option>
-              <option value="">2021-2022</option>
-              <option value="">2022-2023</option>
-              <option value="">2023-2024</option>
+              {sessions.map((session) => (
+                <option key={session.id} value={session.id}>
+                  {session.name}
+                </option>
+              ))}
             </select>
           </span>
           <span className=" text-center ">
@@ -56,13 +110,21 @@ const StudentResult = () => {
             <select
               name=""
               id=""
-              className="p-2 bg-white rounded-full border border-gray-300 w-80 "
+              value={selectedExam?.id}
+              onChange={(e) =>
+                setSelectedExam(exams.find((exam) => exam.id == e.target.value))
+              }
+              className="p-2 bg-white rounded-full border border-gray-300  "
             >
-              <option value="" selected disabled></option>
-              <option value="">CBSE</option>
-              <option value="">NEB</option>
-              <option value="">SEE</option>
-              <option value="">DLE</option>
+              {exams.length > 0 ? (
+                exams.map((exam) => (
+                  <option key={exam.id} value={exam.id}>
+                    {exam.name}
+                  </option>
+                ))
+              ) : (
+                <option>No exams found for this session</option>
+              )}
             </select>
           </span>
         </div>
@@ -70,7 +132,10 @@ const StudentResult = () => {
           <div className="w-96 ">
             <div className="flex items-center  bg-white rounded-full ">
               {/* Left Side: Three-Line Menu Icon */}
-              <IoFilterSharp className="text-gray-600 ml-4 cursor-pointer" size={24} />
+              <IoFilterSharp
+                className="text-gray-600 ml-4 cursor-pointer"
+                size={24}
+              />
 
               {/* Vertical Line Divider */}
               <div className="w-px h-6 bg-gray-600 mx-4"></div>
@@ -79,11 +144,17 @@ const StudentResult = () => {
               <input
                 type="text"
                 placeholder="Search"
+                value={searchKey}
+                onChange={(e) => setSearchKey(e.target.value)}
                 className="flex-grow px-4 py-2 text-black placeholder-gray-500 bg-transparent focus:outline-none items-center text-center"
               />
 
               {/* Right Side: Search Icon */}
-              <IoSearch className="text-gray-600 mr-4 cursor-pointer" size={24} onClick={handleResultClick}/>
+              <IoSearch
+                className="text-gray-600 mr-4 cursor-pointer"
+                size={24}
+                onClick={handleResultClick}
+              />
             </div>
           </div>
           {/* <div className="border border-[#BCA8EA] p-2 bg-white rounded-full">
@@ -92,9 +163,17 @@ const StudentResult = () => {
         </div>
       </div>
       <div className="flex justify-center pt-8">
-        <button type="button" className="bg-pink-500  p-2 px-8 rounded-full text-white" onClick={handleResultClick}>Search</button>
+        <button
+          type="button"
+          className="bg-pink-500  p-2 px-8 rounded-full text-white"
+          onClick={handleResultClick}
+        >
+          Search
+        </button>
       </div>
     </div>
+  ) : (
+    <div>Loading...</div>
   );
 };
 

@@ -7,38 +7,14 @@ const EditPage = () => {
   const { updateState, onUpdate } = useContext(UpdateContext);
   const navigate = useNavigate();
 
-  const subjectList = [
-    { id: 1, name: "English" },
-    { id: 2, name: "Mathematics" },
-    { id: 3, name: "Science" },
-    { id: 4, name: "Social Studies" },
-    { id: 5, name: "Hindi" },
-    { id: 6, name: "Computer Science" },
-    { id: 7, name: "Physics" },
-    { id: 8, name: "Chemistry" },
-    { id: 9, name: "Biology" },
-    { id: 10, name: "Geography" },
-    { id: 11, name: "History" },
-    { id: 12, name: "Economics" },
-    { id: 13, name: "Physical Education" },
-  ];
+  
+  
 
-  const teacherList = [
-    { id: 1, name: "John Smith" },
-    { id: 2, name: "Emily Johnson" },
-    { id: 3, name: "Michael Brown" },
-    { id: 4, name: "Sarah Davis" },
-    { id: 5, name: "David Wilson" },
-    { id: 6, name: "Anna Taylor" },
-    { id: 7, name: "James Anderson" },
-    { id: 8, name: "Sophia Martinez" },
-    { id: 9, name: "William Hernandez" },
-    { id: 10, name: "Olivia Moore" },
-    { id: 11, name: "Lucas Martin" },
-    { id: 12, name: "Amelia Garcia" },
-    { id: 13, name: "Benjamin Lee" },
-  ];
+  const subjectList = JSON.parse(localStorage.getItem("subjects_for_config"))
 
+
+  const teacherList = JSON.parse(localStorage.getItem("teachers_for_config"))
+  
   const [subjects, setSubjects] = useState(updateState.subjects || []);
 
   const handleAddMore = () => {
@@ -52,6 +28,8 @@ const EditPage = () => {
 
   const handleUpdate = () => {
     if (onUpdate) {
+      console.log(subjects);
+      
       onUpdate(updateState.classId, subjects);
     }
     navigate(-1); // Navigate back

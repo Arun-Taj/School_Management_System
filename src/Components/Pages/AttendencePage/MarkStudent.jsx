@@ -1,71 +1,67 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FaHandPaper } from "react-icons/fa";
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
 import { FiRefreshCcw } from "react-icons/fi";
 import { IoFilterSharp } from "react-icons/io5";
+import { AuthContext } from "../../../context/AuthContext";
 
 const MarkStudent = () => {
   // Initial student data with status
-  const initialRows = [
-    {
-      enrollmentId: "01249999",
-      name: "Rahul Kumar Debnath",
-      fatherName: "Subham Kumar Debnath",
-      gender: "Male",
-      rollNo: "02",
-      status: "P",
-    },
-    {
-      enrollmentId: "01250000",
-      name: "Ananya Sharma",
-      fatherName: "Rajesh Sharma",
-      gender: "Female",
-      rollNo: "03",
-      status: "A",
-    },
-    {
-      enrollmentId: "01250001",
-      name: "Vikram Singh",
-      fatherName: "Ajay Singh",
-      gender: "Male",
-      rollNo: "04",
-      status: "P",
-    },
-    {
-      enrollmentId: "01250002",
-      name: "Sneha Gupta",
-      fatherName: "Ramesh Gupta",
-      gender: "Female",
-      rollNo: "05",
-      status: "P",
-    },
-    {
-      enrollmentId: "01250003",
-      name: "Aarav Patel",
-      fatherName: "Vijay Patel",
-      gender: "Male",
-      rollNo: "06",
-      status: "L", // L for Leave
-    },
-    {
-      enrollmentId: "01250004",
-      name: "Priya Verma",
-      fatherName: "Suresh Verma",
-      gender: "Female",
-      rollNo: "07",
-      status: "A",
-    },
-    {
-      enrollmentId: "01250005",
-      name: "Karan Mehta",
-      fatherName: "Anil Mehta",
-      gender: "Male",
-      rollNo: "08",
-      status: "P",
-    },
-  ];
-  const [rows, setRows] = useState(initialRows);
+  const [initialRows, setInitialRows] = useState([]);
+  const [classList, setClassList] = useState([]);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    recordsPerPage: 10,
+    totalRecords: 0,
+    totalPages: 1,
+  });
+
+  const setRecordsPerPage = (recordsPerPage) => {
+    setPagination((prevPagination) => ({
+      ...prevPagination,
+      recordsPerPage: parseInt(recordsPerPage),
+      currentPage: 1,
+      totalPages: Math.ceil(
+        prevPagination.totalRecords / parseInt(recordsPerPage)
+      ),
+    }));
+  };
+
+  const applyPagination = () => {
+    let startIndex =
+      pagination.totalRecords == 0
+        ? 0
+        : pagination.currentPage * pagination.recordsPerPage -
+          pagination.recordsPerPage;
+    let endIndex =
+      pagination.currentPage * pagination.recordsPerPage >
+      pagination.totalRecords
+        ? pagination.totalRecords
+        : pagination.currentPage * pagination.recordsPerPage;
+
+    setRows(initialRows.slice(startIndex, endIndex));
+  };
+
+  useEffect(() => {
+    applyPagination();
+  }, [pagination]);
+
+  const { api } = useContext(AuthContext);
+  useEffect(() => {
+    const loadClassListFromServer = async () => {
+      try {
+        const response = await api.get("/get_classes_for_config/");
+
+        setClassList(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    loadClassListFromServer();
+  }, [api]);
+
+  const [rows, setRows] = useState([]);
 
   // State to toggle sort direction (ascending/descending)
 
@@ -76,9 +72,9 @@ const MarkStudent = () => {
   const handleSort = (sortBy) => {
     if (sortBy === "roll") {
       // Sort by roll number in ascending order
-      setRows((prevRows) =>
-        [...prevRows].sort((a, b) => a.rollNo.localeCompare(b.rollNo))
-      );
+      console.log(rows);
+
+      setRows((prevRows) => [...prevRows].sort((a, b) => a.rollNo - b.rollNo));
     } else if (sortBy === "name") {
       // Sort by name in alphabetical order
       setRows((prevRows) =>
@@ -91,33 +87,79 @@ const MarkStudent = () => {
   // Refresh the page function
   const handleRefresh = () => {
     setRows(initialRows);
+    setPagination({
+      ...pagination,
+      currentPage: 1,
+      recordsPerPage: 10,
+    });
   };
 
   // Function to handle status change (P, A, L) for each student
-  const handleStatusChange = (index, newStatus) => {
+  const handleStatusChange = (row_id, newStatus) => {
     setRows((prevRows) =>
-      prevRows.map((row, i) =>
-        i === index ? { ...row, status: newStatus } : row
+      prevRows.map((row) =>
+        row.id == row_id ? { ...row, status: newStatus } : row
+      )
+    );
+    setInitialRows((prevRows) =>
+      prevRows.map((row) =>
+        row.id == row_id ? { ...row, status: newStatus } : row
       )
     );
   };
-  const [searchDate, setSearchDate] = useState("");
+  // set date as today
+  const [searchDate, setSearchDate] = useState(
+    new Date().toISOString().slice(0, 10)
+  );
   const [selectedClass, setSelectedClass] = useState("");
 
   const handleSearch = () => {
     // Perform search logic here based on searchDate and selectedClass
     if (searchDate && selectedClass) {
-      console.log(`Searching for class ${selectedClass} on date ${searchDate}`);
-      // Add your search logic (like filtering data, API calls, etc.)
+      const getStudentsForAttendence = async () => {
+        try {
+          const response = await api.get(
+            `/get_students_for_attendance/${searchDate}/${selectedClass}/`
+          );
+          // console.log(response.data);
+
+          setInitialRows(response.data);
+
+          setPagination({
+            currentPage: 1,
+            recordsPerPage: 10,
+            totalRecords: response.data.length,
+            totalPages: Math.ceil(
+              response.data.length / pagination.recordsPerPage
+            ),
+          });
+
+          applyPagination();
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+      getStudentsForAttendence();
     } else {
-      console.log("Please select a date and class.");
+      alert("Please select a date and class.");
     }
   };
   //submit function
   const handleSubmit = () => {
-    // Log the updated students data to the console
-    console.log("Submitted Student Data:", rows);
-    // Perform your submission logic (e.g., API call) here
+    let confirmSubmit = window.confirm("Are you sure you want to submit?");
+
+    if (confirmSubmit) {
+      const udpateAttendence = async () => {
+        try {
+          const response = await api.post(`/update_attendance/`, initialRows);
+          alert(response.data.message);
+          // console.log(response.data);
+        } catch (error) {
+          alert("attendance not updated");
+        }
+      };
+      udpateAttendence();
+    }
   };
 
   return (
@@ -156,9 +198,11 @@ const MarkStudent = () => {
             <option value="" disabled>
               Select Class
             </option>
-            <option value="Class 1">Class 1</option>
-            <option value="Class 2">Class 2</option>
-            <option value="Class 3">Class 3</option>
+            {classList.map((classItem) => (
+              <option key={classItem.id} value={classItem.id}>
+                {classItem.name}
+              </option>
+            ))}
           </select>
 
           {/* Search button */}
@@ -247,7 +291,7 @@ const MarkStudent = () => {
                     className={`${
                       row.status === "P" ? "bg-green-500" : "bg-white"
                     } rounded-full px-2 cursor-pointer`}
-                    onClick={() => handleStatusChange(index, "P")}
+                    onClick={() => handleStatusChange(row.id, "P")}
                   >
                     P
                   </p>
@@ -255,7 +299,7 @@ const MarkStudent = () => {
                     className={`${
                       row.status === "A" ? "bg-red-600" : "bg-white"
                     } rounded-full px-2 cursor-pointer`}
-                    onClick={() => handleStatusChange(index, "A")}
+                    onClick={() => handleStatusChange(row.id, "A")}
                   >
                     A
                   </p>
@@ -263,7 +307,7 @@ const MarkStudent = () => {
                     className={`${
                       row.status === "L" ? "bg-yellow-500" : "bg-white"
                     } rounded-full px-2 cursor-pointer`}
-                    onClick={() => handleStatusChange(index, "L")}
+                    onClick={() => handleStatusChange(row.id, "L")}
                   >
                     L
                   </p>
@@ -276,27 +320,82 @@ const MarkStudent = () => {
       {/* Pagination Controls */}
       <div className="mt-4 flex justify-between items-center pb-10">
         <div className="flex space-x-2 items-center">
-          <button className="px-3 py-2 border border-gray-400 rounded-full ">
+          <button
+            className={
+              pagination.recordsPerPage == 10
+                ? "bg-[#BCA8EA] text-white px-3 py-2 border border-gray-400 rounded-full "
+                : "px-3 py-2 border border-gray-400 rounded-full "
+            }
+            value="10"
+            onClick={(e) => setRecordsPerPage(e.currentTarget.value)}
+          >
             10
           </button>
-          <button className="px-3 py-2 border border-gray-400 rounded-full ">
+          <button
+            className={
+              pagination.recordsPerPage == 25
+                ? "bg-[#BCA8EA] text-white px-3 py-2 border border-gray-400 rounded-full "
+                : "px-3 py-2 border border-gray-400 rounded-full "
+            }
+            value="25"
+            onClick={(e) => setRecordsPerPage(e.currentTarget.value)}
+          >
             25
           </button>
-          <button className="px-3 py-2 border border-gray-400 rounded-full ">
+          <button
+            className={
+              pagination.recordsPerPage == 50
+                ? "bg-[#BCA8EA] text-white px-3 py-2 border border-gray-400 rounded-full "
+                : "px-3 py-2 border border-gray-400 rounded-full "
+            }
+            value="50"
+            onClick={(e) => setRecordsPerPage(e.currentTarget.value)}
+          >
             50
           </button>
           <p>Records per page </p>
         </div>
         <div className="flex flex-row items-center">
           <div className="text-sm text-gray-600 ">
-            Showing 1 to 25 of 78 records
+            Showing{" "}
+            {pagination.totalRecords == 0
+              ? 0
+              : pagination.currentPage * pagination.recordsPerPage -
+                (pagination.recordsPerPage - 1)}{" "}
+            &nbsp; to &nbsp;
+            {pagination.currentPage * pagination.recordsPerPage >
+            pagination.totalRecords
+              ? pagination.totalRecords
+              : pagination.currentPage * pagination.recordsPerPage}{" "}
+            &nbsp; of {pagination.totalRecords} records
           </div>
           <div className="flex space-x-2 items-center">
-            <button className="px-3  ">
+            <button
+              className="px-3  "
+              onClick={() =>
+                pagination.currentPage > 1 &&
+                setPagination({
+                  ...pagination,
+                  currentPage: pagination.currentPage - 1,
+                })
+              }
+            >
               <IoIosArrowDropleft size={30} />
             </button>
-            <p className="border border-gray-700 px-2 rounded-full"> 1</p>
-            <button className="px-3 ">
+            <p className="border border-gray-700 px-2 rounded-full">
+              {" "}
+              {pagination.currentPage}
+            </p>
+            <button
+              className="px-3 "
+              onClick={() =>
+                pagination.currentPage < pagination.totalPages &&
+                setPagination({
+                  ...pagination,
+                  currentPage: pagination.currentPage + 1,
+                })
+              }
+            >
               <IoIosArrowDropright size={30} />
             </button>
           </div>

@@ -3,12 +3,12 @@ import { FcSettings } from "react-icons/fc";
 import Table from "./Table";
 import { IoSearch } from "react-icons/io5";
 import { FiRefreshCcw } from "react-icons/fi";
-import {AuthContext} from "../../../context/AuthContext"
-
+import { AuthContext } from "../../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Classes = () => {
-
   const { api } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [className, setClassName] = useState("");
   const [monthlyFees, setMonthlyFees] = useState("");
@@ -19,84 +19,85 @@ const Classes = () => {
   const [editIndex, setEditIndex] = useState(-1); // This will now store the original index of the row
   const [classTeacherOptions, setClassTeacherOptions] = useState([]);
 
-
-
-  const getClassTeacherNameFromID = (id) => {    
+  const getClassTeacherNameFromID = (id) => {
     const classTeacher = classTeacherOptions.find((option) => option.id == id);
-    
+
     return classTeacher ? classTeacher.fullName : "";
   };
 
-
-
   React.useEffect(() => {
-
-
-    const getFullNameAndID = (employeeObj) =>{
+    const getFullNameAndID = (employeeObj) => {
       return {
-        'fullName':employeeObj.employeeFirstName + " " + employeeObj.employeeMiddleName+ " " + employeeObj.employeeLastName,
-        'id':employeeObj.id
-      }
-    }
-
-    
+        fullName:
+          employeeObj.employeeFirstName +
+          " " +
+          employeeObj.employeeMiddleName +
+          " " +
+          employeeObj.employeeLastName,
+        id: employeeObj.id,
+      };
+    };
 
     const loadClassTeacherOptions = async () => {
       const response = await api.get("/employee/");
       // const classTeachers = response.data;
-      const classTeachers = response.data.map((employeeObj) => getFullNameAndID(employeeObj));
-      // console.log(classTeachers);
-      
-      setClassTeacherOptions(classTeachers);
+      const classTeachers = response.data.map((employeeObj) =>
+        getFullNameAndID(employeeObj)
+      );
+
+      if (classTeachers.length === 0) {
+        alert("Please add a teacher/employee first");
+        navigate("/employees/employeeForm");
+      } else {
+        setClassTeacherOptions(classTeachers);
+      }
     };
     loadClassTeacherOptions();
 
-
-    
-    
     const loadClasses = async () => {
       const response = await api.get("/class/");
 
-      
       setRows(response.data);
       setFilteredRows(response.data);
       // console.log(response.data);
-      
     };
-    
+
     loadClasses();
-    
   }, []);
-
-
-
 
   const handleCreateClass = () => {
     if (className && monthlyFees && classTeacherID) {
       const classTeacherName = getClassTeacherNameFromID(classTeacherID);
-      const newClass = { className, class_teacher_fullname: classTeacherName,class_teacher: classTeacherID, monthlyFees };
+      const newClass = {
+        className,
+        class_teacher_fullname: classTeacherName,
+        class_teacher: classTeacherID,
+        monthlyFees,
+      };
       // console.log(newClass);
-      
+
       setRows((prevRows) => [...prevRows, newClass]);
       setFilteredRows((prevRows) => [...prevRows, newClass]); // Update filtered rows
-      
+
       setClassName("");
       setMonthlyFees("");
       setClassTeacherID("");
-
 
       //create class in database
       const formData = new FormData();
       formData.append("className", className);
       formData.append("class_teacher", classTeacherID);
       formData.append("monthlyFees", monthlyFees);
-      api.post("/class/", formData).then((response) => {
-        console.log(response);
-      }).catch((error) => {
-        console.log(error);
-      });
-
-
+      api
+        .post("/class/", formData)
+        .then((response) => {
+          // console.log(response);
+          alert("Class added successfully");
+        })
+        .catch((error) => {
+          // console.log(error);
+          alert("Something went wrong");
+        });
     }
   };
 
@@ -109,7 +110,6 @@ const Classes = () => {
         row.monthlyFees === filteredRows[index].monthlyFees
     );
     // console.log(rows, "org index", originalIndex);
-    
 
     if (originalIndex >= 0) {
       const rowToEdit = rows[originalIndex];
@@ -124,14 +124,19 @@ const Classes = () => {
     if (editIndex >= 0) {
       const updatedRows = rows.map((row, index) => {
         if (index === editIndex) {
-          
-          return { ...row, className: className, monthlyFees, class_teacher: classTeacherID, class_teacher_fullname: getClassTeacherNameFromID(classTeacherID) };
+          return {
+            ...row,
+            className: className,
+            monthlyFees,
+            class_teacher: classTeacherID,
+            class_teacher_fullname: getClassTeacherNameFromID(classTeacherID),
+          };
         }
         return row;
       });
       // console.log(updatedRows[editIndex]);
       const needToUpdateRow = updatedRows[editIndex];
-      
+
       setRows(updatedRows);
       setFilteredRows(updatedRows); // Update filtered rows as well
       setEditIndex(-1);
@@ -139,59 +144,54 @@ const Classes = () => {
       setMonthlyFees("");
       setClassTeacherID("");
 
-
-
       //update class in database
       const formData = new FormData();
-      formData.append("className", needToUpdateRow.className);      
+      formData.append("className", needToUpdateRow.className);
       formData.append("class_teacher", needToUpdateRow.class_teacher);
       formData.append("monthlyFees", needToUpdateRow.monthlyFees);
-      api.patch(`/class/${needToUpdateRow.id}/`, formData).then((response) => {
-        // console.log(response);
-        console.log("Class updated successfully");
-        
-      }).catch((error) => {
-        console.log(error);
-      });
-
-
-
+      api
+        .patch(`/class/${needToUpdateRow.id}/`, formData)
+        .then((response) => {
+          // console.log(response);
+          alert("Class updated successfully");
+        })
+        .catch((error) => {
+          alert("Failed to update class");
+        });
     }
   };
 
   const handleDeleteClass = (index) => {
     // Find the original index in the `rows` array
-    const confirmDelete = window.confirm("Are you sure you want to delete this item?");
-    if(confirmDelete){
-      const originalIndex = rows.findIndex(
-      (row) =>
-        row.className === filteredRows[index].className &&
-        row.class_teacher === filteredRows[index].class_teacher &&
-        row.monthlyFees === filteredRows[index].monthlyFees
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this item?"
     );
-    
-    const updatedRows = rows.filter((_, i) => i !== originalIndex); // Delete from the original rows
-    const needToDeleteRow = rows[originalIndex];
-    // console.log(needToDeleteRow);
+    if (confirmDelete) {
+      const originalIndex = rows.findIndex(
+        (row) =>
+          row.className === filteredRows[index].className &&
+          row.class_teacher === filteredRows[index].class_teacher &&
+          row.monthlyFees === filteredRows[index].monthlyFees
+      );
 
-    
-    setRows(updatedRows);
-    setFilteredRows(updatedRows); // Update filtered rows after deletion
+      const updatedRows = rows.filter((_, i) => i !== originalIndex); // Delete from the original rows
+      const needToDeleteRow = rows[originalIndex];
+      // console.log(needToDeleteRow);
 
+      setRows(updatedRows);
+      setFilteredRows(updatedRows); // Update filtered rows after deletion
 
-    //delete class in database
-    api.delete(`/class/${needToDeleteRow.id}/`).then((response) => {
-      // console.log(response);
-      console.log("Class deleted successfully");
-      
-    }).catch((error) => {
-      console.log(error);
-    });
-
-
-
+      //delete class in database
+      api
+        .delete(`/class/${needToDeleteRow.id}/`)
+        .then((response) => {
+          // console.log(response);
+          console.log("Class deleted successfully");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
-    
   };
 
   const handleSearch = () => {
@@ -288,7 +288,11 @@ const Classes = () => {
             </div>
           </div>
 
-          <Table rows={filteredRows} handleEdit={handleEditClass} handleDelete={handleDeleteClass} />
+          <Table
+            rows={filteredRows}
+            handleEdit={handleEditClass}
+            handleDelete={handleDeleteClass}
+          />
         </div>
       </div>
     </div>

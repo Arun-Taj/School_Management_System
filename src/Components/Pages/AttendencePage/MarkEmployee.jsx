@@ -1,73 +1,55 @@
-import React, { useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { FaRegEye, FaHandPaper } from "react-icons/fa";
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
 import { FiRefreshCcw } from "react-icons/fi";
 import { IoFilterSharp } from "react-icons/io5";
+import { AuthContext } from "../../../context/AuthContext";
 
 const MarkEmployee = () => {
+  const { api } = useContext(AuthContext);
   // Dummy data to replicate the table
-  const initialRows = [
-    {
-      enrollmentId: "01249999",
-      name: "Rahul Kumar Debnath",
-      fatherName: "Subham Kumar Debnath",
-      type: "Teacher",
-      status: "P",
-    },
-    {
-      enrollmentId: "01250000",
-      name: "Sagar Sharma",
-      fatherName: "Ram Sharma",
-      type: "Staff",
-      status: "A",
-    },
-    {
-      enrollmentId: "01250001",
-      name: "Ananya Gupta",
-      fatherName: "Rajesh Gupta",
-      type: "Teacher",
-      status: "P",
-    },
-    {
-      enrollmentId: "01250002",
-      name: "Vikram Singh",
-      fatherName: "Ajay Singh",
-      type: "Staff",
-      status: "L",
-    },
-    {
-      enrollmentId: "01250003",
-      name: "Sneha Verma",
-      fatherName: "Ramesh Verma",
-      type: "Teacher",
-      status: "P",
-    },
-    {
-      enrollmentId: "01250004",
-      name: "Aarav Patel",
-      fatherName: "Vijay Patel",
-      type: "Staff",
-      status: "A",
-    },
-    {
-      enrollmentId: "01250005",
-      name: "Priya Mehta",
-      fatherName: "Suresh Mehta",
-      type: "Teacher",
-      status: "P",
-    },
-    {
-      enrollmentId: "01249998",
-      name: "Sagar Sharma",
-      fatherName: "Ram Sharma",
-      type: "Staff",
-      status: "A",
-    },
-    // Add more employees here if needed
-  ];
+  const [initialRows, setInitialRows] = useState([]);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    recordsPerPage: 10,
+    totalRecords: 0,
+    totalPages: 1,
+  });
+  const setRecordsPerPage = (recordsPerPage) => {
+    setPagination((prevPagination) => ({
+      ...prevPagination,
+      recordsPerPage: parseInt(recordsPerPage),
+      currentPage: 1,
+      totalPages: Math.ceil(
+        prevPagination.totalRecords / parseInt(recordsPerPage)
+      ),
+    }));
+  };
+
+  const applyPagination = () => {
+    let startIndex =
+      pagination.totalRecords == 0
+        ? 0
+        : pagination.currentPage * pagination.recordsPerPage -
+          pagination.recordsPerPage;
+    let endIndex =
+      pagination.currentPage * pagination.recordsPerPage >
+      pagination.totalRecords
+        ? pagination.totalRecords
+        : pagination.currentPage * pagination.recordsPerPage;
+
+    setRows(initialRows.slice(startIndex, endIndex));
+  };
+
+  useEffect(() => {
+    applyPagination();
+  }, [pagination]);
 
   const [rows, setRows] = useState(initialRows);
+  const [searchDate, setSearchDate] = useState(
+    new Date().toISOString().slice(0, 10)
+  );
 
   // State to show/hide the sorting options popup
   const [showSortOptions, setShowSortOptions] = useState(false);
@@ -85,14 +67,48 @@ const MarkEmployee = () => {
 
   const handleSearch = () => {
     // Perform search logic here based on searchDate and selectedClass
-    if (searchDate && selectedClass) {
-      console.log(`Searching for class ${selectedClass} on date ${searchDate}`);
-      // Add your search logic (like filtering data, API calls, etc.)
+    if (searchDate) {
+      console.log(`${searchDate}`);
+      const getEmployeesForAttendence = async () => {
+        try {
+          const response = await api.get(
+            `/get_employees_for_attendance/${searchDate}/`
+          );
+          console.log(response.data);
+
+          setInitialRows(response.data);
+
+          setPagination({
+            currentPage: 1,
+            recordsPerPage: 10,
+            totalRecords: response.data.length,
+            totalPages: Math.ceil(
+              response.data.length / pagination.recordsPerPage
+            ),
+          });
+
+          applyPagination();
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+      getEmployeesForAttendence();
     } else {
       console.log("Please select a date and class.");
     }
   };
-
+  const handleStatusChange = (row_id, newStatus) => {
+    setRows((prevRows) =>
+      prevRows.map((row) =>
+        row.id == row_id ? { ...row, status: newStatus } : row
+      )
+    );
+    setInitialRows((prevRows) =>
+      prevRows.map((row) =>
+        row.id == row_id ? { ...row, status: newStatus } : row
+      )
+    );
+  };
 
   const handleRefresh = () => {
     setRows(initialRows);
@@ -101,6 +117,16 @@ const MarkEmployee = () => {
   const handleSubmit = () => {
     console.log("Submitted Employee Data:", rows);
     // Perform your submission logic (e.g., API call) here
+    const update_employee_attendance = async () => {
+      try {
+        const response = await api.post(`/update_employee_attendance/`, rows);
+        alert(response.data.message);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    update_employee_attendance();
   };
 
   return (
@@ -127,15 +153,15 @@ const MarkEmployee = () => {
         <div className="flex gap-4 items-center">
           <input
             type="date"
-            name=""
-            id=""
+            value={searchDate}
+            onChange={(e) => setSearchDate(e.target.value)}
             className="p-2 rounded-3xl border border-gray-300"
           />
           <div
             className="bg-white p-2 px-4 rounded-full border border-gray-300 cursor-pointer transition-all duration-200 hover:bg-indigo-200 hover:shadow-md"
             onClick={handleSearch}
           >
-            <IoSearch className="cursor-pointer transition-colors duration-300 hover:text-blue-600 text-xl"/>
+            <IoSearch className="cursor-pointer transition-colors duration-300 hover:text-blue-600 text-xl" />
           </div>
         </div>
         <div className="flex flex-row gap-4 justify-end items-center">
@@ -208,17 +234,13 @@ const MarkEmployee = () => {
                 <td className="p-2 text-center">{row.enrollmentId}</td>
                 <td className="p-2 text-center">{row.name}</td>
                 <td className="p-2 text-center">{row.fatherName}</td>
-                <td className="p-2 text-center">{row.type}</td>
+                <td className="p-2 text-center">{row.role}</td>
                 <td className="p-2 flex flex-row justify-center gap-4">
                   <p
                     className={`${
                       row.status === "P" ? "bg-green-500" : "bg-white"
                     } rounded-full px-2 cursor-pointer`}
-                    onClick={() => {
-                      const updatedRows = [...rows];
-                      updatedRows[index].status = "P";
-                      setRows(updatedRows);
-                    }}
+                    onClick={() => handleStatusChange(row.id, "P")}
                   >
                     P
                   </p>
@@ -226,11 +248,7 @@ const MarkEmployee = () => {
                     className={`${
                       row.status === "A" ? "bg-red-600" : "bg-white"
                     } rounded-full px-2 cursor-pointer`}
-                    onClick={() => {
-                      const updatedRows = [...rows];
-                      updatedRows[index].status = "A";
-                      setRows(updatedRows);
-                    }}
+                    onClick={() => handleStatusChange(row.id, "A")}
                   >
                     A
                   </p>
@@ -238,11 +256,7 @@ const MarkEmployee = () => {
                     className={`${
                       row.status === "L" ? "bg-yellow-500" : "bg-white"
                     } rounded-full px-2 cursor-pointer`}
-                    onClick={() => {
-                      const updatedRows = [...rows];
-                      updatedRows[index].status = "L";
-                      setRows(updatedRows);
-                    }}
+                    onClick={() => handleStatusChange(row.id, "L")}
                   >
                     L
                   </p>
@@ -256,27 +270,82 @@ const MarkEmployee = () => {
       {/* Pagination Controls */}
       <div className="mt-4 flex justify-between items-center pb-10">
         <div className="flex space-x-2 items-center">
-          <button className="px-3 py-2 border border-gray-400 rounded-full ">
+          <button
+            className={
+              pagination.recordsPerPage == 10
+                ? "bg-[#BCA8EA] text-white px-3 py-2 border border-gray-400 rounded-full "
+                : "px-3 py-2 border border-gray-400 rounded-full "
+            }
+            value="10"
+            onClick={(e) => setRecordsPerPage(e.currentTarget.value)}
+          >
             10
           </button>
-          <button className="px-3 py-2 border border-gray-400 rounded-full ">
+          <button
+            className={
+              pagination.recordsPerPage == 25
+                ? "bg-[#BCA8EA] text-white px-3 py-2 border border-gray-400 rounded-full "
+                : "px-3 py-2 border border-gray-400 rounded-full "
+            }
+            value="25"
+            onClick={(e) => setRecordsPerPage(e.currentTarget.value)}
+          >
             25
           </button>
-          <button className="px-3 py-2 border border-gray-400 rounded-full ">
+          <button
+            className={
+              pagination.recordsPerPage == 50
+                ? "bg-[#BCA8EA] text-white px-3 py-2 border border-gray-400 rounded-full "
+                : "px-3 py-2 border border-gray-400 rounded-full "
+            }
+            value="50"
+            onClick={(e) => setRecordsPerPage(e.currentTarget.value)}
+          >
             50
           </button>
           <p>Records per page </p>
         </div>
         <div className="flex flex-row items-center">
-          <div className="text-sm text-gray-600">
-            Showing 1 to 25 of 78 records
+          <div className="text-sm text-gray-600 ">
+            Showing{" "}
+            {pagination.totalRecords == 0
+              ? 0
+              : pagination.currentPage * pagination.recordsPerPage -
+                (pagination.recordsPerPage - 1)}{" "}
+            &nbsp; to &nbsp;
+            {pagination.currentPage * pagination.recordsPerPage >
+            pagination.totalRecords
+              ? pagination.totalRecords
+              : pagination.currentPage * pagination.recordsPerPage}{" "}
+            &nbsp; of {pagination.totalRecords} records
           </div>
           <div className="flex space-x-2 items-center">
-            <button className="px-3">
+            <button
+              className="px-3  "
+              onClick={() =>
+                pagination.currentPage > 1 &&
+                setPagination({
+                  ...pagination,
+                  currentPage: pagination.currentPage - 1,
+                })
+              }
+            >
               <IoIosArrowDropleft size={30} />
             </button>
-            <p className="border border-gray-700 px-2 rounded-full"> 1</p>
-            <button className="px-3">
+            <p className="border border-gray-700 px-2 rounded-full">
+              {" "}
+              {pagination.currentPage}
+            </p>
+            <button
+              className="px-3 "
+              onClick={() =>
+                pagination.currentPage < pagination.totalPages &&
+                setPagination({
+                  ...pagination,
+                  currentPage: pagination.currentPage + 1,
+                })
+              }
+            >
               <IoIosArrowDropright size={30} />
             </button>
           </div>

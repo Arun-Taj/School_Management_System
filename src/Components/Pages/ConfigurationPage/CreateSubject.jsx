@@ -1,76 +1,73 @@
 import React, { useState, useContext } from "react";
 import { FcSettings } from "react-icons/fc";
 import { FaRegTrashAlt } from "react-icons/fa";
-import {AuthContext} from "../../../context/AuthContext"
+import { AuthContext } from "../../../context/AuthContext";
 
 const CreateSubject = () => {
+  const { api } = useContext(AuthContext);
 
-  const {api} = useContext(AuthContext);
-
-  const [subjects, setSubjects] = useState([
-   
-  ]);
-
+  const [subjects, setSubjects] = useState([]);
 
   React.useEffect(() => {
     //load subjects from database
-    api.get('/subject/').then((response) => {
-      console.log(response.data);
-      setSubjects(response.data);
-    }).catch((error) => {
-      console.log(error);
-    })
-
-
+    api
+      .get("/subject/")
+      .then((response) => {
+        setSubjects(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, [api]);
-  
+
   const [newSubject, setNewSubject] = useState(""); // State to hold the new subject input
 
   const handleCreateSubject = () => {
     if (newSubject.trim() !== "") {
       const subject = {
         subjectName: newSubject,
-        subjectID:null
-      }
+        subjectID: null,
+      };
       // console.log(subject);
-      
+
       setSubjects((prevSubjects) => [...prevSubjects, subject]);
       setNewSubject(""); // Clear the input after adding
-
 
       // save subject to database
       const formData = new FormData();
       formData.append("subjectName", subject.subjectName);
-      api.post("/subject/", formData).then((response) => {
-        // console.log(response.data);
-        console.log("Subject created successfully");
-      }).catch((error) => {
-        console.log(error);
-      })
-
-
-
+      api
+        .post("/subject/", formData)
+        .then((response) => {
+          // console.log(response.data);
+          console.log("Subject created successfully");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
 
   const handleDeleteSubject = (index) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete?");
-  if(confirmDelete){
-    const updatedSubjects = subjects.filter((_, i) => i !== index);
-    setSubjects(updatedSubjects); // Update the subjects state
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete? All data related to this subject will be deleted."
+    );
+    if (confirmDelete) {
+      const updatedSubjects = subjects.filter((_, i) => i !== index);
+      setSubjects(updatedSubjects); // Update the subjects state
 
-    const subjectToDelete = subjects[index];
-    // console.log(subjectToDelete);
-    api.delete(`/subject/${subjectToDelete.id}/`).then((response) => {
-      // console.log(response.data);
-      console.log("Subject deleted successfully");
-    }).catch((error) => {
-      console.log(error);
-    })
-
-
-  }
-    
+      const subjectToDelete = subjects[index];
+      // console.log(subjectToDelete);
+      api
+        .delete(`/subject/${subjectToDelete.id}/`)
+        .then((response) => {
+          // console.log(response.data);
+          console.log("Subject deleted successfully");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   return (
@@ -99,7 +96,9 @@ const CreateSubject = () => {
       <div className="flex justify-center gap-8 pt-8">
         <div className="bg-white rounded-lg shadow-[4px_4px_4px_0px_#00000040] w-1/2 flex justify-center flex-col">
           <span className="space-y-4 p-2 pb-6 pt-6 mx-6">
-            <p className="text-2xl font-sans font-bold text-center pb-6">Create New Subject</p>
+            <p className="text-2xl font-sans font-bold text-center pb-6">
+              Create New Subject
+            </p>
             <input
               type="text"
               placeholder="Name of the subject"
@@ -127,7 +126,12 @@ const CreateSubject = () => {
             </thead>
             <tbody>
               {subjects.map((subject, index) => (
-                <tr key={index} className={`${index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"}`}>
+                <tr
+                  key={index}
+                  className={`${
+                    index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"
+                  }`}
+                >
                   <td className="py-2 px-4">{subject.subjectName}</td>
                   <td className="py-2 px-4 text-center">
                     <button
