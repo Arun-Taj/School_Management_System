@@ -5,10 +5,26 @@ import { IoSearch } from "react-icons/io5";
 import { FiRefreshCcw } from "react-icons/fi";
 import { IoFilterSharp } from "react-icons/io5";
 import { AuthContext } from "../../../context/AuthContext";
+import { set } from "date-fns";
 
 const MarkEmployee = () => {
   const { api } = useContext(AuthContext);
   // Dummy data to replicate the table
+  const [roles, setRoles] = useState([]);
+  useEffect(() => {
+    const getRoles = async () => {
+      try {
+        const response = await api.get("/get_roles/");
+        setRoles(response.data);
+      } catch (error) {
+        alert("Roles not found");
+        // console.error("Error fetching roles:", error);
+      }
+    }
+    getRoles();
+
+
+  }, [])
   const [initialRows, setInitialRows] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -32,10 +48,10 @@ const MarkEmployee = () => {
       pagination.totalRecords == 0
         ? 0
         : pagination.currentPage * pagination.recordsPerPage -
-          pagination.recordsPerPage;
+        pagination.recordsPerPage;
     let endIndex =
       pagination.currentPage * pagination.recordsPerPage >
-      pagination.totalRecords
+        pagination.totalRecords
         ? pagination.totalRecords
         : pagination.currentPage * pagination.recordsPerPage;
 
@@ -129,8 +145,8 @@ const MarkEmployee = () => {
     update_employee_attendance();
   };
 
-  return (
-    <div className="p-8 bg-pink-100 min-h-screen">
+  return roles && (
+    <div className="p-8 bg-pink-100">
       <div className="flex gap-4 bg-white rounded-3xl p-2 ">
         <div className="flex items-center space-x-2">
           <FaHandPaper className="text-gray-700 " />
@@ -227,35 +243,31 @@ const MarkEmployee = () => {
             {rows.map((row, index) => (
               <tr
                 key={index}
-                className={`border border-gray-300 ${
-                  index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"
-                }`}
+                className={`border border-gray-300 ${index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"
+                  }`}
               >
                 <td className="p-2 text-center">{row.enrollmentId}</td>
                 <td className="p-2 text-center">{row.name}</td>
                 <td className="p-2 text-center">{row.fatherName}</td>
-                <td className="p-2 text-center">{row.role}</td>
+                <td className="p-2 text-center">{roles && roles.find(role => role.id == row.role)?.name || "No Role"}</td>
                 <td className="p-2 flex flex-row justify-center gap-4">
                   <p
-                    className={`${
-                      row.status === "P" ? "bg-green-500" : "bg-white"
-                    } rounded-full px-2 cursor-pointer`}
+                    className={`${row.status === "P" ? "bg-green-500" : "bg-white"
+                      } rounded-full px-2 cursor-pointer`}
                     onClick={() => handleStatusChange(row.id, "P")}
                   >
                     P
                   </p>
                   <p
-                    className={`${
-                      row.status === "A" ? "bg-red-600" : "bg-white"
-                    } rounded-full px-2 cursor-pointer`}
+                    className={`${row.status === "A" ? "bg-red-600" : "bg-white"
+                      } rounded-full px-2 cursor-pointer`}
                     onClick={() => handleStatusChange(row.id, "A")}
                   >
                     A
                   </p>
                   <p
-                    className={`${
-                      row.status === "L" ? "bg-yellow-500" : "bg-white"
-                    } rounded-full px-2 cursor-pointer`}
+                    className={`${row.status === "L" ? "bg-yellow-500" : "bg-white"
+                      } rounded-full px-2 cursor-pointer`}
                     onClick={() => handleStatusChange(row.id, "L")}
                   >
                     L
@@ -311,10 +323,10 @@ const MarkEmployee = () => {
             {pagination.totalRecords == 0
               ? 0
               : pagination.currentPage * pagination.recordsPerPage -
-                (pagination.recordsPerPage - 1)}{" "}
+              (pagination.recordsPerPage - 1)}{" "}
             &nbsp; to &nbsp;
             {pagination.currentPage * pagination.recordsPerPage >
-            pagination.totalRecords
+              pagination.totalRecords
               ? pagination.totalRecords
               : pagination.currentPage * pagination.recordsPerPage}{" "}
             &nbsp; of {pagination.totalRecords} records

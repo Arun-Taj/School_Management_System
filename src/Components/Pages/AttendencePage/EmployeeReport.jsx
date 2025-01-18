@@ -19,6 +19,21 @@ const EmployeeReport = () => {
   const [employees, setEmployees] = useState(initialEmployees);
   const [month, setMonth] = useState(null);
   const [year, setYear] = useState(null);
+  const [roles, setRoles] = useState([]);
+  useEffect(() => {
+    const getRoles = async () => {
+      try {
+        const response = await api.get("/get_roles/");
+        setRoles(response.data);
+      } catch (error) {
+        alert("Roles not found");
+        // console.error("Error fetching roles:", error);
+      }
+    }
+    getRoles();
+
+
+  }, [])
   const [pagination, setPagination] = useState({
     currentPage: 1,
     recordsPerPage: 10,
@@ -31,10 +46,10 @@ const EmployeeReport = () => {
       pagination.totalRecords == 0
         ? 0
         : pagination.currentPage * pagination.recordsPerPage -
-          pagination.recordsPerPage;
+        pagination.recordsPerPage;
     let endIndex =
       pagination.currentPage * pagination.recordsPerPage >
-      pagination.totalRecords
+        pagination.totalRecords
         ? pagination.totalRecords
         : pagination.currentPage * pagination.recordsPerPage;
 
@@ -288,7 +303,7 @@ const EmployeeReport = () => {
                   >
                     <td className="p-2 text-center">{employee.employeeId}</td>
                     <td className="p-2 text-center">{employee.name}</td>
-                    <td className="p-2 text-center">{employee.role}</td>
+                    <td className="p-2 text-center">{roles && roles.find(role => role.id == employee.role)?.name || "No Role"}</td>
                     <td className="p-2">
                       <div
                         ref={(el) => (attendanceScrollRefs.current[index] = el)}
@@ -360,10 +375,10 @@ const EmployeeReport = () => {
             {pagination.totalRecords == 0
               ? 0
               : pagination.currentPage * pagination.recordsPerPage -
-                (pagination.recordsPerPage - 1)}{" "}
+              (pagination.recordsPerPage - 1)}{" "}
             &nbsp; to &nbsp;
             {pagination.currentPage * pagination.recordsPerPage >
-            pagination.totalRecords
+              pagination.totalRecords
               ? pagination.totalRecords
               : pagination.currentPage * pagination.recordsPerPage}{" "}
             &nbsp; of {pagination.totalRecords} records
