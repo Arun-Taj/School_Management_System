@@ -130,7 +130,7 @@ const Profile = () => {
         setTownCity(school_data.town_village_city);
         setEmail(admin_user.email);
         setPinCode(school_data.pincode);
-        setLogoFile(school_data.photo);
+        setLogoFile(`${base_url}/${school_data.photo}`);
         setState(school_data.state);
         setDistrict(school_data.district);
 
@@ -152,17 +152,23 @@ const Profile = () => {
   }, [api]);
 
   const handleLogoChange = (e) => {
+    e.preventDefault()
     if (e.target.files && e.target.files[0]) {
-      setLogoFile(e.target.files[0]);
+      const file = e.target.files[0];
+      const file_url = URL.createObjectURL(file);
+      setLogoFile(file_url);
     }
   };
 
-  const handleLogoUpload = () => {
+  const handleLogoUpload = (e) => {
+    e.preventDefault()
     // Trigger the file input click event
     document.getElementById("logo-input").click();
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("form submitted");
+
 
     const formData = new FormData(e.currentTarget);
     formData.append("school_id", schoolId);
@@ -237,7 +243,7 @@ const Profile = () => {
                   <div className="w-24 h-24 bg-gray-200 rounded-lg">
                     {logoFile ? (
                       <img
-                        src={`${base_url}/${logoFile}`}
+                        src={logoFile}
                         alt="Logo"
                         className="w-24 h-24 rounded-lg object-cover"
                       />

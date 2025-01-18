@@ -85,9 +85,12 @@ const Classes = () => {
 
       //create class in database
       const formData = new FormData();
+      // console.log(className, classTeacherID, monthlyFees);
+
       formData.append("className", className);
       formData.append("class_teacher", classTeacherID);
       formData.append("monthlyFees", monthlyFees);
+      // formData.append("id", monthlyFees);
       api
         .post("/class/", formData)
         .then((response) => {
@@ -149,6 +152,10 @@ const Classes = () => {
       formData.append("className", needToUpdateRow.className);
       formData.append("class_teacher", needToUpdateRow.class_teacher);
       formData.append("monthlyFees", needToUpdateRow.monthlyFees);
+      formData.append("id", needToUpdateRow.id);
+      // console.log("needToUpdateRow", needToUpdateRow.id);
+      // console.log("needToUpdateRow", needToUpdateRow.class_teacher);
+
       api
         .patch(`/class/${needToUpdateRow.id}/`, formData)
         .then((response) => {
@@ -235,7 +242,7 @@ const Classes = () => {
               onChange={(e) => setClassName(e.target.value)}
             />
             <input
-              type="text"
+              type="number"
               className="p-2 px-4 mb-4 rounded-3xl placeholder-black border border-blue-500 w-full"
               placeholder="Monthly Fees"
               value={monthlyFees}
