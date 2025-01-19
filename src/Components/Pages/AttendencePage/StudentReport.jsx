@@ -144,7 +144,7 @@ const StudentAttendanceReport = () => {
       const response = await api.get(
         `/get_class_attendance_by_month/${year}/${month}/${selectedClass}/`
       );
-      // console.log(response.data);
+      console.log(response.data);
       setInitialStudents(response.data);
       setPagination({
         currentPage: 1,
