@@ -889,9 +889,13 @@ function AddEmployee() {
                     <option value="" disabled selected>
                       Religion
                     </option>
-                    <option value="Class 1">Sikh</option>
-                    <option value="Class 2">Hindu</option>
-                    <option value="Class 3">Muslim</option>
+                    <option value="hindu">Hindu</option>
+                    <option value="muslim">Muslim</option>
+                    <option value="christian">Christian</option>
+                    <option value="sikh">Sikh</option>
+                    <option value="buddhist">Buddhist</option>
+                    <option value="jain">Jains</option>
+                    <option value="other">Other</option>
                   </Field>
                 </div>
                 <div className="mb-4">
@@ -906,9 +910,10 @@ function AddEmployee() {
                     <option value="" disabled selected>
                       Caste
                     </option>
-                    <option value="Class 1">Brahimin</option>
-                    <option value="Class 2">Chettri</option>
-                    <option value="Class 3">Muslim</option>
+                    <option value="caste1">General</option>
+                    <option value="caste2">OBC</option>
+                    <option value="caste3">SC</option>
+                    <option value="caste4">ST</option>
                   </Field>
                 </div>{" "}
                 <div className="mb-4 ">
@@ -921,12 +926,16 @@ function AddEmployee() {
                     className="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-3xl"
                   >
                     <option value="" disabled selected>
-                      BloodGroup
+                      Blood Group
                     </option>
                     <option value="O+">O+</option>
-                    <option value="A+">A+</option>
-                    <option value="AB+">AB+</option>
                     <option value="O-">O-</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
                   </Field>
                   <ErrorMessage
                     name="bloodGroup"
