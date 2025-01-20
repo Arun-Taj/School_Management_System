@@ -2,19 +2,20 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { FcSettings } from "react-icons/fc";
 import { UpdateContext } from "../../../context/UpdateContext";
+import { sub } from "date-fns";
 
 const EditPage = () => {
   const { updateState, onUpdate } = useContext(UpdateContext);
   const navigate = useNavigate();
 
-  
-  
+
+
 
   const subjectList = JSON.parse(localStorage.getItem("subjects_for_config"))
 
 
   const teacherList = JSON.parse(localStorage.getItem("teachers_for_config"))
-  
+
   const [subjects, setSubjects] = useState(updateState.subjects || []);
 
   const handleAddMore = () => {
@@ -22,14 +23,16 @@ const EditPage = () => {
   };
 
   const handleRemove = (index) => {
+    // console.log("removing", subjects[index]);
+
     const newSubjects = subjects.filter((_, subIndex) => subIndex !== index);
     setSubjects(newSubjects);
   };
 
   const handleUpdate = () => {
     if (onUpdate) {
-      console.log(subjects);
-      
+      // console.log(subjects);
+
       onUpdate(updateState.classId, subjects);
     }
     navigate(-1); // Navigate back

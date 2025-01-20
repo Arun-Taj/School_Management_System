@@ -8,7 +8,7 @@ const CreateSubject = () => {
 
   const [subjects, setSubjects] = useState([]);
 
-  React.useEffect(() => {
+  const getSubjects = () => {
     //load subjects from database
     api
       .get("/subject/")
@@ -18,6 +18,10 @@ const CreateSubject = () => {
       .catch((error) => {
         console.log(error);
       });
+  }
+
+  React.useEffect(() => {
+    getSubjects()
   }, [api]);
 
   const [newSubject, setNewSubject] = useState(""); // State to hold the new subject input
@@ -41,6 +45,7 @@ const CreateSubject = () => {
         .then((response) => {
           // console.log(response.data);
           console.log("Subject created successfully");
+
         })
         .catch((error) => {
           console.log(error);
@@ -128,9 +133,8 @@ const CreateSubject = () => {
               {subjects.map((subject, index) => (
                 <tr
                   key={index}
-                  className={`${
-                    index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"
-                  }`}
+                  className={`${index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"
+                    }`}
                 >
                   <td className="py-2 px-4">{subject.subjectName}</td>
                   <td className="py-2 px-4 text-center">

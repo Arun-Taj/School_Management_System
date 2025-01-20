@@ -25,10 +25,10 @@ const Table = ({ rows, handleEdit, handleDelete }) => {
       pagination.totalRecords == 0
         ? 0
         : pagination.currentPage * pagination.recordsPerPage -
-          pagination.recordsPerPage;
+        pagination.recordsPerPage;
     let endIndex =
       pagination.currentPage * pagination.recordsPerPage >
-      pagination.totalRecords
+        pagination.totalRecords
         ? pagination.totalRecords
         : pagination.currentPage * pagination.recordsPerPage;
 
@@ -63,9 +63,8 @@ const Table = ({ rows, handleEdit, handleDelete }) => {
             {filteredRows.map((row, index) => (
               <tr
                 key={index}
-                className={`border border-gray-300 ${
-                  index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"
-                }`}
+                className={`border border-gray-300 ${index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"
+                  }`}
               >
                 <td className="p-2 text-center">{row.className}</td>
                 <td className="p-2 text-center">
@@ -81,7 +80,7 @@ const Table = ({ rows, handleEdit, handleDelete }) => {
                   </button>
                   <button
                     className="p-1 text-black flex items-center"
-                    onClick={() => handleDelete(index)}
+                    onClick={() => handleDelete(row.id)}
                   >
                     <RiDeleteBin6Line />
                   </button>
@@ -135,10 +134,10 @@ const Table = ({ rows, handleEdit, handleDelete }) => {
             {pagination.totalRecords == 0
               ? 0
               : pagination.currentPage * pagination.recordsPerPage -
-                (pagination.recordsPerPage - 1)}{" "}
+              (pagination.recordsPerPage - 1)}{" "}
             &nbsp; to &nbsp;
             {pagination.currentPage * pagination.recordsPerPage >
-            pagination.totalRecords
+              pagination.totalRecords
               ? pagination.totalRecords
               : pagination.currentPage * pagination.recordsPerPage}{" "}
             &nbsp; of {pagination.totalRecords} records

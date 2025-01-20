@@ -110,8 +110,8 @@ const Classes = () => {
             subjects: assignedSubjects,
           });
           // console.log(response.data);
+          loadClassSubjectsFromServer();
           updateUI();
-          // loadClassSubjectsFromServer();
         } catch (error) {
           alert(error.response.data.error);
         }
