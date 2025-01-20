@@ -1,8 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import SchoolDetails from "./SchoolDetails";
 import AdminDetails from "./AdminDetails";
 import SignupForm from "./SignUp";
+import { AuthContext } from "../../../context/AuthContext";
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -10,7 +11,7 @@ const baseUrl = import.meta.env.VITE_API_BASE_URL;
 const SignUpDetails = () => {
   const [showAdminDetails, setShowAdminDetails] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
-  
+  const { api } = useContext(AuthContext);
   // Refs for each form's Formik instance
   const schoolDetailsRef = useRef(null);
   const adminDetailsRef = useRef(null);
@@ -45,17 +46,17 @@ const SignUpDetails = () => {
     lastName: "",
     gender: "",
     uploadPhoto: null,
-    dateOfBirth:null,
-    altPhone:"",
-    aadhaarNumber:"",
-    address1:"",
-    townVillageCity:"",
-    district:"",
-    state:"",
-    country:"",
-    pinCode:"",
-    nationality:"",
-    religion:"",
+    dateOfBirth: null,
+    altPhone: "",
+    aadhaarNumber: "",
+    address1: "",
+    townVillageCity: "",
+    district: "",
+    state: "",
+    country: "",
+    pinCode: "",
+    nationality: "",
+    religion: "",
     passportPhoto: null,
   });
 
@@ -83,25 +84,25 @@ const SignUpDetails = () => {
     ) {
       console.log("All forms are valid!");
       // Ensure that formData is up-to-date
-     // Get the updated values from Formik refs
-     const updatedFormData = signUpFormRef.current.values;
-     const updatedSchoolDetailsData = schoolDetailsRef.current.values;
-     const updatedAdminDetailsData = adminDetailsRef.current.values;
- 
-     // Update the state to ensure we have the latest values
-     setFormData(updatedFormData);
-     setSchoolDetailsData(updatedSchoolDetailsData);
-     setAdminDetailsData(updatedAdminDetailsData);
+      // Get the updated values from Formik refs
+      const updatedFormData = signUpFormRef.current.values;
+      const updatedSchoolDetailsData = schoolDetailsRef.current.values;
+      const updatedAdminDetailsData = adminDetailsRef.current.values;
 
-    //  // Log the latest form data
-    // console.log("Signup Data: ", updatedFormData);
-    // console.log("School Details Data: ", updatedSchoolDetailsData);
-    // console.log("Admin Details Data: ", updatedAdminDetailsData);
+      // Update the state to ensure we have the latest values
+      setFormData(updatedFormData);
+      setSchoolDetailsData(updatedSchoolDetailsData);
+      setAdminDetailsData(updatedAdminDetailsData);
 
-
+      //  // Log the latest form data
+      // console.log("Signup Data: ", updatedFormData);
+      // console.log("School Details Data: ", updatedSchoolDetailsData);
+      // console.log("Admin Details Data: ", updatedAdminDetailsData);
 
 
-    signup(updatedFormData, updatedSchoolDetailsData, updatedAdminDetailsData);
+
+
+      signup(updatedFormData, updatedSchoolDetailsData, updatedAdminDetailsData);
       // Submit and redirect to home
       setFormSubmitted(true);
       navigate("/");
@@ -115,39 +116,39 @@ const SignUpDetails = () => {
 
 
     // Create a FormData object to handle file and text data
-      const signupFormData = new FormData();
+    const signupFormData = new FormData();
 
-      // Append text fields
-      signupFormData.append("username", updatedFormData.username);
-      signupFormData.append("email", updatedFormData.email);
-      signupFormData.append("full_name", `${updatedAdminDetailsData.firstName} ${updatedAdminDetailsData.middleName} ${updatedAdminDetailsData.lastName}`);
-      signupFormData.append("password", updatedFormData.password);
-      signupFormData.append("gender", updatedAdminDetailsData.gender);
-      signupFormData.append("dob", updatedAdminDetailsData.dateOfBirth);
-      signupFormData.append("aadhar_no", updatedAdminDetailsData.aadhaarNumber);
-      signupFormData.append("address", updatedAdminDetailsData.address1);
-      signupFormData.append("town_village_city", updatedAdminDetailsData.townVillageCity);
-      signupFormData.append("district", updatedAdminDetailsData.district);
-      signupFormData.append("state", updatedAdminDetailsData.state);
-      signupFormData.append("country", updatedAdminDetailsData.country);
-      signupFormData.append("pincode", updatedAdminDetailsData.pinCode);
-      signupFormData.append("nationality", updatedAdminDetailsData.nationality);
-      signupFormData.append("religion", updatedAdminDetailsData.religion);
-      signupFormData.append("phone_number", updatedFormData.phoneNumber);
-      signupFormData.append("alt_phone_number", updatedAdminDetailsData.altPhone);
+    // Append text fields
+    signupFormData.append("username", updatedFormData.username);
+    signupFormData.append("email", updatedFormData.email);
+    signupFormData.append("full_name", `${updatedAdminDetailsData.firstName} ${updatedAdminDetailsData.middleName} ${updatedAdminDetailsData.lastName}`);
+    signupFormData.append("password", updatedFormData.password);
+    signupFormData.append("gender", updatedAdminDetailsData.gender);
+    signupFormData.append("dob", updatedAdminDetailsData.dateOfBirth);
+    signupFormData.append("aadhar_no", updatedAdminDetailsData.aadhaarNumber);
+    signupFormData.append("address", updatedAdminDetailsData.address1);
+    signupFormData.append("town_village_city", updatedAdminDetailsData.townVillageCity);
+    signupFormData.append("district", updatedAdminDetailsData.district);
+    signupFormData.append("state", updatedAdminDetailsData.state);
+    signupFormData.append("country", updatedAdminDetailsData.country);
+    signupFormData.append("pincode", updatedAdminDetailsData.pinCode);
+    signupFormData.append("nationality", updatedAdminDetailsData.nationality);
+    signupFormData.append("religion", updatedAdminDetailsData.religion);
+    signupFormData.append("phone_number", updatedFormData.phoneNumber);
+    signupFormData.append("alt_phone_number", updatedAdminDetailsData.altPhone);
 
 
-      // Append file fields (assuming updatedAdminDetailsData.uploadPhoto and updatedAdminDetailsData.passportPhoto are files)
-      if (updatedAdminDetailsData.uploadPhoto) {
-        signupFormData.append("photo", updatedAdminDetailsData.uploadPhoto);
-      }
-      if (updatedAdminDetailsData.passportPhoto) {
-        signupFormData.append("passport_photo", updatedAdminDetailsData.passportPhoto);
-      }
+    // Append file fields (assuming updatedAdminDetailsData.uploadPhoto and updatedAdminDetailsData.passportPhoto are files)
+    if (updatedAdminDetailsData.uploadPhoto) {
+      signupFormData.append("photo", updatedAdminDetailsData.uploadPhoto);
+    }
+    if (updatedAdminDetailsData.passportPhoto) {
+      signupFormData.append("passport_photo", updatedAdminDetailsData.passportPhoto);
+    }
     // Call signup API
     const response = await fetch(`${baseUrl}/adminuser/`, {
       method: "POST",
-      
+
       body: signupFormData,
     });
 
@@ -171,28 +172,32 @@ const SignUpDetails = () => {
       schoolFormData.append("pincode", updatedSchoolDetailsData.pinCode);
       schoolFormData.append("admin", parseInt(data.user.id));
 
+      if (schoolDetailsData.logo) {
+        schoolFormData.append("photo", schoolDetailsData.logo);
+      }
+
       // Call school creation API
       const response = await fetch(`${baseUrl}/school/`, {
         method: "POST",
-        
+
         body: schoolFormData,
       });
 
       const schoolData = await response.json();
 
       if (response.ok) {
-        // console.log("Signup successful", schoolData);
+        console.log("Signup successful", schoolData);
         alert("Signup Successful");
-      }else{
+      } else {
         console.log("School Creation failed", schoolData);
       }
 
-      
-    }
-     else {
-      // console.log("Signup failed", data);
-      alert("User registration failed");
-      
+
+
+    } else {
+      console.log("Signup failed", data);
+      alert("Signup failed");
+
       // throw new Error("Signup failed");
     }
   };
@@ -201,11 +206,11 @@ const SignUpDetails = () => {
   return (
     <div className="flex space-x-4">
       <div className="w-1/2">
-        <SignupForm 
+        <SignupForm
           formData={formData}
           setFormData={setFormData}
           formRef={signUpFormRef}
-          handleSubmit={handleSubmit} 
+          handleSubmit={handleSubmit}
         />
       </div>
       <div className="w-1/2">

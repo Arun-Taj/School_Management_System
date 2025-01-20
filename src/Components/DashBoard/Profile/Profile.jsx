@@ -81,12 +81,10 @@ const Profile = () => {
   const [phone, setPhone] = useState("");
   const [schoolBoard, setSchoolBoard] = useState('')
   const [schoolBoards, setSchoolBoards] = useState([
-    "cbse",
-    "icse",
-    "state board",
-    "seba",
-    "ahsec",
-    "other",
+    "CBSE",
+    "SEBA",
+    "AHSEC",
+    "OTHERS",
   ]);
   const [townCity, setTownCity] = useState("");
   const [district, setDistrict] = useState(districts[0]);

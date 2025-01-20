@@ -201,13 +201,14 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`flex flex-col ${
-        isOpen ? "w-64" : "w-20"
-      } bg-[#FFFFFF] h-screen p-5 transition-all duration-300 ease-in-out`}
+      className={`flex flex-col ${isOpen ? "w-64" : "w-20"
+        } bg-[#FFFFFF] h-screen p-5 transition-all duration-300 ease-in-out`}
       style={{ boxShadow: "4px 4px 4px 0px #00000040" }}
     >
       <div className="flex justify-between items-center">
-        <h1 className={`text-black ${!isOpen && "hidden"}`}><img src={Logo} alt="" className="w-44"/></h1>
+        <h1 className={`text-black ${!isOpen && "hidden"}`}>
+          <img src={Logo} alt="Logo" className="w-44" />
+        </h1>
         {isOpen ? (
           <IoIosArrowDropleft
             className="text-gray-700 cursor-pointer text-2xl"
@@ -227,18 +228,16 @@ const Sidebar = () => {
               <div className="flex items-center">
                 <Link
                   to={item.link}
-                  className={`flex items-center hover:text-[#5011DD] hover:font-bold transition-colors duration-200 ${
-                    (location.pathname === item.link ||
-                      expandedMenu === index) &&
+                  className={`flex items-center hover:text-[#5011DD] hover:font-bold transition-colors duration-200 ${(location.pathname === item.link ||
+                    expandedMenu === index) &&
                     "text-[#5011DD] font-bold"
-                  }`}
+                    }`}
                 >
                   <item.icon
-                    className={`mr-2 text-xl ${
-                      (location.pathname === item.link ||
-                        expandedMenu === index) &&
+                    className={`mr-2 text-xl ${(location.pathname === item.link ||
+                      expandedMenu === index) &&
                       "text-[#5011DD]"
-                    }`}
+                      }`}
                   />
                   {isOpen && <span>{item.name}</span>}
                 </Link>
@@ -260,12 +259,11 @@ const Sidebar = () => {
                     <div className="flex items-center justify-between">
                       <Link
                         to={subItem.link}
-                        className={`block py-1 hover:text-[#5011DD] hover:font-bold transition-colors duration-200 ${
-                          location.pathname === subItem.link ||
+                        className={`block py-1 hover:text-[#5011DD] hover:font-bold transition-colors duration-200 ${location.pathname === subItem.link ||
                           activeSubMenu === subItem.name
-                            ? "text-[#5011DD] font-bold"
-                            : ""
-                        }`}
+                          ? "text-[#5011DD] font-bold"
+                          : ""
+                          }`}
                         onClick={() => handleSubMenuClick(subItem.name)}
                       >
                         {subItem.name}
@@ -280,9 +278,9 @@ const Sidebar = () => {
                           }}
                         >
                           {activeSubMenu === subItem.name ? (
-                            <FaMinus className="cursor-pointer"/>
+                            <FaMinus className="cursor-pointer" />
                           ) : (
-                            <FaPlus className="cursor-pointer"/>
+                            <FaPlus className="cursor-pointer" />
                           )}
                         </span>
                       )}
@@ -294,12 +292,11 @@ const Sidebar = () => {
                             <Link
                               key={nestedIndex}
                               to={nestedSubItem.link}
-                              className={`block py-1 hover:text-[#5011DD] hover:font-bold transition-colors duration-200 ${
-                                location.pathname === nestedSubItem.link ||
+                              className={`block py-1 hover:text-[#5011DD] hover:font-bold transition-colors duration-200 ${location.pathname === nestedSubItem.link ||
                                 activeNestedSubMenu === nestedSubItem.name
-                                  ? "text-[#5011DD] font-bold"
-                                  : ""
-                              }`}
+                                ? "text-[#5011DD] font-bold"
+                                : ""
+                                }`}
                               onClick={() =>
                                 handleNestedSubMenuClick(nestedSubItem.name)
                               }

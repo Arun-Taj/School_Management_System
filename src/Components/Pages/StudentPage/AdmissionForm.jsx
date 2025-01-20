@@ -1,8 +1,7 @@
 import React, { useState, useRef, useContext, useEffect } from "react";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
-import StateDistrictSelect from "../SignUp&SignIn/StatesDistricts";
-import axios from "axios";
+
 import { AuthContext } from "../../../context/AuthContext";
 import satesDistrictsJSON from "../SignUp&SignIn/statesDistricts.json";
 import { useNavigate } from "react-router-dom";
@@ -232,9 +231,13 @@ function AdmissionForm() {
 
     if (!formData.phoneNumber.trim()) {
       errors.phoneNumber = "Phone Number is required";
-    } else if (!/^\d{10}$/.test(formData.phoneNumber)) {
-      errors.phoneNumber = "Phone Number must be a 10-digit number";
+    } else if (!/^(\+91[\s]?)?[6-9]\d{9}$/.test(formData.phoneNumber)) {
+      errors.phoneNumber = "Phone number must be exactly 10 digits or having country code added";
     }
+
+    // if(!/^(\+91[\s]?)?[6-9]\d{9}$/.test(formData.alternatePhoneNumber)){
+    //   errors.alternatePhoneNumber = "Enter valid phone number";
+    // }
 
     if (!formData.classOfAdmission.trim()) {
       errors.classOfAdmission = "Class of Admission is required";
@@ -295,9 +298,9 @@ function AdmissionForm() {
 
       if (!formData.guardianPhoneNumber.trim()) {
         errors.guardianPhoneNumber = "Guardian's Phone Number is required";
-      } else if (!/^\d{10}$/.test(formData.guardianPhoneNumber)) {
+      } else if (!/^(\+91[\s]?)?[6-9]\d{9}$/.test(formData.guardianPhoneNumber)) {
         errors.guardianPhoneNumber =
-          "Guardian's Phone Number must be a 10-digit number";
+          "Enter valid phone number";
       }
     }
     //validations for permanent address
@@ -354,24 +357,10 @@ function AdmissionForm() {
     sendData();
   };
 
-  
-
-  const [fileName, setFileName] = useState("");
-
-const handleUploadClick = () => {
-  fileInputRef.current.click(); // Trigger file input click
-};
-
-const handleFileChange = (event) => {
-  const file = event.target.files[0]; // Get the first selected file
-  if (file) {
-    const fileName = file.name.toString();
-    // const newFileName = `${fileName.slice(0, 10)}...${fileName.slice(fileName.length - 6)}`;
-    setFileName(fileName); // Update the file name state
-  }
-};
-
-
+  // Handle file upload click (optional based on file handling logic)
+  const handleUploadClick = () => {
+    fileInputRef.current.click();
+  };
   const handleReset = () => {
     setFormData(initialFormValues);
   };
@@ -505,7 +494,6 @@ const handleFileChange = (event) => {
                 type="file"
                 ref={fileInputRef}
                 style={{ display: "none" }}
-                onChange={handleFileChange} // Capture file change event
                 className="rounded-3xl"
                 name="photo"
               />
@@ -514,14 +502,8 @@ const handleFileChange = (event) => {
                 onClick={handleUploadClick}
                 className="w-full bg-white border border-gray-300 rounded-3xl px-4 p-2 flex flex-row items-start justify-between"
               >
-                
-                <span
-                      className="overflow-hidden text-ellipsis whitespace-nowrap"
-                      style={{ maxWidth: "80%" }} // Adjust to control the space for the file name
-                    >
-                      {fileName ? fileName : "Upload Photo"}
-                    </span> <MdOutlineFileUpload />
-              </button> 
+                Upload Photo <MdOutlineFileUpload />
+              </button>
             </div>
           </div>
 
@@ -1113,9 +1095,9 @@ const handleFileChange = (event) => {
                 <option value="" disabled selected>
                   Country
                 </option>
-                
+                <option value="Class 1">Nepal</option>
                 <option value="Class 2">India</option>
-                
+                <option value="Class 3">China</option>
               </select>
             </div>
 
@@ -1212,13 +1194,13 @@ const handleFileChange = (event) => {
                 <option value="" disabled selected>
                   Religion
                 </option>
-                <option value="hindu">Hindu</option>
-                    <option value="muslim">Muslim</option>
-                    <option value="christian">Christian</option>
-                    <option value="sikh">Sikh</option>
-                    <option value="buddhist">Buddhist</option>
-                    <option value="jain">Jains</option>
-                    <option value="other">Other</option>
+                <option value="Hindu">Hindu</option>
+                <option value="Muslim">Muslim</option>
+                <option value="Christian">Christian</option>
+                <option value="Sikh">Sikh</option>
+                <option value="Buddhist">Buddhist</option>
+                <option value="Jains">Jains</option>
+                <option value="Other">Other</option>
               </select>
             </div>
             <div className="mb-4">
@@ -1234,10 +1216,10 @@ const handleFileChange = (event) => {
                 <option value="" disabled selected>
                   Caste
                 </option>
-                <option value="caste1">General</option>
-                    <option value="caste2">OBC</option>
-                    <option value="caste3">SC</option>
-                    <option value="caste4">ST</option>
+                <option value="General">General</option>
+                <option value="OBC">OBC</option>
+                <option value="SC">SC</option>
+                <option value="ST">ST</option>
               </select>
             </div>{" "}
             <div className="mb-4 ">
@@ -1254,13 +1236,13 @@ const handleFileChange = (event) => {
                   Blood Group
                 </option>
                 <option value="O+">O+</option>
-                    <option value="O-">O-</option>
-                    <option value="A+">A+</option>
-                    <option value="A-">A-</option>
-                    <option value="AB+">AB+</option>
-                    <option value="AB-">AB-</option>
-                    <option value="B+">B+</option>
-                    <option value="B-">B-</option>
+                <option value="O-">O-</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
               </select>
               {errors.bloodGroup && (
                 <p className="text-red-500 text-sm">{errors.bloodGroup}</p>

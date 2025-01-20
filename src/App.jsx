@@ -8,6 +8,7 @@ import AdminDetails from "./Components/Pages/SignUp&SignIn/AdminDetails";
 import Profile from "./Components/DashBoard/Profile/Profile";
 import AccountSetting from "./Components/DashBoard/Profile/AccountSetting";
 import { UpdateContextProvider } from "./context/UpdateContext";
+import Terms from "./Components/Pages/SignUp&SignIn/Terms&Conditions";
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
         <Routes>
           <Route path="/signup" element={<SignUpDetails />} />
           <Route path="/" element={<SignInForm />} />
+          <Route path="/terms" element={<Terms/>}/>
           {/* <Route path="/dashboard" element={<MainDashBoard/>} /> */}
 
           <Route

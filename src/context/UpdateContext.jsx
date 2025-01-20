@@ -7,10 +7,10 @@ export const UpdateContext = createContext();
 
 // Provide UpdateContext to the app
 export const UpdateContextProvider = ({ children }) => {
-  
+
   const [updateState, setUpdateState] = useState(
     {
-   
+
       classId: null,
       className: null,
       subjects: null,
@@ -18,27 +18,28 @@ export const UpdateContextProvider = ({ children }) => {
     }
   );
 
-  const {api} = useContext(AuthContext)
+  const { api } = useContext(AuthContext)
 
 
-  const onUpdate=(classId, updatedSubjects) => {
+  const onUpdate = (classId, updatedSubjects) => {
     // console.log("Here i am onUpdate")
-    console.log(classId,updatedSubjects)
-    const updateSubjects = () => {
-      try{
-        const response = api.post("update_class_subjects/", updatedSubjects)
-        console.log("Response from server:", response.data);
+    // console.log(classId, updatedSubjects)
+    const updateSubjects = async () => {
+      try {
+        const response = await api.post("/update_class_subjects/", { subjects: updatedSubjects, class_id: classId })
+        // const response = await api.post("/update_class_subjects/", updateSubjects)
+        // console.log("Response from server:", response.data);
       } catch (error) {
         console.error("Error posting data:", error);
       }
-      
+
     }
 
     updateSubjects()
 
 
 
-    
+
     const updatedClasses = updateState.classes.map((cls) =>
       cls.id === classId ? { ...cls, subjects: updatedSubjects } : cls
     );
@@ -50,7 +51,7 @@ export const UpdateContextProvider = ({ children }) => {
 
 
   return (
-    <UpdateContext.Provider value={{updateState, setUpdateState, onUpdate}}>
+    <UpdateContext.Provider value={{ updateState, setUpdateState, onUpdate }}>
       {children}
     </UpdateContext.Provider>
   );

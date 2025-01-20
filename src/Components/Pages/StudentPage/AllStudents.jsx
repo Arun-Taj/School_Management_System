@@ -38,10 +38,10 @@ const AllStudents = () => {
       pagination.totalRecords == 0
         ? 0
         : pagination.currentPage * pagination.recordsPerPage -
-          pagination.recordsPerPage;
+        pagination.recordsPerPage;
     let endIndex =
       pagination.currentPage * pagination.recordsPerPage >
-      pagination.totalRecords
+        pagination.totalRecords
         ? pagination.totalRecords
         : pagination.currentPage * pagination.recordsPerPage;
 
@@ -54,6 +54,8 @@ const AllStudents = () => {
 
   // Load data from API
   useEffect(() => {
+    console.log("getting students");
+
     const fetchData = async () => {
       try {
         const response = await api.get("/student/");
@@ -85,7 +87,7 @@ const AllStudents = () => {
     };
 
     fetchData();
-  }, [api]);
+  }, []);
 
   const isSearchTermValid = (lowerCaseSearchTerm) => {
     if (!lowerCaseSearchTerm.includes(",")) {
@@ -469,18 +471,18 @@ const AllStudents = () => {
                   filterOption === "name"
                     ? "eg. John Doe"
                     : filterOption === "enrollmentId"
-                    ? "eg. ENR-10EABB4BD0	"
-                    : filterOption === "gender"
-                    ? "eg. male/female"
-                    : filterOption === "class"
-                    ? "eg. class 01"
-                    : filterOption === "class&rollNo"
-                    ? "eg. class 01, rollno 1"
-                    : filterOption === "name&fatherName"
-                    ? "eg. John Doe, Father Name"
-                    : filterOption === "class&gender"
-                    ? "eg. class 01, male/female"
-                    : "Search"
+                      ? "eg. ENR-10EABB4BD0	"
+                      : filterOption === "gender"
+                        ? "eg. male/female"
+                        : filterOption === "class"
+                          ? "eg. class 01"
+                          : filterOption === "class&rollNo"
+                            ? "eg. class 01, rollno 1"
+                            : filterOption === "name&fatherName"
+                              ? "eg. John Doe, Father Name"
+                              : filterOption === "class&gender"
+                                ? "eg. class 01, male/female"
+                                : "Search"
                 }
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -527,9 +529,8 @@ const AllStudents = () => {
                   filteredRows.map((row, index) => (
                     <tr
                       key={index}
-                      className={`border border-gray-300 ${
-                        index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"
-                      }`}
+                      className={`border border-gray-300 ${index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"
+                        }`}
                     >
                       <td className="p-2 text-center">{row.enrollmentId}</td>
                       <td className="p-2 text-center">
@@ -724,10 +725,10 @@ const AllStudents = () => {
               {pagination.totalRecords == 0
                 ? 0
                 : pagination.currentPage * pagination.recordsPerPage -
-                  (pagination.recordsPerPage - 1)}{" "}
+                (pagination.recordsPerPage - 1)}{" "}
               &nbsp; to &nbsp;
               {pagination.currentPage * pagination.recordsPerPage >
-              pagination.totalRecords
+                pagination.totalRecords
                 ? pagination.totalRecords
                 : pagination.currentPage * pagination.recordsPerPage}{" "}
               &nbsp; of {pagination.totalRecords} records

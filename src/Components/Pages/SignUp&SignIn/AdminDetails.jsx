@@ -63,7 +63,7 @@ function AdminDetails({
 
   const handlePhotoChange1 = (event, setFieldValue) => {
     const file = event.target.files[0];
-    
+
     // Check if the file exists
     if (file) {
       // File size check (250KB = 250 * 1024 bytes)
@@ -72,7 +72,7 @@ function AdminDetails({
         alert("File size exceeds 250KB. Please upload a smaller file.");
         return;
       }
-  
+
       setFieldValue("uploadPhoto", file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -81,10 +81,10 @@ function AdminDetails({
       reader.readAsDataURL(file);
     }
   };
-  
+
   const handlePhotoChange2 = (event, setFieldValue) => {
     const file = event.target.files[0];
-    
+
     // Check if the file exists
     if (file) {
       // File size check (250KB = 250 * 1024 bytes)
@@ -93,7 +93,7 @@ function AdminDetails({
         alert("File size exceeds 250KB. Please upload a smaller file.");
         return;
       }
-  
+
       setFieldValue("passportPhoto", file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -103,7 +103,7 @@ function AdminDetails({
     }
   };
   const handleSubmit = (values) => {
-   // console.log("Form submitted values:", values);
+    // console.log("Form submitted values:", values);
     setAdminDetailsData(values); // Save the form data
     onBackClick();
   };
@@ -123,7 +123,7 @@ function AdminDetails({
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
           enableReinitialize={true} // Prevent resetting form on switch
-          //validateOnChange={true}
+        //validateOnChange={true}
         >
           {({ setFieldValue, values }) => (
             <Form className="space-y-4">
@@ -204,7 +204,7 @@ function AdminDetails({
                     className="w-full placeholder-black border border-[#5011DD] rounded-3xl px-4 py-2 cursor-pointer"
                   />
                   <FaCalendarAlt
-                    className="absolute cursor-pointer right-2 top-3   text-[#5011DD]" 
+                    className="absolute cursor-pointer right-2 top-3   text-[#5011DD]"
                     onClick={() => datePickerRef.current.setFocus()}
                   />
                   <ErrorMessage
@@ -365,13 +365,13 @@ function AdminDetails({
                     <option value="" selected disabled>
                       Religion
                     </option>
-                    <option value="hindu">Hindu</option>
-                    <option value="muslim">Muslim</option>
-                    <option value="christian">Christian</option>
-                    <option value="sikh">Sikh</option>
-                    <option value="buddhist">Buddhist</option>
-                    <option value="jain">Jain</option>
-                    <option value="others">Others</option>
+                    <option value="Hindu">Hindu</option>
+                    <option value="Muslim">Muslim</option>
+                    <option value="Christian">Christian</option>
+                    <option value="Sikh">Sikh</option>
+                    <option value="Buddhist">Buddhist</option>
+                    <option value="Jains">Jains</option>
+                    <option value="Other">Other</option>
                   </Field>
                   <ErrorMessage
                     name="religion"
@@ -419,7 +419,7 @@ function AdminDetails({
               >
                 <IoIosArrowDropleft size={24} className="cursor-pointer" />
               </button>
-              
+
             </Form>
           )}
         </Formik>

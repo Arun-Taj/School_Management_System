@@ -165,7 +165,7 @@ const FeeReport = () => {
   };
 
   return (
-    <div className="p-8 bg-pink-100 min-h-screen">
+    <div className="p-8 bg-pink-100 min-h-full">
       <div className="flex gap-4  bg-white  rounded-3xl p-2 ">
         <div className="flex items-center space-x-2">
           <FaMoneyBill className="text-gray-700 " />
@@ -264,12 +264,12 @@ const FeeReport = () => {
       </div>
 
       {/* Table */}
-      <div className="max-w-screen-xl bg-white py-4 rounded-lg shadow-lg">
+      <div className=" bg-white py-4 rounded-lg shadow-lg">
         <div className="overflow-x-auto ">
           <div className="max-h-[400px] overflow-y-auto">
-            <table
+            <table 
               id="fee-report-table"
-              className="text-center border-collapse"
+              className="text-center border-collapse w-full"
             >
               <thead className="sticky top-0 bg-white">
                 <tr>
@@ -308,9 +308,8 @@ const FeeReport = () => {
                   rows.map((row, index) => (
                     <tr
                       key={index}
-                      className={`border border-gray-300 ${
-                        index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"
-                      }`}
+                      className={`border border-gray-300 ${index % 2 === 0 ? "bg-[#BCA8EA]" : "bg-[#E3D6FF]"
+                        }`}
                     >
                       <td className="p-2 text-center">
                         <input

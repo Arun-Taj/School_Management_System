@@ -7,7 +7,7 @@ import Logo from "../../../assets/Logo.svg";
 
 const SignInForm = () => {
   const navigate = useNavigate();
-  const { login, auth } = useContext(AuthContext);
+  const { login, auth, api } = useContext(AuthContext);
 
 
 
@@ -25,7 +25,7 @@ const SignInForm = () => {
     if (auth.isAuthenticated) {
       navigate("/dashboard"); //navigate 
     }
-    
+
   }, [auth, navigate]);
 
   const handleChange = (e) => {
@@ -38,23 +38,23 @@ const SignInForm = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
+
     // Reset any previous form errors
     setFormErrors({});
     // Check for empty username or password
-  if (!formValues.username || !formValues.password) {
-    setFormErrors({
-      username: !formValues.username ? "Username is required" : "",
-      password: !formValues.password ? "Password is required" : "",
-    });
-    return; // Stop execution if there are validation errors
-  }
+    if (!formValues.username || !formValues.password) {
+      setFormErrors({
+        username: !formValues.username ? "Username is required" : "",
+        password: !formValues.password ? "Password is required" : "",
+      });
+      return; // Stop execution if there are validation errors
+    }
 
     // Try logging in with the provided credentials
     try {
       // Call the login function from context
       const loggedIn = await login(formValues.username, formValues.password);
-      
+
       if (loggedIn) {
         // If login is successful, navigate to dashboard
         navigate("/dashboard");
@@ -68,56 +68,37 @@ const SignInForm = () => {
     }
   };
 
-  
-  //   e.preventDefault();
-    
-  //   // try logging in with provided credentials
-  //   try {
-  //     await login(formValues.username, formValues.password);
-  //     alert("Login successful!");
-  //   } catch (err) {
-  //     alert(err.message);
-  //   }
-    
-  //   if (loggedUser) {
-  //     const { username: storedUsername, password: storedPassword } = loggedUser;
-      
-  //     // DEBUG: Check what values are being compared
-  //     console.log("Stored username:", storedUsername);
-  //     console.log("Stored password:", storedPassword);
-  //     console.log("Entered username:", formValues.username);
-  //     console.log("Entered password:", formValues.password);
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
-  //     // Case-insensitive username comparison
-  //     if (
-  //       formValues.username === storedUsername &&
-  //       formValues.password === storedPassword
-  //     ) {
-  //       navigate("/dashboard"); // Navigate to dashboard on successful login
-  //     } else {
-  //       // Set error messages for incorrect username/password
-  //       setFormErrors({
-  //         username:
-  //           formValues.username === ""
-  //             ? "User name is required!"
-  //             : formValues.username !== storedUsername
-  //             ? "Incorrect username"
-  //             : "",
-  //         password:
-  //           formValues.password === ""
-  //             ? "Password is required!"
-  //             : formValues.password !== storedPassword
-  //             ? "Incorrect password"
-  //             : "",
-  //       });
-  //     }
-  //   } else {
-  //     setFormErrors({
-  //       username: "No registered user found",
-  //       password: "Please sign up first!",
-  //     });
-  //   }
-  // };
+
+  const handleForgotPassword = () => {
+    const email = window.prompt("Enter your email address:");
+
+    if (email && email.length > 0) {
+      if (validateEmail(email)) {
+        console.log("Email:", email);
+
+        const sendToServer = async () => {
+          try {
+            const response = await api.post("/account/forgot_password/", { email: email });
+            console.log(response.data);
+            alert("Password reset link sent successfully!");
+          } catch (error) {
+            // console.log(error);
+            alert("Failed to send password reset link.");
+          }
+        };
+        sendToServer();
+
+
+      } else {
+        alert("Please enter a valid email address.");
+      }
+    }
+  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -127,16 +108,17 @@ const SignInForm = () => {
     navigate("/signup");
   };
 
-  
+
   return (
-    <div className="flex min-h-screen">
-      <div className="flex justify-center bg-white w-full">
+    <div className="flex min-h-screen ">
+      <div className="flex justify-center align-middle bg-white w-full">
         {/* Left Side */}
-        <div className="w-1/2 p-8 h-full">
-        <div className="absolute top-4 left-4">
-            <img src={Logo} alt="" className="w-52 h-auto"/>
+        <div className="w-1/2  h-full flex flex-col justify-center">
+          <div className="font-bold text-xl">
+            <img src={Logo} alt="Logo" className="w-52 absolute top-4 left-4" />
+
           </div>
-          <div className="flex justify-center pt-14">
+          <div className="flex justify-center ">
             <div className="w-80">
               <h2 className="text-2xl font-semibold mb-2 text-center">
                 Welcome back
@@ -201,7 +183,7 @@ const SignInForm = () => {
                       Remember Me
                     </label>
                   </div>
-                  <button type="button" className="text-sm text-blue-500">
+                  <button type="button" className="text-sm text-blue-500" onClick={handleForgotPassword}>
                     Forgot Password?
                   </button>
                 </div>
@@ -231,7 +213,7 @@ const SignInForm = () => {
         </div>
 
         {/* Right Side */}
-        <div className="w-1/2 bg-[#f5eae4] pt-12 h-full">
+        <div className="w-1/2 bg-[#f5eae4] h-full flex flex-col justify-center">
           <div className="flex justify-center">
             <div className="w-[400px] ">
               <h2 className="text-2xl font-semibold mb-4 text-center">

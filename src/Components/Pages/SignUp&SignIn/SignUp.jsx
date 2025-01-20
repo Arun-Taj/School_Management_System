@@ -2,11 +2,11 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import Logo from "../../../assets/Logo.svg"
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-
 //import axios from "axios";
+import Logo from "../../../assets/Logo.svg";
+
 
 const SignupForm = ({ formData, setFormData, formRef, handleSubmit }) => {
   const navigate = useNavigate();
@@ -21,13 +21,14 @@ const SignupForm = ({ formData, setFormData, formRef, handleSubmit }) => {
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
-  const phoneRegExp = /^(?:[7-9]\d{9})$/;
+  // const phoneRegExp = /^(?:[7-9]\d{9})$/;
+  const phoneRegExp=/^(\+91[\s]?)?[6-9]\d{9}$/;
   // Validation schema using Yup
   const validationSchema = Yup.object({
     email: Yup.string().email("Invalid email format").required("Email is required"),
     phoneNumber: Yup.string()
-    .matches(phoneRegExp, 'Number must exactly 10-digit starting with 7, 8, or 9')
-    .required('Phone number is required'),
+      .matches(phoneRegExp, 'Phone number must be exactly 10 digits or having country code added')
+      .required('Phone number is required'),
     username: Yup.string().min(3, "Username must be at least 3 characters long").required("Username is required"),
     password: Yup.string().min(6, "Password must be at least 6 characters long").matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{6,}$/,
@@ -36,25 +37,24 @@ const SignupForm = ({ formData, setFormData, formRef, handleSubmit }) => {
     confirmPassword: Yup.string().oneOf([Yup.ref("password"), null], "Passwords must match").required("Please confirm your password"),
     terms: Yup.bool().oneOf([true], "You must accept the terms and conditions"),
   });
-  
+
 
   return (
     <div className="justify-center items-center min-h-screen flex flex-row">
       <div className="bg-white rounded-3xl p-8 w-full max-w-lg">
-      <div className="absolute top-4 left-4">
-          <img src={Logo} alt="" className="w-44 h-auto" />
-        </div>
-        <h2 className="text-2xl font-semibold mb-6 text-center">Register your account</h2>
+        <img src={Logo} alt="Logo" className="w-52 absolute top-4 left-4" />
+
+        <h2 className="text-2xl font-semibold mb-6 mt-8 text-center">Register your account</h2>
         <Formik
           innerRef={formRef}
           initialValues={formData}
           validationSchema={validationSchema}
-       
-          onSubmit={(values)=>{
+
+          onSubmit={(values) => {
             setFormData(values);
             handleSubmit()
           }}
-          
+
         >
           {() => (
             <Form className="space-y-4">
@@ -98,10 +98,8 @@ const SignupForm = ({ formData, setFormData, formRef, handleSubmit }) => {
                 <Field type="checkbox" id="terms" name="terms" className="mr-2 cursor-pointer" />
                 <label htmlFor="terms" className="text-sm">
                   Accept our
-                  <a href="/TermsConditions.pdf" 
-      className="text-black font-bold px-1" 
-      target="_blank" 
-      rel="noopener noreferrer">Terms & Condition</a>
+                  {/* <a href="#" className="text-black font-bold px-1">Terms & Condition</a> */}
+                  <button className="text-black font-bold px-1"onClick={()=>navigate("/terms")}>Terms & Condition </button>
                 </label>
               </div>
               <ErrorMessage name="terms" component="div" className="text-red-500 text-sm" />
@@ -121,7 +119,7 @@ const SignupForm = ({ formData, setFormData, formRef, handleSubmit }) => {
           </button>
         </p>
       </div>
-    </div>
+    </div >
   );
 };
 

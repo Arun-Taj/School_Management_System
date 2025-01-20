@@ -1,4 +1,4 @@
-import React, { useRef,useState } from "react";
+import React, { useRef, useState } from "react";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { IoIosArrowDropright } from "react-icons/io";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -69,7 +69,7 @@ const SchoolDetails = ({
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
           enableReinitialize={true} // Prevent resetting form on switch
-          //validateOnChange={true}  // Ensure the form updates parent state when fields change
+        //validateOnChange={true}  // Ensure the form updates parent state when fields change
         >
           {({ setFieldValue, values }) => (
             <Form className="space-y-4">
@@ -114,6 +114,7 @@ const SchoolDetails = ({
                       src={photoPreview}
                       alt="Preview"
                       className="mt-2 w-20 h-20 rounded-full object-cover"
+                      name="logo"
                     />
                   )}
                 </div>
@@ -134,12 +135,11 @@ const SchoolDetails = ({
                     <option value="" disabled>
                       School Board
                     </option>
-                    <option value="cbse">CBSE</option>
-                    <option value="seba">SEBA</option>
-                    
-                    <option value="ahsec">AHSEC</option>
-                    
-                    <option value="other_boards">Other Boards</option>
+                    <option value="CBSE">CBSE</option>
+
+                    <option value="SEBA">SEBA</option>
+                    <option value="AHSEC">AHSEC</option>
+                    <option value="OTHERS">OTHERS</option>
                   </Field>
                   <ErrorMessage
                     name="schoolBoard"

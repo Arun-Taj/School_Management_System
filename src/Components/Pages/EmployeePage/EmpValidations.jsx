@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 
 // Aadhar Number must be 12 digits, phone numbers should be 10 digits
 const aadharRegExp = /^\d{12}$/;
-const phoneRegExp = /^\d{10}$/;
+const phoneRegExp = /^(\+91[\s]?)?[6-9]\d{9}$/;
 // const zipRegExp = {
 //     US: /^\d{5}(-\d{4})?$/,               // USA
 //     CA: /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/,  // Canada
@@ -66,7 +66,7 @@ export const formValidationSchema = Yup.object().shape({
     .required('Aadhar number is required'),
 //   motherTongue: Yup.string().required('Mother Tongue is required'),
   phoneNumber: Yup.string()
-    .matches(phoneRegExp, 'Phone number must be exactly 10 digits')
+    .matches(phoneRegExp, 'Phone number must be exactly 10 digits or having country code added')
     .required('Phone number is required'),
   alternatePhoneNumber: Yup.string()
     .matches(phoneRegExp, 'Alternate Phone number must be exactly 10 digits')
